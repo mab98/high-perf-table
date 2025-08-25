@@ -4,7 +4,7 @@ import TableCell from "./TableCell"
 import TableRow from "./TableRow"
 import TableBody from "./TableBody"
 import { SkeletonRow, EmptyRow } from "./EmptySkeletonRow"
-import TablePagination from "./TablePagination"
+import TableStatus from "./TableStatus"
 import TableTooltip from "./TableTooltip"
 import BlankSlate from "./BlankSlate"
 import Button from "./Button"
@@ -17,7 +17,7 @@ export {
   TableBody,
   SkeletonRow,
   EmptyRow,
-  TablePagination,
+  TableStatus,
   TableTooltip,
   BlankSlate,
   Button,

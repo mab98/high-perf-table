@@ -1,10 +1,7 @@
+import { TableVirtuoso } from "react-virtuoso"
+import { DEFAULT_PAGE_SIZE } from "../../constants/table"
 import type { Column } from "../../types/table"
-import {
-  TableSearch,
-  TableHeader,
-  TableBody,
-  TablePagination,
-} from "./components"
+import { TableHeader, TableRow, TableSearch, TableStatus } from "./components"
 import "./Table.css"
 
 interface TableProps<T> {
@@ -19,7 +16,6 @@ interface TableProps<T> {
   currentPage?: number
   pageSize?: number
   onPageChange?: (offset: number) => void
-  blankSlateText?: string
 }
 
 const Table = <T extends Record<string, unknown> & { id?: string | number }>({
@@ -32,9 +28,7 @@ const Table = <T extends Record<string, unknown> & { id?: string | number }>({
   searchValue = "",
   onSearch,
   currentPage = 0,
-  pageSize = 10,
   onPageChange,
-  blankSlateText = "No records found",
 }: TableProps<T>) => {
   return (
     <div className="table-container">
@@ -46,32 +40,38 @@ const Table = <T extends Record<string, unknown> & { id?: string | number }>({
         />
       )}
 
-      <div className="table-wrapper">
-        <table className="table-main">
-          <TableHeader
-            colDefs={colDefs}
-            currentSort={currentSort}
-            onSort={onSort}
-          />
-          <TableBody
-            data={data}
-            colDefs={colDefs}
-            loading={loading}
-            pageSize={pageSize}
-            blankSlateText={blankSlateText}
-          />
-        </table>
+      <div
+        className="table-wrapper"
+        style={{ height: `${DEFAULT_PAGE_SIZE * 36}px` }}
+      >
+        <TableVirtuoso
+          data={data}
+          fixedHeaderContent={() => (
+            <TableHeader
+              colDefs={colDefs}
+              currentSort={currentSort}
+              onSort={onSort}
+            />
+          )}
+          itemContent={(index, row) => (
+            <TableRow row={row} colDefs={colDefs} index={index} />
+          )}
+          rangeChanged={({ endIndex }) => {
+            const buffer = Math.floor(DEFAULT_PAGE_SIZE / 2)
+            const hasMoreData = data.length < totalRecords
+
+            if (!loading && hasMoreData && endIndex >= data.length - buffer) {
+              onPageChange?.(currentPage + 1)
+            }
+          }}
+        />
       </div>
 
-      {onPageChange && (
-        <TablePagination
-          currentPage={currentPage}
-          pageSize={pageSize}
-          totalRecords={totalRecords}
-          loading={loading}
-          onPageChange={onPageChange}
-        />
-      )}
+      <TableStatus
+        loadedRecords={data.length}
+        totalRecords={totalRecords}
+        loading={loading}
+      />
     </div>
   )
 }

@@ -17,7 +17,7 @@ const TableRow = <
   index,
 }: TableRowProps<T>) => {
   return (
-    <tr key={row.id ?? index} className="table-row">
+    <td key={row.id ?? index} className="table-row">
       {colDefs.map((col) => {
         const cellContent = col.renderer
           ? col.renderer(row)
@@ -40,7 +40,7 @@ const TableRow = <
           />
         )
       })}
-    </tr>
+    </td>
   )
 }
 

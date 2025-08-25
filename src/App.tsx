@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useEmployeeData } from "./hooks/useEmployeeData"
 import { colDefs } from "./config/colDefs"
 import { DEFAULT_PAGE_SIZE } from "./constants/table"
@@ -6,6 +6,7 @@ import useDebounce from "./hooks/useDebounce"
 import "./App.css"
 import Table from "./components/Table"
 import Toast from "./components/Toast"
+import type { ApiData } from "./types/api"
 
 function App() {
   const [searchValue, setSearchValue] = useState("")
@@ -14,6 +15,7 @@ function App() {
     direction: "asc" | "desc"
   }>()
   const [currentPage, setCurrentPage] = useState(0)
+  const [fetchedRows, setFetchedRows] = useState<ApiData[]>([])
 
   const debouncedSearchTerm = useDebounce(searchValue)
 
@@ -30,26 +32,32 @@ function App() {
     search: debouncedSearchTerm,
   })
 
-  const handleSort = (field: string, direction: "asc" | "desc") => {
+  // Reset rows on search/sort change
+  useEffect(() => {
+    setFetchedRows([])
+    setCurrentPage(0)
+  }, [debouncedSearchTerm, currentSort])
+
+  // Update rows when API data changes
+  useEffect(() => {
+    if (!apiData) return
+
+    setFetchedRows((prev) =>
+      currentPage === 0 ? apiData.data : [...prev, ...apiData.data]
+    )
+  }, [apiData, currentPage])
+
+  const handleSort = (field: string, direction: "asc" | "desc") =>
     setCurrentSort({ field, direction })
-    setCurrentPage(0)
-  }
 
-  const handleSearch = (term: string) => {
-    setSearchValue(term)
-    setCurrentPage(0)
-  }
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page)
-  }
+  const handleSearch = (term: string) => setSearchValue(term)
 
   return (
     <div className="app">
       {error && <Toast message={error.message} />}
 
       <Table
-        data={apiData?.data || []}
+        data={fetchedRows}
         totalRecords={apiData?.total || 0}
         colDefs={colDefs}
         loading={isLoading}
@@ -59,7 +67,7 @@ function App() {
         onSort={handleSort}
         currentPage={currentPage}
         pageSize={DEFAULT_PAGE_SIZE}
-        onPageChange={handlePageChange}
+        onPageChange={setCurrentPage}
       />
     </div>
   )
