@@ -1,0 +1,47 @@
+/* ====== TOOLTIP VARIABLES ====== */
+:root {
+  --tooltip-bg: rgba(0, 0, 0, 0.9);
+  --tooltip-color: white;
+  --tooltip-padding: 8px 12px;
+  --tooltip-border-radius: 6px;
+  --tooltip-font-size: var(--table-font-size, 14px);
+  --tooltip-font-family: var(--table-font-family, Roboto, sans-serif);
+  --tooltip-line-height: var(--table-line-height, 1.4);
+  --tooltip-max-width: 300px;
+  --tooltip-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --tooltip-z-index: 9999;
+  --tooltip-transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+}
+
+/* ====== TOOLTIP STYLES ====== */
+.tooltip {
+  /* Layout */
+  position: fixed !important;
+  z-index: var(--tooltip-z-index) !important;
+  pointer-events: none;
+
+  /* Appearance */
+  background: var(--tooltip-bg);
+  color: var(--tooltip-color);
+  padding: var(--tooltip-padding);
+  border-radius: var(--tooltip-border-radius);
+  box-shadow: var(--tooltip-shadow);
+
+  /* Typography */
+  font-size: var(--tooltip-font-size);
+  font-family: var(--tooltip-font-family);
+  line-height: var(--tooltip-line-height);
+
+  /* Content handling */
+  max-width: var(--tooltip-max-width);
+  word-wrap: break-word;
+  white-space: pre-wrap;
+
+  /* Animation */
+  transition: var(--tooltip-transition);
+}
+
+/* ====== TOOLTIP VARIANTS ====== */
+.tooltip--error {
+  --tooltip-bg: rgba(220, 53, 69, 0.9);
+}

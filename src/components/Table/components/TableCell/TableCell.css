@@ -1,0 +1,23 @@
+/* ====== TABLE CELL VARIABLES ====== */
+:root {
+  --cell-ellipsis-min-width: 0; /* Allows text-overflow to work */
+}
+
+/* ====== TABLE CELL STYLES ====== */
+.table-cell {
+  height: var(--table-row-height);
+  padding: var(--table-padding);
+  border-right: 1px solid var(--table-border-light);
+  color: var(--table-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  box-sizing: border-box;
+  min-width: var(--cell-ellipsis-min-width);
+  position: relative;
+}
+
+.table-cell:last-child {
+  border-right: none;
+}

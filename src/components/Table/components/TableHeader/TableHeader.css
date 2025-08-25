@@ -1,0 +1,52 @@
+/* ====== TABLE HEADER VARIABLES ====== */
+:root {
+  --table-header-height: 36px;
+}
+
+/* ====== TABLE HEADER STYLES ====== */
+.table-header {
+  height: var(--table-header-height);
+  padding: var(--table-padding);
+  background: linear-gradient(
+    to bottom,
+    var(--table-bg-secondary) 0%,
+    #e9ecef 100%
+  );
+  border-bottom: 1px solid var(--table-border-color);
+  border-right: 1px solid var(--table-border-light);
+  text-align: left;
+  font-weight: 600;
+  color: var(--table-text-primary);
+  user-select: none;
+  white-space: nowrap;
+  box-sizing: border-box;
+  transition: background-color var(--table-transition);
+}
+
+.table-header:last-child {
+  border-right: none;
+}
+
+.table-header.sortable {
+  cursor: pointer;
+}
+
+.table-header.sortable:hover {
+  background: linear-gradient(to bottom, #e9ecef 0%, #dee2e6 100%);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  height: 100%;
+}
+
+.sort-icon {
+  color: var(--table-text-secondary);
+  opacity: 0.7;
+  min-width: 10px;
+  text-align: center;
+  font-size: 11px;
+}

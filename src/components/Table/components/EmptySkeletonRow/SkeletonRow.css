@@ -1,0 +1,40 @@
+/* ====== SKELETON VARIABLES ====== */
+:root {
+  --skeleton-height: 18px;
+  --skeleton-animation-duration: 1.5s;
+}
+
+/* ====== SKELETON LOADING STYLES ====== */
+.skeleton-placeholder {
+  height: var(--skeleton-height);
+  background: linear-gradient(
+    90deg,
+    #e9ecef 25%,
+    var(--table-bg-secondary) 50%,
+    #e9ecef 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer var(--skeleton-animation-duration) infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .skeleton-placeholder {
+    margin: 4px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .skeleton-placeholder {
+    height: 12px;
+    margin: 2px 0;
+  }
+}

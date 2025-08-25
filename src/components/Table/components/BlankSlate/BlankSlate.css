@@ -1,0 +1,51 @@
+/* ====== BLANK SLATE VARIABLES ====== */
+:root {
+  --blank-slate-padding: 3rem 2rem;
+  --blank-slate-max-width: 400px;
+  --blank-slate-min-height: 200px;
+  --blank-slate-icon-size: 64px;
+  --blank-slate-icon-margin: 0 0 1.5rem 0;
+}
+
+/* ====== BLANK SLATE STYLES ====== */
+.blank-slate {
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  /* Spacing */
+  padding: var(--blank-slate-padding);
+  margin: 0 auto;
+  max-width: var(--blank-slate-max-width);
+  min-height: var(--blank-slate-min-height);
+
+  /* Visual - Force light mode */
+  background: #ffffff;
+  border-radius: 12px;
+
+  /* Typography */
+  color: #6b7280;
+
+  /* Interactive states */
+  cursor: default;
+}
+
+.blank-slate-text {
+  /* Typography */
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: #374151;
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .blank-slate {
+    padding: 2rem 1rem;
+    border-radius: 12px;
+    margin: 0 1rem;
+  }
+}
