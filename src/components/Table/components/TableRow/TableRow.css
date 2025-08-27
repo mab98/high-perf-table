@@ -1,0 +1,15 @@
+.table-row {
+  display: flex;
+  height: var(--row-height);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  align-items: center;
+}
+
+.table-row:hover {
+  background-color: var(--bg-hover);
+}
+
+tr:nth-child(even) .table-row {
+  background: var(--bg-secondary);
+}

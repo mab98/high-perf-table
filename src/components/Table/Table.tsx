@@ -1,9 +1,15 @@
+import React from "react"
+import { TableVirtuoso } from "react-virtuoso"
+import { PAGE_SIZE, ROW_HEIGHT } from "../../constants"
 import type { Column } from "../../types/table"
+import { useColumnWidths } from "../../hooks/useColumnWidths"
 import {
-  TableSearch,
+  BlankSlate,
+  SkeletonRow,
   TableHeader,
-  TableBody,
-  TablePagination,
+  TableRow,
+  TableSearch,
+  TableStatus,
 } from "./components"
 import "./Table.css"
 
@@ -17,12 +23,16 @@ interface TableProps<T> {
   searchValue?: string
   onSearch?: (searchTerm: string) => void
   currentPage?: number
-  pageSize?: number
   onPageChange?: (offset: number) => void
-  blankSlateText?: string
+  tableWidth?: number
+  tableHeight?: number
+  numberOfRows?: number
+  rowHeight?: number
 }
 
-const Table = <T extends Record<string, unknown> & { id?: string | number }>({
+type TableData<T> = T & { id?: string | number }
+
+const Table = <T extends Record<string, unknown>>({
   data,
   totalRecords,
   colDefs,
@@ -32,46 +42,136 @@ const Table = <T extends Record<string, unknown> & { id?: string | number }>({
   searchValue = "",
   onSearch,
   currentPage = 0,
-  pageSize = 10,
   onPageChange,
-  blankSlateText = "No records found",
-}: TableProps<T>) => {
-  return (
-    <div className="table-container">
-      {onSearch && (
-        <TableSearch
-          value={searchValue}
-          onChange={onSearch}
-          disabled={loading}
-        />
-      )}
+  tableWidth,
+  tableHeight,
+  numberOfRows = PAGE_SIZE,
+  rowHeight = ROW_HEIGHT,
+}: TableProps<TableData<T>>) => {
+  const columnWidths = useColumnWidths({ colDefs, tableWidth })
 
-      <div className="table-wrapper">
-        <table className="table-main">
+  const enhancedColDefs = colDefs.map((col, index) => ({
+    ...col,
+    width: columnWidths[index]?.width || col.width,
+  }))
+
+  const headerHeight = rowHeight + 5
+  const bodyHeight = numberOfRows * rowHeight
+  const defaultTableHeight = headerHeight + bodyHeight
+
+  const containerStyle = {
+    width: tableWidth ? `${tableWidth}px` : undefined,
+    "--row-height": `${rowHeight}px`,
+    "--header-height": `${headerHeight}px`,
+  } as React.CSSProperties
+
+  const tableWrapperStyle: React.CSSProperties = {
+    height: tableHeight ? `${tableHeight}px` : `${defaultTableHeight}px`,
+  }
+
+  const handleEndReached = () => {
+    const hasMoreData = data.length < totalRecords
+    if (!loading && hasMoreData && onPageChange) {
+      onPageChange(currentPage + 1)
+    }
+  }
+
+  const renderFixedHeader = () => (
+    <TableHeader
+      colDefs={enhancedColDefs}
+      currentSort={currentSort}
+      onSort={onSort}
+      columnWidths={columnWidths}
+    />
+  )
+
+  const renderItemContent = (index: number, row: TableData<T>) => (
+    <TableRow
+      row={row}
+      colDefs={enhancedColDefs}
+      index={index}
+      columnWidths={columnWidths}
+    />
+  )
+
+  const renderFixedFooter = () => {
+    if (!loading) return null
+
+    return (
+      <div className="loading-container">
+        <div className="loading-indicator">
+          <div className="loading-spinner" />
+          <strong>Loading more data...</strong>
+        </div>
+      </div>
+    )
+  }
+
+  const renderTableContent = () => {
+    if (loading && data.length === 0) {
+      return (
+        <div className="skeleton-container">
           <TableHeader
-            colDefs={colDefs}
+            colDefs={enhancedColDefs}
             currentSort={currentSort}
             onSort={onSort}
+            columnWidths={columnWidths}
           />
-          <TableBody
-            data={data}
-            colDefs={colDefs}
-            loading={loading}
-            pageSize={pageSize}
-            blankSlateText={blankSlateText}
+          {Array.from({ length: numberOfRows }, (_, index) => (
+            <SkeletonRow key={index} colDefs={enhancedColDefs} />
+          ))}
+        </div>
+      )
+    }
+
+    if (data.length === 0) {
+      return (
+        <div className="empty-state-container">
+          <TableHeader
+            colDefs={enhancedColDefs}
+            currentSort={currentSort}
+            onSort={onSort}
+            columnWidths={columnWidths}
           />
-        </table>
+          <div className="blankslate-wrapper">
+            <BlankSlate text="No records found." />
+          </div>
+        </div>
+      )
+    }
+
+    return (
+      <TableVirtuoso
+        data={data}
+        fixedHeaderContent={renderFixedHeader}
+        itemContent={renderItemContent}
+        fixedFooterContent={renderFixedFooter}
+        endReached={handleEndReached}
+      />
+    )
+  }
+
+  return (
+    <div className="table-container" style={containerStyle}>
+      {onSearch && (
+        <div className="table-actions-bar">
+          <TableSearch
+            value={searchValue}
+            onChange={onSearch}
+            disabled={loading}
+          />
+        </div>
+      )}
+
+      <div className="table-wrapper" style={tableWrapperStyle}>
+        {renderTableContent()}
       </div>
 
-      {onPageChange && (
-        <TablePagination
-          currentPage={currentPage}
-          pageSize={pageSize}
-          totalRecords={totalRecords}
-          loading={loading}
-          onPageChange={onPageChange}
-        />
-      )}
+      <TableStatus
+        loadedRecords={data.length}
+        totalRecords={totalRecords}
+        loading={loading}
+      />
     </div>
   )
 }

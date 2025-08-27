@@ -32,6 +32,17 @@ export const colDefs: Column<ApiData>[] = [
     editable: true,
     sortable: true,
     filterable: true,
+    renderer: (apiData: ApiData) => {
+      return (
+        <a
+          href={`mailto:${apiData.email}`}
+          className="email-link"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {apiData.email}
+        </a>
+      )
+    },
   },
   {
     key: "phone",
@@ -45,8 +56,8 @@ export const colDefs: Column<ApiData>[] = [
     width: 120,
     editable: true,
     sortable: true,
-    renderer: (employee: ApiData) => {
-      const date = new Date(employee.dateOfBirth)
+    renderer: (apiData: ApiData) => {
+      const date = new Date(apiData.dateOfBirth)
       return date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
@@ -84,8 +95,8 @@ export const colDefs: Column<ApiData>[] = [
     width: 120,
     editable: true,
     sortable: true,
-    renderer: (employee: ApiData) => {
-      const date = new Date(employee.joinDate)
+    renderer: (apiData: ApiData) => {
+      const date = new Date(apiData.joinDate)
       return date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
@@ -100,13 +111,13 @@ export const colDefs: Column<ApiData>[] = [
     editable: true,
     sortable: true,
     filterable: true,
-    renderer: (employee: ApiData) => {
+    renderer: (apiData: ApiData) => {
       return new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
-      }).format(employee.salary)
+      }).format(apiData.salary)
     },
   },
 ]

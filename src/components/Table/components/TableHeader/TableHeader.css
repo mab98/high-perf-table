@@ -1,52 +1,41 @@
-/* ====== TABLE HEADER VARIABLES ====== */
-:root {
-  --table-header-height: 36px;
+.table-header-row {
+  display: flex;
+  align-items: center;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border-color);
 }
 
-/* ====== TABLE HEADER STYLES ====== */
 .table-header {
-  height: var(--table-header-height);
-  padding: var(--table-padding);
-  background: linear-gradient(
-    to bottom,
-    var(--table-bg-secondary) 0%,
-    #e9ecef 100%
-  );
-  border-bottom: 1px solid var(--table-border-color);
-  border-right: 1px solid var(--table-border-light);
-  text-align: left;
+  display: flex;
+  align-items: center;
+  padding: var(--padding);
+  border-right: 1px solid var(--border-color);
+  font-size: var(--small-font-size);
   font-weight: 600;
-  color: var(--table-text-primary);
-  user-select: none;
-  white-space: nowrap;
-  box-sizing: border-box;
-  transition: background-color var(--table-transition);
+  color: var(--text-primary);
+  background: var(--header-bg);
+  cursor: pointer;
+  transition: var(--transition);
+  height: var(--header-height);
 }
 
 .table-header:last-child {
   border-right: none;
 }
 
-.table-header.sortable {
-  cursor: pointer;
-}
-
 .table-header.sortable:hover {
-  background: linear-gradient(to bottom, #e9ecef 0%, #dee2e6 100%);
+  background-color: var(--bg-hover);
 }
 
 .header-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 4px;
-  height: 100%;
+  width: 100%;
 }
 
 .sort-icon {
-  color: var(--table-text-secondary);
-  opacity: 0.7;
-  min-width: 10px;
-  text-align: center;
-  font-size: 11px;
+  opacity: 0.6;
+  margin-left: var(--spacing-sm);
+  font-size: var(--small-font-size);
 }

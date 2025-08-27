@@ -1,7 +1,7 @@
 import useSWR from "swr"
 import type { TableQueryParams } from "../types/table"
 import type { ApiResponse } from "../types/api"
-import { DEFAULT_PAGE_SIZE } from "../constants/table"
+import { PAGE_SIZE } from "../constants"
 
 interface UseDataFetchParams<T> extends TableQueryParams {
   endpoint: string
@@ -69,7 +69,7 @@ export const useDataFetch = <T>({
 }: UseDataFetchParams<T>): UseDataFetchReturn<T> => {
   // Set default values using central constants
   const queryParams: TableQueryParams = {
-    limit: DEFAULT_PAGE_SIZE,
+    limit: PAGE_SIZE,
     offset: 0,
     ...params,
   }

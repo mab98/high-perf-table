@@ -1,6 +1,6 @@
 import React, { useState } from "react"
-import "./TableCell.css"
 import TableTooltip from "../TableTooltip"
+import "./TableCell.css"
 
 interface Position {
   x: number
@@ -44,7 +44,7 @@ const TableCell: React.FC<TableCellProps> = ({
     }
   }
 
-  const handleMouseEnter = (e: React.MouseEvent<HTMLTableCellElement>) => {
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!tooltipText.trim()) return
 
     const position = calculateTooltipPosition(e.currentTarget)
@@ -62,19 +62,15 @@ const TableCell: React.FC<TableCellProps> = ({
   return (
     <>
       <td
-        className={`table-cell ${className}`.trim()}
+        className={`table-cell ${className}`}
         style={style}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {content}
+        <div className="cell-value">{content}</div>
       </td>
 
-      <TableTooltip
-        show={tooltip.show}
-        text={tooltip.text}
-        position={tooltip.position}
-      />
+      <TableTooltip {...tooltip} />
     </>
   )
 }

@@ -1,11 +1,12 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useEmployeeData } from "./hooks/useEmployeeData"
 import { colDefs } from "./config/colDefs"
-import { DEFAULT_PAGE_SIZE } from "./constants/table"
+import { PAGE_SIZE } from "./constants"
 import useDebounce from "./hooks/useDebounce"
 import "./App.css"
 import Table from "./components/Table"
 import Toast from "./components/Toast"
+import type { ApiData } from "./types/api"
 
 function App() {
   const [searchValue, setSearchValue] = useState("")
@@ -14,30 +15,58 @@ function App() {
     direction: "asc" | "desc"
   }>()
   const [currentPage, setCurrentPage] = useState(0)
+  const [fetchedRows, setFetchedRows] = useState<ApiData[]>([])
+  const [totalRecords, setTotalRecords] = useState(0)
 
   const debouncedSearchTerm = useDebounce(searchValue)
 
-  const {
-    data: apiData,
-    isLoading,
-    error,
-  } = useEmployeeData({
-    limit: DEFAULT_PAGE_SIZE,
-    offset: currentPage * DEFAULT_PAGE_SIZE,
+  const apiParams = {
+    limit: PAGE_SIZE,
+    offset: currentPage * PAGE_SIZE,
     sort: currentSort
       ? `${currentSort.field},${currentSort.direction}`
       : undefined,
     search: debouncedSearchTerm,
-  })
-
-  const handleSort = (field: string, direction: "asc" | "desc") => {
-    setCurrentSort({ field, direction })
-    setCurrentPage(0)
   }
+
+  const { data: apiData, isLoading, error } = useEmployeeData(apiParams)
+
+  // Reset rows on search/sort change
+  useEffect(() => {
+    setFetchedRows([])
+    setCurrentPage(0)
+  }, [debouncedSearchTerm, currentSort])
+
+  // Update rows and totalRecords when API data changes
+  useEffect(() => {
+    if (!apiData) return
+
+    setTotalRecords(apiData.total)
+    setFetchedRows((prev) =>
+      currentPage === 0 ? apiData.data : [...prev, ...apiData.data]
+    )
+  }, [apiData, currentPage])
+
+  // Reset rows on search/sort change
+  useEffect(() => {
+    setFetchedRows([])
+    setCurrentPage(0)
+  }, [debouncedSearchTerm, currentSort])
+
+  // Update rows when API data changes
+  useEffect(() => {
+    if (!apiData) return
+
+    setFetchedRows((prev) =>
+      currentPage === 0 ? apiData.data : [...prev, ...apiData.data]
+    )
+  }, [apiData, currentPage])
+
+  const handleSort = (field: string, direction: "asc" | "desc") =>
+    setCurrentSort({ field, direction })
 
   const handleSearch = (term: string) => {
     setSearchValue(term)
-    setCurrentPage(0)
   }
 
   const handlePageChange = (page: number) => {
@@ -49,8 +78,8 @@ function App() {
       {error && <Toast message={error.message} />}
 
       <Table
-        data={apiData?.data || []}
-        totalRecords={apiData?.total || 0}
+        data={fetchedRows}
+        totalRecords={totalRecords}
         colDefs={colDefs}
         loading={isLoading}
         searchValue={searchValue}
@@ -58,8 +87,9 @@ function App() {
         currentSort={currentSort}
         onSort={handleSort}
         currentPage={currentPage}
-        pageSize={DEFAULT_PAGE_SIZE}
         onPageChange={handlePageChange}
+        tableWidth={1400}
+        tableHeight={665}
       />
     </div>
   )

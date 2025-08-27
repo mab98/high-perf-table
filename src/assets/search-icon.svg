@@ -4,12 +4,12 @@
     cy="11"
     r="8"
     fill="#f8fafc"
-    stroke="#d1d5db"
+    stroke="#6c757d"
     strokeWidth="2"
   />
   <path
     d="m21 21-4.35-4.35"
-    stroke="#d1d5db"
+    stroke="#6c757d"
     strokeWidth="2"
     strokeLinecap="round"
   />
