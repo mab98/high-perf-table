@@ -1,0 +1,111 @@
+:root {
+  /* ====== DIMENSIONS ====== */
+  --header-height: 45px;
+  --row-height: 36px;
+  --border-radius: 4px;
+  --padding: 8px 12px;
+  --cell-padding: 0 12px;
+
+  /* ====== COLORS ====== */
+  --border-color: #bdc3c7;
+  --bg-primary: #fff;
+  --bg-secondary: #f8f9fa;
+  --bg-hover: #eef5fa;
+  --header-bg: #f8f9fa;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --error-color: #dc3545;
+
+  /* ====== TYPOGRAPHY ====== */
+  --font-family: Roboto, sans-serif;
+  --font-size: 14px;
+  --small-font-size: 13px;
+  --line-height: 1.4;
+
+  /* ====== SPACING ====== */
+  --spacing-xs: 2px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+
+  /* ====== ANIMATIONS ====== */
+  --transition: 0.15s ease;
+
+  /* ====== Z-INDEX ====== */
+  --z-tooltip: 1000;
+  --z-toast: 1050;
+
+  /* ====== COMPONENT SPECIFIC ====== */
+  /* Skeleton */
+  --skeleton-height: 18px;
+  --skeleton-color-light: #e9ecef;
+  --skeleton-color-dark: #f8f9fa;
+  --skeleton-animation-duration: 1.5s;
+
+  /* BlankSlate */
+  --blank-slate-gap: 25px;
+  --blank-slate-font-size: 1.25rem;
+  --blank-slate-font-weight: 600;
+  --blank-slate-color: #374151;
+
+  /* Search */
+  --search-width: 300px;
+  --search-height: 36px;
+  --search-padding: 0.75rem 1rem;
+  --search-border: #ddd;
+  --search-border-light: #b3beca;
+  --search-bg-disabled: #f5f5f5;
+  --search-text-disabled: #666;
+
+  /* Toast */
+  --toast-min-width: 320px;
+  --toast-max-width: 480px;
+  --toast-padding: 16px;
+  --toast-border-width: 4px;
+
+  /* Tooltip */
+  --tooltip-bg: rgba(0, 0, 0, 0.9);
+  --tooltip-padding: 8px 12px;
+  --tooltip-max-width: 300px;
+  --tooltip-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --tooltip-transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+
+  /* Loading Spinner */
+  --spinner-size: 16px;
+  --spinner-dark: #6c757d;
+  --spinner-border-width: 2px;
+  --spinner-duration: 0.8s;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --header-height: 40px;
+    --font-size: 12px;
+    --small-font-size: 11px;
+    --padding: 6px 8px;
+    --search-width: 250px;
+    --search-height: 34px;
+    --skeleton-height: 12px;
+    --spinner-size: 14px;
+    --spacing-sm: 6px;
+    --spacing-lg: 12px;
+    --toast-padding: 14px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --header-height: 36px;
+    --font-size: 11px;
+    --small-font-size: 10px;
+    --padding: 4px 6px;
+    --search-width: 100%;
+    --search-height: 32px;
+    --search-padding: 12px;
+    --skeleton-height: 10px;
+    --spinner-size: 12px;
+    --spacing-lg: 8px;
+    --toast-padding: 12px;
+  }
+}

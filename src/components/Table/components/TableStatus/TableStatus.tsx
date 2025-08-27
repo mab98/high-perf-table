@@ -12,22 +12,13 @@ const TableStatus: React.FC<TableStatusProps> = ({
   totalRecords,
   loading,
 }) => {
-  const hasMoreData = loadedRecords < totalRecords
-
   return (
     <div className="table-status">
-      {loading ? (
-        "Loading more records..."
-      ) : totalRecords === 0 ? (
-        "No records found"
-      ) : hasMoreData ? (
-        <>
-          Loaded {loadedRecords.toLocaleString()} of{" "}
-          {totalRecords.toLocaleString()} records
-        </>
-      ) : (
-        <>All {totalRecords.toLocaleString()} records loaded</>
-      )}
+      <strong>
+        {!loading && totalRecords === 0
+          ? "No records found."
+          : `Loaded ${loadedRecords.toLocaleString()} of ${totalRecords.toLocaleString()} records`}
+      </strong>
     </div>
   )
 }

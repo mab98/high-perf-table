@@ -1,12 +1,11 @@
 .app {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 1rem;
+  padding: var(--spacing-xl);
+  display: flex;
+  justify-content: center;
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
   .app {
-    padding: 0.5rem;
+    padding: var(--spacing-sm);
   }
 }

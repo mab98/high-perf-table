@@ -1,58 +1,71 @@
-import { TABLE_CELL_MIN_WIDTH } from "../../../../constants/table"
 import type { Column } from "../../../../types/table"
 import "./TableHeader.css"
+
+interface ColumnWidthInfo {
+  width: number
+  minWidth: number
+}
 
 interface TableHeaderProps<T> {
   colDefs: Column<T>[]
   currentSort?: { field: string; direction: "asc" | "desc" } | null
   onSort?: (field: string, direction: "asc" | "desc") => void
+  columnWidths: ColumnWidthInfo[]
 }
 
 const TableHeader = <T,>({
   colDefs,
   currentSort,
   onSort,
+  columnWidths,
 }: TableHeaderProps<T>) => {
+  const handleSort = (col: Column<T>) => {
+    if (col.sortable && onSort) {
+      const newDirection =
+        currentSort?.field === col.key && currentSort.direction === "asc"
+          ? "desc"
+          : "asc"
+      onSort(col.key, newDirection)
+    }
+  }
+
   return (
-    <thead>
-      <tr>
-        {colDefs.map((col) => (
-          <th
+    <div className="table-header-row">
+      {colDefs.map((col, index) => {
+        const widthInfo = columnWidths[index]
+        const isActive = currentSort?.field === col.key
+        const sortDirection = isActive ? currentSort.direction : null
+
+        return (
+          <div
             key={col.key}
-            className={`table-header ${col.sortable ? "sortable" : ""}`}
+            className={`table-header ${col.sortable ? "sortable" : ""} ${
+              isActive ? "active" : ""
+            }`}
             style={{
-              width: col.width ? `${col.width}px` : undefined,
-              minWidth: col.width
-                ? `${col.width}px`
-                : `${TABLE_CELL_MIN_WIDTH}px`,
+              width: `${widthInfo?.width || col.width}px`,
+              minWidth: `${widthInfo?.minWidth || col.width}px`,
             }}
-            onClick={() => {
-              if (col.sortable && onSort) {
-                const newDirection =
-                  currentSort?.field === col.key &&
-                  currentSort.direction === "asc"
-                    ? "desc"
-                    : "asc"
-                onSort(col.key, newDirection)
-              }
-            }}
+            onClick={() => handleSort(col)}
+            role={col.sortable ? "button" : undefined}
+            tabIndex={col.sortable ? 0 : undefined}
           >
             <div className="header-content">
-              <span>{col.title}</span>
+              <span className="header-title">{col.title}</span>
               {col.sortable && (
-                <span className="sort-icon">
-                  {currentSort?.field === col.key
-                    ? currentSort.direction === "asc"
-                      ? "▲"
-                      : "▼"
-                    : "⇅"}
+                <span className={`sort-icon ${sortDirection || ""}`}>
+                  {sortDirection === "asc"
+                    ? "▲"
+                    : sortDirection === "desc"
+                    ? "▼"
+                    : ""}
                 </span>
               )}
             </div>
-          </th>
-        ))}
-      </tr>
-    </thead>
+          </div>
+        )
+      })}
+    </div>
   )
 }
 
