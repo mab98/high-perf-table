@@ -11,7 +11,7 @@ import type { ApiData } from "./types/api"
 function App() {
   const [searchValue, setSearchValue] = useState("")
   const [currentSort, setCurrentSort] = useState<{
-    field: string
+    column: string
     direction: "asc" | "desc"
   }>()
   const [currentPage, setCurrentPage] = useState(0)
@@ -24,7 +24,7 @@ function App() {
     limit: PAGE_SIZE,
     offset: currentPage * PAGE_SIZE,
     sort: currentSort
-      ? `${currentSort.field},${currentSort.direction}`
+      ? `${currentSort.column},${currentSort.direction}`
       : undefined,
     search: debouncedSearchTerm,
   }
@@ -62,8 +62,14 @@ function App() {
     )
   }, [apiData, currentPage])
 
-  const handleSort = (field: string, direction: "asc" | "desc") =>
-    setCurrentSort({ field, direction })
+  const handleSort = (column: string, direction: "asc" | "desc") => {
+    if (column === "") {
+      // Clear sorting
+      setCurrentSort(undefined)
+    } else {
+      setCurrentSort({ column, direction })
+    }
+  }
 
   const handleSearch = (term: string) => {
     setSearchValue(term)

@@ -5,7 +5,7 @@ import "./ColumnsButton.css"
 interface ColumnsButtonProps<T> {
   colDefs: Column<T>[]
   visibleColumns: string[]
-  onColumnVisibilityChange: (columnId: string, visible: boolean) => void
+  onColumnVisibilityChange: (columnKey: string, visible: boolean) => void
   onToggleAllColumns: (visible: boolean) => void
 }
 
@@ -129,20 +129,20 @@ const ColumnsButton = <T extends Record<string, unknown>>({
           </div>
 
           <div className="columns-menu-content">
-            {colDefs.map((column) => {
-              const isVisible = visibleColumns.includes(column.key)
+            {colDefs.map((col) => {
+              const isVisible = visibleColumns.includes(col.key)
 
               return (
-                <label key={column.key} className="column-checkbox-item">
+                <label key={col.key} className="column-checkbox-item">
                   <input
                     type="checkbox"
                     checked={isVisible}
                     onChange={(e) =>
-                      onColumnVisibilityChange(column.key, e.target.checked)
+                      onColumnVisibilityChange(col.key, e.target.checked)
                     }
                     className="column-checkbox"
                   />
-                  <span className="column-label">{column.title}</span>
+                  <span className="column-label">{col.title}</span>
                 </label>
               )
             })}
