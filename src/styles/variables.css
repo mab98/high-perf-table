@@ -1,7 +1,7 @@
 :root {
   /* ====== DIMENSIONS ====== */
   --header-height: 45px;
-  --row-height: 36px;
+  --row-height: 40px;
   --border-radius: 4px;
   --padding: 8px 12px;
   --cell-padding: 0 12px;
@@ -34,7 +34,7 @@
 
   /* ====== Z-INDEX ====== */
   --z-tooltip: 1000;
-  --z-columns-menu: 1010;
+  --z-menu: 1010;
   --z-toast: 1050;
 
   /* ====== COMPONENT SPECIFIC ====== */
@@ -92,6 +92,8 @@
     --spacing-sm: 6px;
     --spacing-lg: 12px;
     --toast-padding: 14px 16px;
+    --header-height: 33px;
+    --row-height: 28px;
   }
 }
 

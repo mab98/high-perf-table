@@ -1,11 +1,12 @@
 import React, { useState, useMemo } from "react"
 import { TableVirtuoso } from "react-virtuoso"
-import { PAGE_SIZE, ROW_HEIGHT } from "../../constants"
+import { PAGE_SIZE } from "../../constants"
 import type { Column } from "../../types/table"
 import { useColumnWidths } from "../../hooks/useColumnWidths"
 import {
   BlankSlate,
   ColumnsButton,
+  FiltersButton,
   SkeletonRow,
   TableHeader,
   TableRow,
@@ -23,12 +24,14 @@ interface TableProps<T> {
   onSort?: (column: string, direction: "asc" | "desc") => void
   searchValue?: string
   onSearch?: (searchTerm: string) => void
+  filters?: Record<string, string>
+  onFilterChange?: (columnKey: string, value: string) => void
+  onClearAllFilters?: () => void
   currentPage?: number
   onPageChange?: (offset: number) => void
   tableWidth?: number
   tableHeight?: number
   numberOfRows?: number
-  rowHeight?: number
 }
 
 const Table = <T extends Record<string, unknown>>({
@@ -40,12 +43,14 @@ const Table = <T extends Record<string, unknown>>({
   onSort,
   searchValue = "",
   onSearch,
+  filters = {},
+  onFilterChange,
+  onClearAllFilters,
   currentPage = 0,
   onPageChange,
   tableWidth,
   tableHeight,
   numberOfRows = PAGE_SIZE,
-  rowHeight = ROW_HEIGHT,
 }: TableProps<T>) => {
   const [visibleColumns, setVisibleColumns] = useState<string[]>(() =>
     colDefs.map((col) => col.key)
@@ -62,18 +67,12 @@ const Table = <T extends Record<string, unknown>>({
     width: columnWidths[index]?.width || col.width,
   }))
 
-  const headerHeight = rowHeight + 5
-  const bodyHeight = numberOfRows * rowHeight
-  const defaultTableHeight = headerHeight + bodyHeight
-
   const containerStyle = {
     width: tableWidth ? `${tableWidth}px` : undefined,
-    "--row-height": `${rowHeight}px`,
-    "--header-height": `${headerHeight}px`,
   } as React.CSSProperties
 
   const tableWrapperStyle: React.CSSProperties = {
-    height: tableHeight || defaultTableHeight,
+    height: tableHeight,
   }
 
   const handleColumnVisibilityChange = (
@@ -175,6 +174,14 @@ const Table = <T extends Record<string, unknown>>({
           )}
         </div>
         <div className="table-actions-right">
+          {onFilterChange && onClearAllFilters && (
+            <FiltersButton
+              colDefs={colDefs}
+              filters={filters}
+              onFilterChange={onFilterChange}
+              onClearAllFilters={onClearAllFilters}
+            />
+          )}
           <ColumnsButton
             colDefs={colDefs}
             visibleColumns={visibleColumns}
