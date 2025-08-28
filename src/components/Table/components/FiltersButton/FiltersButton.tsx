@@ -61,33 +61,28 @@ const FiltersButton = <T extends Record<string, unknown>>({
     (value) => value.trim() !== ""
   )
 
-  const closeMenu = useCallback(() => setIsMenuOpen(false), [])
+  const closeMenu = () => setIsMenuOpen(false)
+  const toggleMenu = () => setIsMenuOpen((prev) => !prev)
 
-  const handleClickOutside = useCallback(
-    (event: MouseEvent) => {
-      const target = event.target as Node
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    const target = event.target as Node
 
-      if (
-        menuRef.current?.contains(target) ||
-        buttonRef.current?.contains(target)
-      ) {
-        return
-      }
+    if (
+      menuRef.current?.contains(target) ||
+      buttonRef.current?.contains(target)
+    ) {
+      return
+    }
 
+    closeMenu()
+  }, [])
+
+  const handleEscapeKey = useCallback((event: KeyboardEvent) => {
+    if (event.key === "Escape") {
       closeMenu()
-    },
-    [closeMenu]
-  )
-
-  const handleEscapeKey = useCallback(
-    (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        closeMenu()
-        buttonRef.current?.focus()
-      }
-    },
-    [closeMenu]
-  )
+      buttonRef.current?.focus()
+    }
+  }, [])
 
   useEffect(() => {
     if (!isMenuOpen) return
@@ -100,10 +95,6 @@ const FiltersButton = <T extends Record<string, unknown>>({
       document.removeEventListener("keydown", handleEscapeKey)
     }
   }, [isMenuOpen, handleClickOutside, handleEscapeKey])
-
-  const toggleMenu = useCallback(() => {
-    setIsMenuOpen((prev) => !prev)
-  }, [])
 
   return (
     <div className="filters-button-container">
