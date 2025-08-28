@@ -8,20 +8,40 @@
   overflow: hidden;
 }
 
+/* Update table-actions-bar to use flexbox for proper alignment */
 .table-actions-bar {
   padding: var(--spacing-md);
   background-color: var(--header-bg);
   border-bottom: 1px solid var(--border-color);
+
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+}
+
+.table-actions-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex: 1;
+}
+
+.table-actions-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.table-wrapper {
+  position: relative;
 }
 
 .loading-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100vw;
+  width: 100%;
 }
 
 .loading-indicator {
@@ -55,18 +75,11 @@
   }
 }
 
-.skeleton-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-
+.skeleton-container,
 .empty-state-container {
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: 100%;
   overflow-x: auto;
 }
@@ -96,15 +109,10 @@
 @media (max-width: 480px) {
   .table-actions-bar {
     flex-direction: column;
-    gap: var(--spacing-sm);
     align-items: stretch;
   }
 
   .blankslate-wrapper {
     min-height: 150px;
-  }
-
-  .loading-indicator {
-    padding: var(--spacing-sm);
   }
 }

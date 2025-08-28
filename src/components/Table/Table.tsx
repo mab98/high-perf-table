@@ -1,10 +1,11 @@
-import React from "react"
+import React, { useState, useMemo } from "react"
 import { TableVirtuoso } from "react-virtuoso"
 import { PAGE_SIZE, ROW_HEIGHT } from "../../constants"
 import type { Column } from "../../types/table"
 import { useColumnWidths } from "../../hooks/useColumnWidths"
 import {
   BlankSlate,
+  ColumnsButton,
   SkeletonRow,
   TableHeader,
   TableRow,
@@ -30,8 +31,6 @@ interface TableProps<T> {
   rowHeight?: number
 }
 
-type TableData<T> = T & { id?: string | number }
-
 const Table = <T extends Record<string, unknown>>({
   data,
   totalRecords,
@@ -47,10 +46,18 @@ const Table = <T extends Record<string, unknown>>({
   tableHeight,
   numberOfRows = PAGE_SIZE,
   rowHeight = ROW_HEIGHT,
-}: TableProps<TableData<T>>) => {
-  const columnWidths = useColumnWidths({ colDefs, tableWidth })
+}: TableProps<T>) => {
+  const [visibleColumns, setVisibleColumns] = useState<string[]>(() =>
+    colDefs.map((col) => col.key)
+  )
 
-  const enhancedColDefs = colDefs.map((col, index) => ({
+  const visibleColDefs = useMemo(() => {
+    return colDefs.filter((col) => visibleColumns.includes(col.key))
+  }, [colDefs, visibleColumns])
+
+  const columnWidths = useColumnWidths({ colDefs: visibleColDefs, tableWidth })
+
+  const enhancedColDefs = visibleColDefs.map((col, index) => ({
     ...col,
     width: columnWidths[index]?.width || col.width,
   }))
@@ -66,7 +73,17 @@ const Table = <T extends Record<string, unknown>>({
   } as React.CSSProperties
 
   const tableWrapperStyle: React.CSSProperties = {
-    height: tableHeight ? `${tableHeight}px` : `${defaultTableHeight}px`,
+    height: tableHeight || defaultTableHeight,
+  }
+
+  const handleColumnVisibilityChange = (columnId: string, visible: boolean) => {
+    setVisibleColumns((prev) =>
+      visible ? [...prev, columnId] : prev.filter((id) => id !== columnId)
+    )
+  }
+
+  const handleToggleAllColumns = (visible: boolean) => {
+    setVisibleColumns(visible ? colDefs.map((c) => c.key) : [])
   }
 
   const handleEndReached = () => {
@@ -85,7 +102,7 @@ const Table = <T extends Record<string, unknown>>({
     />
   )
 
-  const renderItemContent = (index: number, row: TableData<T>) => (
+  const renderItemContent = (index: number, row: T) => (
     <TableRow
       row={row}
       colDefs={enhancedColDefs}
@@ -111,12 +128,7 @@ const Table = <T extends Record<string, unknown>>({
     if (loading && data.length === 0) {
       return (
         <div className="skeleton-container">
-          <TableHeader
-            colDefs={enhancedColDefs}
-            currentSort={currentSort}
-            onSort={onSort}
-            columnWidths={columnWidths}
-          />
+          {renderFixedHeader()}
           {Array.from({ length: numberOfRows }, (_, index) => (
             <SkeletonRow key={index} colDefs={enhancedColDefs} />
           ))}
@@ -127,12 +139,7 @@ const Table = <T extends Record<string, unknown>>({
     if (data.length === 0) {
       return (
         <div className="empty-state-container">
-          <TableHeader
-            colDefs={enhancedColDefs}
-            currentSort={currentSort}
-            onSort={onSort}
-            columnWidths={columnWidths}
-          />
+          {renderFixedHeader()}
           <div className="blankslate-wrapper">
             <BlankSlate text="No records found." />
           </div>
@@ -153,15 +160,25 @@ const Table = <T extends Record<string, unknown>>({
 
   return (
     <div className="table-container" style={containerStyle}>
-      {onSearch && (
-        <div className="table-actions-bar">
-          <TableSearch
-            value={searchValue}
-            onChange={onSearch}
-            disabled={loading}
+      <div className="table-actions-bar">
+        <div className="table-actions-left">
+          {onSearch && (
+            <TableSearch
+              value={searchValue}
+              onChange={onSearch}
+              disabled={loading}
+            />
+          )}
+        </div>
+        <div className="table-actions-right">
+          <ColumnsButton
+            colDefs={colDefs}
+            visibleColumns={visibleColumns}
+            onColumnVisibilityChange={handleColumnVisibilityChange}
+            onToggleAllColumns={handleToggleAllColumns}
           />
         </div>
-      )}
+      </div>
 
       <div className="table-wrapper" style={tableWrapperStyle}>
         {renderTableContent()}

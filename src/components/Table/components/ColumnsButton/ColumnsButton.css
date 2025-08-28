@@ -1,0 +1,93 @@
+/* Columns Button Styles */
+.columns-button-container {
+  position: relative;
+  display: inline-block;
+}
+
+.columns-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--padding);
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  color: var(--text-primary);
+  font-size: var(--font-size);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  font-family: var(--font-family);
+}
+
+.columns-button:hover {
+  background: var(--bg-secondary);
+  border-color: var(--text-secondary);
+}
+
+.dropdown-arrow {
+  transition: transform var(--transition);
+  color: var(--text-secondary);
+}
+
+.dropdown-arrow.rotated {
+  transform: rotate(180deg);
+}
+
+.columns-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  min-width: 200px;
+  max-width: 300px;
+  max-height: 300px;
+  overflow: hidden;
+  z-index: var(--z-columns-menu);
+}
+
+.columns-menu-header {
+  padding: var(--spacing-sm) 0;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.columns-menu-content {
+  padding: var(--spacing-sm) 0;
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.column-checkbox-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-lg);
+  cursor: pointer;
+  transition: background-color var(--transition);
+  user-select: none;
+}
+
+.column-checkbox-item:hover {
+  background-color: var(--bg-hover);
+}
+
+.column-checkbox {
+  margin-right: var(--spacing-sm);
+  cursor: pointer;
+}
+
+.column-label {
+  font-size: var(--font-size);
+  color: var(--text-primary);
+}
+
+@media (max-width: 640px) {
+  .column-checkbox-item {
+    padding: var(--spacing-md) var(--spacing-lg);
+  }
+}
