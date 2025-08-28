@@ -29,7 +29,7 @@ const FiltersButton = <T extends Record<string, unknown>>({
   colDefs,
   filters,
   onFilterChange,
-  onClearAllFilters,
+  onClearAllFilters
 }: FiltersButtonProps<T>) => {
   const filterableColumns = colDefs.filter((col) => col.filterable)
   const hasActiveFilters = Object.values(filters).some(

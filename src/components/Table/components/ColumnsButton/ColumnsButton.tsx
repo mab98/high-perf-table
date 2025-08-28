@@ -15,7 +15,7 @@ const ColumnsButton = <T extends Record<string, unknown>>({
   colDefs,
   visibleColumns,
   onColumnVisibilityChange,
-  onToggleAllColumns,
+  onToggleAllColumns
 }: ColumnsButtonProps<T>) => {
   const checkboxState = (): CheckboxState => {
     const visibleCount = visibleColumns.length

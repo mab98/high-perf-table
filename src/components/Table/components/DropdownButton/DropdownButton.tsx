@@ -34,7 +34,7 @@ const DropdownButton = ({
   isActive = false,
   ariaLabel,
   children,
-  className = "",
+  className = ""
 }: DropdownButtonProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)

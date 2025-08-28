@@ -1,5 +1,5 @@
-import type { Column } from "../types/table"
 import type { ApiData } from "../types/api"
+import type { Column } from "../types/table"
 
 export const colDefs: Column<ApiData>[] = [
   {
@@ -7,7 +7,7 @@ export const colDefs: Column<ApiData>[] = [
     title: "ID",
     width: 80,
     sortable: true,
-    filterable: true,
+    filterable: true
   },
   {
     key: "firstName",
@@ -15,7 +15,7 @@ export const colDefs: Column<ApiData>[] = [
     width: 120,
     editable: true,
     sortable: true,
-    filterable: true,
+    filterable: true
   },
   {
     key: "lastName",
@@ -23,7 +23,7 @@ export const colDefs: Column<ApiData>[] = [
     width: 120,
     editable: true,
     sortable: true,
-    filterable: true,
+    filterable: true
   },
   {
     key: "email",
@@ -42,13 +42,13 @@ export const colDefs: Column<ApiData>[] = [
           {apiData.email}
         </a>
       )
-    },
+    }
   },
   {
     key: "phone",
     title: "Phone",
     width: 180,
-    editable: true,
+    editable: true
   },
   {
     key: "dateOfBirth",
@@ -61,9 +61,9 @@ export const colDefs: Column<ApiData>[] = [
       return date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
-        day: "numeric",
+        day: "numeric"
       })
-    },
+    }
   },
   {
     key: "designation",
@@ -71,7 +71,7 @@ export const colDefs: Column<ApiData>[] = [
     width: 150,
     editable: true,
     sortable: true,
-    filterable: true,
+    filterable: true
   },
   {
     key: "city",
@@ -79,7 +79,7 @@ export const colDefs: Column<ApiData>[] = [
     width: 120,
     editable: true,
     sortable: true,
-    filterable: true,
+    filterable: true
   },
   {
     key: "country",
@@ -87,7 +87,7 @@ export const colDefs: Column<ApiData>[] = [
     width: 120,
     editable: true,
     sortable: true,
-    filterable: true,
+    filterable: true
   },
   {
     key: "joinDate",
@@ -100,9 +100,9 @@ export const colDefs: Column<ApiData>[] = [
       return date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
-        day: "numeric",
+        day: "numeric"
       })
-    },
+    }
   },
   {
     key: "salary",
@@ -116,8 +116,8 @@ export const colDefs: Column<ApiData>[] = [
         style: "currency",
         currency: "USD",
         minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
+        maximumFractionDigits: 0
       }).format(apiData.salary)
-    },
-  },
+    }
+  }
 ]

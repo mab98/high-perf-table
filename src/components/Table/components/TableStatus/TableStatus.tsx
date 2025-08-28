@@ -10,7 +10,7 @@ interface TableStatusProps {
 const TableStatus: React.FC<TableStatusProps> = ({
   loadedRecords,
   totalRecords,
-  loading,
+  loading
 }) => {
   return (
     <div className="table-status">

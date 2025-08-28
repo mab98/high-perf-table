@@ -1,5 +1,5 @@
-import "./TableSearch.css"
 import searchIcon from "../../../../assets/search-icon.svg"
+import "./TableSearch.css"
 
 interface TableSearchProps {
   value: string
@@ -12,7 +12,7 @@ const TableSearch: React.FC<TableSearchProps> = ({
   value,
   onChange,
   disabled = false,
-  placeholder = "Search...",
+  placeholder = "Search..."
 }) => {
   return (
     <div className="search-wrapper">

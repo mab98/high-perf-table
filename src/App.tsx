@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react"
-import { useEmployeeData } from "./hooks/useEmployeeData"
-import { colDefs } from "./config/colDefs"
-import { PAGE_SIZE } from "./constants"
-import useDebounce from "./hooks/useDebounce"
 import "./App.css"
 import Table from "./components/Table"
 import Toast from "./components/Toast"
+import { colDefs } from "./config/colDefs"
+import { PAGE_SIZE } from "./constants"
+import useDebounce from "./hooks/useDebounce"
+import { useEmployeeData } from "./hooks/useEmployeeData"
 import type { ApiData } from "./types/api"
 
 function App() {
@@ -29,7 +29,7 @@ function App() {
       ? `${currentSort.column},${currentSort.direction}`
       : undefined,
     search: debouncedSearchTerm,
-    filters: debouncedFilters,
+    filters: debouncedFilters
   }
 
   const { data: apiData, isLoading, error } = useEmployeeData(apiParams)
@@ -66,7 +66,7 @@ function App() {
   const handleFilterChange = (columnKey: string, value: string) => {
     setFilters((prev) => ({
       ...prev,
-      [columnKey]: value,
+      [columnKey]: value
     }))
   }
 

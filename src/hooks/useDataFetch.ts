@@ -1,7 +1,7 @@
 import useSWR from "swr"
-import type { TableQueryParams } from "../types/table"
-import type { ApiResponse } from "../types/api"
 import { PAGE_SIZE } from "../constants"
+import type { ApiResponse } from "../types/api"
+import type { TableQueryParams } from "../types/table"
 
 interface UseDataFetchParams<T> extends TableQueryParams {
   endpoint: string
@@ -20,8 +20,8 @@ const defaultFetcher = async <T>(url: string): Promise<ApiResponse<T>> => {
     mode: "cors",
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json",
-    },
+      "Content-Type": "application/json"
+    }
   })
 
   if (!response.ok) {
@@ -71,7 +71,7 @@ export const useDataFetch = <T>({
   const queryParams: TableQueryParams = {
     limit: PAGE_SIZE,
     offset: 0,
-    ...params,
+    ...params
   }
 
   const queryString = buildQueryString(queryParams)
@@ -79,12 +79,12 @@ export const useDataFetch = <T>({
 
   const { data, error, isLoading } = useSWR<ApiResponse<T>>(url, fetcher, {
     revalidateOnFocus: false,
-    revalidateOnReconnect: true,
+    revalidateOnReconnect: true
   })
 
   return {
     data,
     isLoading,
-    error,
+    error
   }
 }

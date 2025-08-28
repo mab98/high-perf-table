@@ -14,7 +14,7 @@ interface ColumnWidthInfo {
 
 export const useColumnWidths = <T>({
   colDefs,
-  tableWidth,
+  tableWidth
 }: UseColumnWidthsParams<T>) => {
   return useMemo(() => {
     if (!tableWidth || tableWidth <= 0) {
@@ -22,7 +22,7 @@ export const useColumnWidths = <T>({
       return colDefs.map(
         (col): ColumnWidthInfo => ({
           width: col.width || CELL_MIN_WIDTH,
-          minWidth: Math.max(col.width || CELL_MIN_WIDTH, CELL_MIN_WIDTH),
+          minWidth: Math.max(col.width || CELL_MIN_WIDTH, CELL_MIN_WIDTH)
         })
       )
     }
@@ -47,13 +47,13 @@ export const useColumnWidths = <T>({
       if (col.width && col.width > 0) {
         return {
           width: col.width,
-          minWidth: Math.max(col.width, CELL_MIN_WIDTH),
+          minWidth: Math.max(col.width, CELL_MIN_WIDTH)
         }
       }
 
       return {
         width: flexColumnWidth,
-        minWidth: CELL_MIN_WIDTH,
+        minWidth: CELL_MIN_WIDTH
       }
     })
   }, [colDefs, tableWidth])

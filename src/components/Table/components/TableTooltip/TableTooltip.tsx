@@ -18,14 +18,14 @@ const TableTooltip: React.FC<TableTooltipProps> = ({
   show,
   text,
   position,
-  className,
+  className
 }) => {
   if (!show || !text.trim()) return null
 
   const tooltipStyle = {
     left: position.x,
     top: position.y,
-    transform: `translate(-50%, -100%)`,
+    transform: `translate(-50%, -100%)`
   }
 
   return createPortal(
