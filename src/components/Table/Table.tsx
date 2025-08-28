@@ -19,8 +19,8 @@ interface TableProps<T> {
   totalRecords: number
   colDefs: Column<T>[]
   loading?: boolean
-  currentSort?: { field: string; direction: "asc" | "desc" } | null
-  onSort?: (field: string, direction: "asc" | "desc") => void
+  currentSort?: { column: string; direction: "asc" | "desc" } | null
+  onSort?: (column: string, direction: "asc" | "desc") => void
   searchValue?: string
   onSearch?: (searchTerm: string) => void
   currentPage?: number
@@ -76,9 +76,12 @@ const Table = <T extends Record<string, unknown>>({
     height: tableHeight || defaultTableHeight,
   }
 
-  const handleColumnVisibilityChange = (columnId: string, visible: boolean) => {
+  const handleColumnVisibilityChange = (
+    columnKey: string,
+    visible: boolean
+  ) => {
     setVisibleColumns((prev) =>
-      visible ? [...prev, columnId] : prev.filter((id) => id !== columnId)
+      visible ? [...prev, columnKey] : prev.filter((id) => id !== columnKey)
     )
   }
 
@@ -98,6 +101,7 @@ const Table = <T extends Record<string, unknown>>({
       colDefs={enhancedColDefs}
       currentSort={currentSort}
       onSort={onSort}
+      onClearSort={() => onSort?.("", "asc")}
       columnWidths={columnWidths}
     />
   )

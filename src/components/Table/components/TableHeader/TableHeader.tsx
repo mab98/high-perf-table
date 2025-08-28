@@ -8,8 +8,9 @@ interface ColumnWidthInfo {
 
 interface TableHeaderProps<T> {
   colDefs: Column<T>[]
-  currentSort?: { field: string; direction: "asc" | "desc" } | null
-  onSort?: (field: string, direction: "asc" | "desc") => void
+  currentSort?: { column: string; direction: "asc" | "desc" } | null
+  onSort?: (column: string, direction: "asc" | "desc") => void
+  onClearSort?: () => void
   columnWidths: ColumnWidthInfo[]
 }
 
@@ -17,15 +18,27 @@ const TableHeader = <T,>({
   colDefs,
   currentSort,
   onSort,
+  onClearSort,
   columnWidths,
 }: TableHeaderProps<T>) => {
   const handleSort = (col: Column<T>) => {
     if (col.sortable && onSort) {
-      const newDirection =
-        currentSort?.field === col.key && currentSort.direction === "asc"
-          ? "desc"
-          : "asc"
-      onSort(col.key, newDirection)
+      const currentColumn = currentSort?.column
+      const currentDirection = currentSort?.direction
+
+      if (currentColumn === col.key) {
+        if (currentDirection === "asc") {
+          onSort(col.key, "desc")
+        } else if (currentDirection === "desc") {
+          // Third click - clear sorting
+          if (onClearSort) {
+            onClearSort()
+          }
+        }
+      } else {
+        // First click on a new column - sort ascending
+        onSort(col.key, "asc")
+      }
     }
   }
 
@@ -33,7 +46,7 @@ const TableHeader = <T,>({
     <div className="table-header-row">
       {colDefs.map((col, index) => {
         const widthInfo = columnWidths[index]
-        const isActive = currentSort?.field === col.key
+        const isActive = currentSort?.column === col.key
         const sortDirection = isActive ? currentSort.direction : null
 
         return (
@@ -58,7 +71,7 @@ const TableHeader = <T,>({
                     ? "▲"
                     : sortDirection === "desc"
                     ? "▼"
-                    : ""}
+                    : "⇅"}
                 </span>
               )}
             </div>
