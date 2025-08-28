@@ -1,5 +1,6 @@
 export { default as BlankSlate } from "./BlankSlate"
 export { default as ColumnsButton } from "./ColumnsButton"
+export { default as DropdownButton } from "./DropdownButton"
 export { default as FiltersButton } from "./FiltersButton"
 export { default as SkeletonRow } from "./SkeletonRow"
 export { default as TableHeader } from "./TableHeader"

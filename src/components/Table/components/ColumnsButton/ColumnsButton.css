@@ -86,11 +86,12 @@
   font-size: 11px;
   cursor: pointer;
   transition: all 0.2s ease;
+  padding: 4px;
+  border-radius: 3px;
 }
 
 .toggle-all-button:hover {
   background-color: #f3f4f6;
-  border-color: #9ca3af;
   color: #374151;
 }
 
@@ -122,12 +123,14 @@
 .column-checkbox {
   margin-right: 8px;
   cursor: pointer;
+  accent-color: #3b82f6;
 }
 
 .column-label {
   font-size: 12px;
   color: #374151;
   font-weight: 500;
+  font-family: var(--font-family);
 }
 
 /* Scrollbar styling for the menu content */
@@ -136,8 +139,12 @@
 }
 
 .columns-menu-content::-webkit-scrollbar-thumb {
-  background: var(--border-color);
+  background: #d1d5db;
   border-radius: 2px;
+}
+
+.columns-menu-content::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 @media (max-width: 768px) {
@@ -158,6 +165,10 @@
   .column-checkbox-item {
     padding: 8px 6px;
   }
+
+  .columns-menu-content {
+    padding: 4px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -169,6 +180,10 @@
   }
 
   .columns-header-content {
-    padding: 0;
+    padding: 4px;
+  }
+
+  .columns-title {
+    font-size: 12px;
   }
 }

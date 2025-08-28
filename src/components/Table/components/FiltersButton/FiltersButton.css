@@ -95,11 +95,11 @@
   font-size: 11px;
   cursor: pointer;
   transition: all 0.2s ease;
+  border-radius: 3px;
 }
 
 .clear-all-button:hover {
   background-color: #f3f4f6;
-  border-color: #9ca3af;
   color: #374151;
 }
 
@@ -126,7 +126,7 @@
 }
 
 .filter-input {
-  padding: 2px 8px;
+  padding: 4px 8px;
   border: 1px solid #d1d5db;
   border-radius: 3px;
   font-size: 12px;
@@ -134,7 +134,7 @@
   background-color: #ffffff;
   transition: all 0.2s ease;
   font-family: var(--font-family);
-  line-height: 1.4;
+  line-height: var(--line-height);
 }
 
 .filter-input:focus {
@@ -147,25 +147,17 @@
   color: #9ca3af;
 }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
 .filters-menu-content::-webkit-scrollbar {
   width: 4px;
 }
 
 .filters-menu-content::-webkit-scrollbar-thumb {
-  background: var(--border-color);
+  background: #d1d5db;
   border-radius: 2px;
+}
+
+.filters-menu-content::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 @media (max-width: 768px) {
@@ -187,6 +179,11 @@
     font-size: 11px;
     padding: 5px 6px;
   }
+
+  .filters-menu-content {
+    gap: 6px 8px;
+    padding: 10px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -202,6 +199,10 @@
   }
 
   .filters-header-content {
-    padding: 0;
+    padding: 4px;
+  }
+
+  .filters-title {
+    font-size: 12px;
   }
 }

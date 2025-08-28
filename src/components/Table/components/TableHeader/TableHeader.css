@@ -14,13 +14,16 @@
   font-weight: 600;
   color: var(--text-primary);
   background: var(--header-bg);
-  cursor: pointer;
   transition: var(--transition);
   height: var(--header-height);
 }
 
 .table-header:last-child {
   border-right: none;
+}
+
+.table-header.sortable {
+  cursor: pointer;
 }
 
 .table-header.sortable:hover {
