@@ -34,6 +34,7 @@
 
   /* ====== Z-INDEX ====== */
   --z-tooltip: 1000;
+  --z-columns-menu: 1010;
   --z-toast: 1050;
 
   /* ====== COMPONENT SPECIFIC ====== */
