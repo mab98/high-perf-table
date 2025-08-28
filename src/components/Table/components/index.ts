@@ -1,21 +1,8 @@
-import TableSearch from "./TableSearch"
-import TableHeader from "./TableHeader"
-import TableCell from "./TableCell"
-import TableRow from "./TableRow"
-import SkeletonRow from "./SkeletonRow"
-import TableStatus from "./TableStatus"
-import TableTooltip from "./TableTooltip"
-import BlankSlate from "./BlankSlate"
-import ColumnsButton from "./ColumnsButton"
-
-export {
-  TableSearch,
-  TableHeader,
-  TableCell,
-  TableRow,
-  SkeletonRow,
-  TableStatus,
-  TableTooltip,
-  BlankSlate,
-  ColumnsButton,
-}
+export { default as BlankSlate } from "./BlankSlate"
+export { default as ColumnsButton } from "./ColumnsButton"
+export { default as FiltersButton } from "./FiltersButton"
+export { default as SkeletonRow } from "./SkeletonRow"
+export { default as TableHeader } from "./TableHeader"
+export { default as TableRow } from "./TableRow"
+export { default as TableSearch } from "./TableSearch"
+export { default as TableStatus } from "./TableStatus"
