@@ -10,6 +10,7 @@ import type { ApiData } from "./types/api"
 
 function App() {
   const [searchValue, setSearchValue] = useState("")
+  const [filters, setFilters] = useState<Record<string, string>>({})
   const [currentSort, setCurrentSort] = useState<{
     column: string
     direction: "asc" | "desc"
@@ -19,6 +20,7 @@ function App() {
   const [totalRecords, setTotalRecords] = useState(0)
 
   const debouncedSearchTerm = useDebounce(searchValue)
+  const debouncedFilters = useDebounce(filters)
 
   const apiParams = {
     limit: PAGE_SIZE,
@@ -27,36 +29,22 @@ function App() {
       ? `${currentSort.column},${currentSort.direction}`
       : undefined,
     search: debouncedSearchTerm,
+    filters: debouncedFilters,
   }
 
   const { data: apiData, isLoading, error } = useEmployeeData(apiParams)
 
-  // Reset rows on search/sort change
+  // Reset rows on search/sort/filter change
   useEffect(() => {
     setFetchedRows([])
     setCurrentPage(0)
-  }, [debouncedSearchTerm, currentSort])
+  }, [debouncedSearchTerm, currentSort, debouncedFilters])
 
   // Update rows and totalRecords when API data changes
   useEffect(() => {
     if (!apiData) return
 
     setTotalRecords(apiData.total)
-    setFetchedRows((prev) =>
-      currentPage === 0 ? apiData.data : [...prev, ...apiData.data]
-    )
-  }, [apiData, currentPage])
-
-  // Reset rows on search/sort change
-  useEffect(() => {
-    setFetchedRows([])
-    setCurrentPage(0)
-  }, [debouncedSearchTerm, currentSort])
-
-  // Update rows when API data changes
-  useEffect(() => {
-    if (!apiData) return
-
     setFetchedRows((prev) =>
       currentPage === 0 ? apiData.data : [...prev, ...apiData.data]
     )
@@ -75,6 +63,17 @@ function App() {
     setSearchValue(term)
   }
 
+  const handleFilterChange = (columnKey: string, value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      [columnKey]: value,
+    }))
+  }
+
+  const handleClearAllFilters = () => {
+    setFilters({})
+  }
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
   }
@@ -90,6 +89,9 @@ function App() {
         loading={isLoading}
         searchValue={searchValue}
         onSearch={handleSearch}
+        filters={filters}
+        onFilterChange={handleFilterChange}
+        onClearAllFilters={handleClearAllFilters}
         currentSort={currentSort}
         onSort={handleSort}
         currentPage={currentPage}
