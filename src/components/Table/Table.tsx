@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from "react"
+import React, { useMemo, useState } from "react"
 import { TableVirtuoso } from "react-virtuoso"
 import { PAGE_SIZE } from "../../constants"
-import type { Column } from "../../types/table"
 import { useColumnWidths } from "../../hooks/useColumnWidths"
+import type { Column } from "../../types/table"
 import {
   BlankSlate,
   ColumnsButton,
@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
   TableSearch,
-  TableStatus,
+  TableStatus
 } from "./components"
 import "./Table.css"
 
@@ -50,7 +50,7 @@ const Table = <T extends Record<string, unknown>>({
   onPageChange,
   tableWidth,
   tableHeight,
-  numberOfRows = PAGE_SIZE,
+  numberOfRows = PAGE_SIZE
 }: TableProps<T>) => {
   const [visibleColumns, setVisibleColumns] = useState<string[]>(() =>
     colDefs.map((col) => col.key)
@@ -64,15 +64,15 @@ const Table = <T extends Record<string, unknown>>({
 
   const enhancedColDefs = visibleColDefs.map((col, index) => ({
     ...col,
-    width: columnWidths[index]?.width || col.width,
+    width: columnWidths[index]?.width || col.width
   }))
 
   const containerStyle = {
-    width: tableWidth ? `${tableWidth}px` : undefined,
+    width: tableWidth ? `${tableWidth}px` : undefined
   } as React.CSSProperties
 
   const tableWrapperStyle: React.CSSProperties = {
-    height: tableHeight,
+    height: tableHeight
   }
 
   const handleColumnVisibilityChange = (

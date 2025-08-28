@@ -23,7 +23,7 @@ interface TableCellProps {
 const INITIAL_TOOLTIP_STATE: TooltipState = {
   show: false,
   text: "",
-  position: { x: 0, y: 0 },
+  position: { x: 0, y: 0 }
 }
 
 const TOOLTIP_OFFSET = 5
@@ -32,7 +32,7 @@ const TableCell: React.FC<TableCellProps> = ({
   content,
   tooltipText,
   style,
-  className = "",
+  className = ""
 }) => {
   const [tooltip, setTooltip] = useState<TooltipState>(INITIAL_TOOLTIP_STATE)
 
@@ -40,7 +40,7 @@ const TableCell: React.FC<TableCellProps> = ({
     const rect = element.getBoundingClientRect()
     return {
       x: rect.left + rect.width / 2,
-      y: rect.top - TOOLTIP_OFFSET,
+      y: rect.top - TOOLTIP_OFFSET
     }
   }
 
@@ -51,7 +51,7 @@ const TableCell: React.FC<TableCellProps> = ({
     setTooltip({
       show: true,
       text: tooltipText,
-      position,
+      position
     })
   }
 

@@ -14,7 +14,7 @@ const SkeletonRow = <T,>({ colDefs }: SkeletonRowProps<T>) => (
         style={{
           width: col.width ? `${col.width}px` : undefined,
           minWidth: col.width ? `${col.width}px` : undefined,
-          maxWidth: col.width ? `${col.width}px` : undefined,
+          maxWidth: col.width ? `${col.width}px` : undefined
         }}
       >
         <div className="skeleton" />

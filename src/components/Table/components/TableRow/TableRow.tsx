@@ -22,14 +22,14 @@ const TableRow = <
   row,
   colDefs,
   index,
-  columnWidths,
+  columnWidths
 }: TableRowProps<T>) => {
   return (
     <div className="table-row" data-row-id={row.id || index}>
       {colDefs.map((col, colIndex) => {
         const cellContent = col.renderer
           ? col.renderer(row)
-          : row[col.key] ?? ""
+          : (row[col.key] ?? "")
         const tooltipText = typeof cellContent === "string" ? cellContent : ""
         const widthInfo = columnWidths[colIndex]
 
@@ -40,7 +40,7 @@ const TableRow = <
             tooltipText={tooltipText}
             style={{
               width: `${widthInfo?.width || col.width}px`,
-              minWidth: `${widthInfo?.minWidth || col.width}px`,
+              minWidth: `${widthInfo?.minWidth || col.width}px`
             }}
           />
         )

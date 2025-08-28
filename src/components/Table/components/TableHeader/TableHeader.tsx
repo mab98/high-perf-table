@@ -19,7 +19,7 @@ const TableHeader = <T,>({
   currentSort,
   onSort,
   onClearSort,
-  columnWidths,
+  columnWidths
 }: TableHeaderProps<T>) => {
   const handleSort = (col: Column<T>) => {
     if (col.sortable && onSort) {
@@ -57,7 +57,7 @@ const TableHeader = <T,>({
             }`}
             style={{
               width: `${widthInfo?.width || col.width}px`,
-              minWidth: `${widthInfo?.minWidth || col.width}px`,
+              minWidth: `${widthInfo?.minWidth || col.width}px`
             }}
             onClick={() => handleSort(col)}
             role={col.sortable ? "button" : undefined}
@@ -70,8 +70,8 @@ const TableHeader = <T,>({
                   {sortDirection === "asc"
                     ? "▲"
                     : sortDirection === "desc"
-                    ? "▼"
-                    : "⇅"}
+                      ? "▼"
+                      : "⇅"}
                 </span>
               )}
             </div>
