@@ -4,6 +4,7 @@
   border-bottom: 1px solid var(--border-color);
   background-color: var(--bg-primary);
   align-items: center;
+  width: 100%;
 }
 
 .table-row:hover {

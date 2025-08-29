@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import { memo } from "react"
+import { CELL_MIN_WIDTH } from "../../../../constants"
 import type { Column } from "../../../../types/table"
 import TableCell from "../TableCell"
 import "./TableRow.css"
@@ -33,15 +34,17 @@ const TableRow = <
         const tooltipText = typeof cellContent === "string" ? cellContent : ""
         const widthInfo = columnWidths[colIndex]
 
+        const cellStyle = {
+          width: `${widthInfo?.width || CELL_MIN_WIDTH}px`,
+          minWidth: `${widthInfo?.minWidth || CELL_MIN_WIDTH}px`
+        }
+
         return (
           <TableCell
             key={col.key}
             content={cellContent as ReactNode}
             tooltipText={tooltipText}
-            style={{
-              width: `${widthInfo?.width || col.width}px`,
-              minWidth: `${widthInfo?.minWidth || col.width}px`
-            }}
+            style={cellStyle}
           />
         )
       })}

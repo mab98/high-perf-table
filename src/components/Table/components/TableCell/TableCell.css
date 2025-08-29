@@ -6,6 +6,7 @@
   font-size: var(--font-size);
   color: var(--text-primary);
   height: var(--row-height);
+  flex-shrink: 0;
 }
 
 .table-cell:last-child {
@@ -17,4 +18,13 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 100%;
+}
+
+.cell-value a {
+  color: var(--blue-500);
+  text-decoration: none;
+}
+
+.cell-value a:hover {
+  text-decoration: underline;
 }

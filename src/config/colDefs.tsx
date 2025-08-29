@@ -36,7 +36,6 @@ export const colDefs: Column<ApiData>[] = [
       return (
         <a
           href={`mailto:${apiData.email}`}
-          className="email-link"
           onClick={(e) => e.stopPropagation()}
         >
           {apiData.email}

@@ -6,14 +6,13 @@
 
   /* Appearance */
   background: var(--tooltip-bg);
-  color: var(--bg-primary);
+  color: var(--tooltip-text);
   padding: var(--tooltip-padding);
   border-radius: var(--border-radius);
   box-shadow: var(--tooltip-shadow);
 
   /* Typography */
   font-size: var(--font-size);
-  font-family: var(--font-family);
   line-height: var(--line-height);
 
   /* Content handling */

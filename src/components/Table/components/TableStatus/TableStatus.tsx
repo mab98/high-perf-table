@@ -1,4 +1,3 @@
-import React from "react"
 import "./TableStatus.css"
 
 interface TableStatusProps {
@@ -7,18 +6,21 @@ interface TableStatusProps {
   loading: boolean
 }
 
-const TableStatus: React.FC<TableStatusProps> = ({
+const TableStatus = ({
   loadedRecords,
   totalRecords,
   loading
-}) => {
+}: TableStatusProps) => {
+  const getStatusText = () => {
+    if (!loading && totalRecords === 0) {
+      return "No records found"
+    }
+    return `Loaded ${loadedRecords.toLocaleString()} of ${totalRecords.toLocaleString()} records`
+  }
+
   return (
     <div className="table-status">
-      <strong>
-        {!loading && totalRecords === 0
-          ? "No records found."
-          : `Loaded ${loadedRecords.toLocaleString()} of ${totalRecords.toLocaleString()} records`}
-      </strong>
+      <span>{getStatusText()}</span>
     </div>
   )
 }
