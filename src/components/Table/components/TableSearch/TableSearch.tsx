@@ -1,4 +1,4 @@
-import searchIcon from "../../../../assets/search-icon.svg"
+import { SearchIcon } from "../../Icons"
 import "./TableSearch.css"
 
 interface TableSearchProps {
@@ -15,12 +15,7 @@ const TableSearch = ({
   placeholder = "Search..."
 }: TableSearchProps) => (
   <div className="search-wrapper">
-    <img
-      src={searchIcon}
-      alt="Search"
-      className="search-icon"
-      aria-hidden="true"
-    />
+    <SearchIcon size="18" />
     <input
       type="search"
       name="search"

@@ -17,10 +17,7 @@ interface UseDataFetchReturn<T> {
 const defaultFetcher = async <T>(url: string): Promise<ApiResponse<T>> => {
   const response = await fetch(url, {
     mode: "cors",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json"
-    }
+    headers: { Accept: "application/json" }
   })
 
   if (!response.ok) {
@@ -56,10 +53,6 @@ const buildQueryString = (params: TableQueryParams): string => {
   return searchParams.toString()
 }
 
-/**
- * Generic data fetching hook for any data type
- * Can be used with any API endpoint and data structure
- */
 export const useDataFetch = <T>({
   endpoint,
   fetcher = defaultFetcher,
@@ -79,9 +72,5 @@ export const useDataFetch = <T>({
     revalidateOnReconnect: true
   })
 
-  return {
-    data,
-    isLoading,
-    error
-  }
+  return { data, isLoading, error }
 }

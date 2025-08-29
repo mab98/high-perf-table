@@ -32,14 +32,6 @@
   background-color: var(--button-hover-bg);
 }
 
-.dropdown-arrow {
-  transition: transform 0.2s ease;
-}
-
-.dropdown-arrow.rotated {
-  transform: rotate(180deg);
-}
-
 .dropdown-menu {
   position: absolute;
   top: 100%;

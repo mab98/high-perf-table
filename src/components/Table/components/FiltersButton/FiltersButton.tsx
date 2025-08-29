@@ -1,29 +1,14 @@
 import type { Column } from "../../../../types/table"
+import { ClearIcon } from "../../Icons"
 import DropdownButton from "../DropdownButton"
 import "./FiltersButton.css"
 
 interface FiltersButtonProps<T> {
   colDefs: Column<T>[]
   filters: Record<string, string>
-  onFilterChange: (columnKey: string, value: string) => void
+  onFilterChange: (key: string, value: string) => void
   onClearAllFilters: () => void
 }
-
-const ClearIcon = () => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 14 14"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-  >
-    <path d="M4 4L12 12M12 4L4 12" />
-  </svg>
-)
 
 const FiltersButton = <T extends Record<string, unknown>>({
   colDefs,
@@ -72,7 +57,7 @@ const FiltersButton = <T extends Record<string, unknown>>({
             </label>
             <input
               id={`filter-${col.key}`}
-              type="text"
+              type="search"
               className="filter-input"
               placeholder={`Filter by ${col.title.toLowerCase()}...`}
               value={filters[col.key] || ""}

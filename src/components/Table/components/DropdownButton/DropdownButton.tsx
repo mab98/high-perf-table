@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
+import { DropdownArrow } from "../../Icons"
 import "./DropdownButton.css"
 
 interface DropdownButtonProps {
@@ -8,26 +9,6 @@ interface DropdownButtonProps {
   children: ReactNode
   className?: string
 }
-
-const DropdownArrow = ({ isOpen }: { isOpen: boolean }) => (
-  <svg
-    width="12"
-    height="12"
-    viewBox="0 0 12 12"
-    fill="currentColor"
-    className={`dropdown-arrow ${isOpen ? "rotated" : ""}`}
-    aria-hidden="true"
-  >
-    <path
-      d="M2.5 4.5L6 8l3.5-3.5"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      fill="none"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-)
 
 const DropdownButton = ({
   label,

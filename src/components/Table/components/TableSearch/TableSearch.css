@@ -4,14 +4,12 @@
   width: var(--search-width);
 }
 
-.search-icon {
+.search-wrapper > svg:first-child {
   position: absolute;
   left: var(--search-icon-left);
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
-  width: 18px;
-  height: 18px;
 }
 
 .search-input {
@@ -43,7 +41,7 @@
 
 /* Tablet (768px and down) */
 @media (max-width: 768px) {
-  .search-icon {
+  .search-wrapper > svg:first-child {
     width: 16px;
     height: 16px;
     left: 8px;
@@ -56,7 +54,7 @@
 
 /* Mobile (480px and down) */
 @media (max-width: 480px) {
-  .search-icon {
+  .search-wrapper > svg:first-child {
     width: 14px;
     height: 14px;
     left: 6px;

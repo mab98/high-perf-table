@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import { TableVirtuoso } from "react-virtuoso"
 import { PAGE_SIZE } from "../../constants"
 import { useColumnWidths } from "../../hooks/useColumnWidths"
@@ -25,7 +25,7 @@ interface TableProps<T> {
   searchValue?: string
   onSearch?: (searchTerm: string) => void
   filters?: Record<string, string>
-  onFilterChange?: (columnKey: string, value: string) => void
+  onFilterChange?: (key: string, value: string) => void
   onClearAllFilters?: () => void
   currentPage?: number
   onPageChange?: (offset: number) => void
@@ -67,20 +67,9 @@ const Table = <T extends Record<string, unknown>>({
     width: columnWidths[index]?.width ?? col.width
   }))
 
-  const containerStyle = {
-    width: tableWidth ? `${tableWidth}px` : undefined
-  } as React.CSSProperties
-
-  const tableWrapperStyle: React.CSSProperties = {
-    height: tableHeight
-  }
-
-  const handleColumnVisibilityChange = (
-    columnKey: string,
-    visible: boolean
-  ) => {
+  const handleColumnVisibilityChange = (key: string, visible: boolean) => {
     setVisibleColumns((prev) =>
-      visible ? [...prev, columnKey] : prev.filter((id) => id !== columnKey)
+      visible ? [...prev, key] : prev.filter((id) => id !== key)
     )
   }
 
@@ -162,7 +151,7 @@ const Table = <T extends Record<string, unknown>>({
   }
 
   return (
-    <div className="table-container" style={containerStyle}>
+    <div className="table-container" style={{ width: tableWidth }}>
       <div className="table-actions-bar">
         <div className="table-actions-left">
           {onSearch && (
@@ -191,9 +180,7 @@ const Table = <T extends Record<string, unknown>>({
         </div>
       </div>
 
-      <div className="table-wrapper" style={tableWrapperStyle}>
-        {renderTableContent()}
-      </div>
+      <div style={{ height: tableHeight }}>{renderTableContent()}</div>
 
       <TableStatus
         loadedRecords={data.length}

@@ -30,14 +30,6 @@
   border-color: var(--button-active-border);
 }
 
-.dropdown-arrow {
-  transition: transform 0.2s ease;
-}
-
-.dropdown-arrow.rotated {
-  transform: rotate(180deg);
-}
-
 .columns-menu {
   position: absolute;
   top: 100%;

@@ -5,7 +5,7 @@ import "./ColumnsButton.css"
 interface ColumnsButtonProps<T> {
   colDefs: Column<T>[]
   visibleColumns: string[]
-  onColumnVisibilityChange: (columnKey: string, visible: boolean) => void
+  onColumnVisibilityChange: (key: string, visible: boolean) => void
   onToggleAllColumns: (visible: boolean) => void
 }
 

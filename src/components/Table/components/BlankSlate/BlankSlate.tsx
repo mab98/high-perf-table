@@ -1,4 +1,4 @@
-import searchIcon from "../../../../assets/search-icon.svg"
+import { SearchIcon } from "../../Icons"
 import "./BlankSlate.css"
 
 interface BlankSlateProps {
@@ -7,7 +7,7 @@ interface BlankSlateProps {
 
 const BlankSlate = ({ text }: BlankSlateProps) => (
   <div className="blank-slate">
-    <img src={searchIcon} alt="Search" width="64" height="64" />
+    <SearchIcon />
     <h3 className="blank-slate-text">{text}</h3>
   </div>
 )

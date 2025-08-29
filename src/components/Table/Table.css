@@ -8,33 +8,20 @@
   overflow: hidden;
 }
 
-/* Update table-actions-bar to use flexbox for proper alignment */
 .table-actions-bar {
   padding: var(--spacing-md);
   background-color: var(--header-bg);
   border-bottom: 1px solid var(--border-color);
-
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--spacing-md);
 }
 
-.table-actions-left {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  flex: 1;
-}
-
-.table-actions-right {
+.table-actions-bar > div {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-}
-
-.table-wrapper {
-  position: relative;
 }
 
 .loading-container {
@@ -60,8 +47,8 @@
 .loading-spinner {
   width: var(--spinner-size);
   height: var(--spinner-size);
-  border: var(--spinner-border-width) solid var(--bg-secondary);
-  border-top: var(--spinner-border-width) solid var(--spinner-dark);
+  border: var(--spinner-border-width) solid var(--gray-300);
+  border-top: var(--spinner-border-width) solid var(--gray-500);
   border-radius: 50%;
   animation: spin var(--spinner-duration) linear infinite;
 }
