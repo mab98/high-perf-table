@@ -1,3 +1,4 @@
+import { CELL_MIN_WIDTH } from "../../../../constants"
 import type { Column } from "../../../../types/table"
 import "./TableHeader.css"
 
@@ -22,23 +23,20 @@ const TableHeader = <T,>({
   columnWidths
 }: TableHeaderProps<T>) => {
   const handleSort = (col: Column<T>) => {
-    if (col.sortable && onSort) {
-      const currentColumn = currentSort?.column
-      const currentDirection = currentSort?.direction
+    if (!col.sortable || !onSort) return
 
-      if (currentColumn === col.key) {
-        if (currentDirection === "asc") {
-          onSort(col.key, "desc")
-        } else if (currentDirection === "desc") {
-          // Third click - clear sorting
-          if (onClearSort) {
-            onClearSort()
-          }
-        }
-      } else {
-        // First click on a new column - sort ascending
-        onSort(col.key, "asc")
-      }
+    const isCurrentColumn = currentSort?.column === col.key
+    const direction = currentSort?.direction
+
+    if (!isCurrentColumn) {
+      // First click → sort ascending
+      onSort(col.key, "asc")
+    } else if (direction === "asc") {
+      // Second click → sort descending
+      onSort(col.key, "desc")
+    } else if (direction === "desc" && onClearSort) {
+      // Third click → clear sorting
+      onClearSort()
     }
   }
 
@@ -56,8 +54,8 @@ const TableHeader = <T,>({
               isActive ? "active" : ""
             }`}
             style={{
-              width: `${widthInfo?.width || col.width}px`,
-              minWidth: `${widthInfo?.minWidth || col.width}px`
+              width: `${widthInfo?.width || CELL_MIN_WIDTH}px`,
+              minWidth: `${widthInfo?.minWidth || CELL_MIN_WIDTH}px`
             }}
             onClick={() => handleSort(col)}
             role={col.sortable ? "button" : undefined}

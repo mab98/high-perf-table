@@ -8,31 +8,29 @@ interface TableSearchProps {
   placeholder?: string
 }
 
-const TableSearch: React.FC<TableSearchProps> = ({
+const TableSearch = ({
   value,
   onChange,
   disabled = false,
   placeholder = "Search..."
-}) => {
-  return (
-    <div className="search-wrapper">
-      <img
-        src={searchIcon}
-        alt="Search"
-        className="search-icon"
-        aria-hidden="true"
-      />
-      <input
-        type="search"
-        name="search"
-        className="search-input"
-        placeholder={placeholder}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        disabled={disabled}
-      />
-    </div>
-  )
-}
+}: TableSearchProps) => (
+  <div className="search-wrapper">
+    <img
+      src={searchIcon}
+      alt="Search"
+      className="search-icon"
+      aria-hidden="true"
+    />
+    <input
+      type="search"
+      name="search"
+      className="search-input"
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      disabled={disabled}
+    />
+  </div>
+)
 
 export default TableSearch

@@ -1,7 +1,7 @@
 .app {
-  padding: var(--spacing-xl);
   display: flex;
   justify-content: center;
+  padding: var(--spacing-xl);
 }
 
 @media (max-width: 768px) {

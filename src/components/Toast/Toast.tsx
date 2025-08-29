@@ -3,7 +3,6 @@ import "./Toast.css"
 
 interface ToastProps {
   message: string
-  duration?: number
 }
 
 const Toast: React.FC<ToastProps> = ({ message }) => {

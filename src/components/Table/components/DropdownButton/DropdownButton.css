@@ -7,34 +7,29 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 10px;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 4px;
-  color: #374151;
-  font-size: 13px;
+  padding: var(--button-padding);
+  background: var(--button-bg);
+  border: 1px solid var(--button-border);
+  border-radius: var(--border-radius);
+  color: var(--button-text);
+  font-size: var(--button-font-size);
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
   white-space: nowrap;
-  font-family: var(--font-family);
+}
+
+.dropdown-button:hover,
+.dropdown-button:focus,
+.dropdown-button.active,
+.dropdown-button.has-active-state {
+  border-color: var(--button-border);
 }
 
 .dropdown-button:hover {
-  background-color: #f9fafb;
-  border-color: #9ca3af;
-}
-
-.dropdown-button:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
-}
-
-.dropdown-button.active,
-.dropdown-button.has-active-state {
-  background-color: #f3f4f6;
-  border-color: #6b7280;
+  background-color: var(--button-hover-bg);
 }
 
 .dropdown-arrow {
@@ -49,38 +44,32 @@
   position: absolute;
   top: 100%;
   right: 0;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
+  background: var(--menu-bg);
+  border: 1px solid var(--menu-border);
   border-radius: 6px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  min-width: 180px;
-  max-width: 320px;
-  min-height: 140px;
-  max-height: 300px;
+  box-shadow: var(--menu-shadow);
+  min-width: var(--menu-min-width);
+  max-width: var(--menu-max-width);
+  min-height: var(--menu-min-height);
+  max-height: var(--menu-max-height);
   overflow: hidden;
   z-index: var(--z-menu);
   margin-top: 2px;
-  font-family: var(--font-family);
 }
 
+/* Tablet (768px and down) */
 @media (max-width: 768px) {
-  .dropdown-button {
-    padding: 6px 8px;
-    font-size: 12px;
-  }
-
   .dropdown-menu {
-    min-width: 180px;
-    max-width: 280px;
+    max-width: var(--menu-max-width);
   }
 }
 
+/* Mobile (480px and down) */
 @media (max-width: 480px) {
   .dropdown-menu {
     right: auto;
     left: 0;
-    min-width: 160px;
-    max-width: calc(100vw - 20px);
+    min-width: var(--menu-min-width);
+    max-width: var(--menu-max-width);
   }
 }

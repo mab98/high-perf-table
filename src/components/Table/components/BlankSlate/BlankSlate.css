@@ -4,6 +4,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--blank-slate-gap);
+  padding: var(--blank-slate-padding);
 }
 
 .blank-slate-text {
@@ -11,13 +12,24 @@
   font-weight: var(--blank-slate-font-weight);
   margin: 0 0 0.5rem 0;
   color: var(--blank-slate-color);
-  font-family: var(--font-family);
+  text-align: center;
 }
 
-@media (max-width: 640px) {
+/* Tablet (768px and down) */
+@media (max-width: 768px) {
   .blank-slate {
-    padding: 2rem 1rem;
     border-radius: var(--border-radius);
-    margin: 0 1rem;
+    margin: 0 var(--spacing-md);
+  }
+
+  .blank-slate-text {
+    font-size: 1.1rem;
+  }
+}
+
+/* Mobile (480px and down) */
+@media (max-width: 480px) {
+  .blank-slate {
+    margin: 0 var(--spacing-sm);
   }
 }

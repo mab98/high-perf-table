@@ -1,3 +1,4 @@
+import { CELL_MIN_WIDTH } from "../../../../constants"
 import type { Column } from "../../../../types/table"
 import "./SkeletonRow.css"
 
@@ -12,9 +13,9 @@ const SkeletonRow = <T,>({ colDefs }: SkeletonRowProps<T>) => (
         key={col.key}
         className="table-cell"
         style={{
-          width: col.width ? `${col.width}px` : undefined,
-          minWidth: col.width ? `${col.width}px` : undefined,
-          maxWidth: col.width ? `${col.width}px` : undefined
+          width: `${col.width || CELL_MIN_WIDTH}px`,
+          minWidth: `${col.width || CELL_MIN_WIDTH}px`,
+          maxWidth: `${col.width || CELL_MIN_WIDTH}px`
         }}
       >
         <div className="skeleton" />

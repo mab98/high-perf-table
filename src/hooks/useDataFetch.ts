@@ -14,7 +14,6 @@ interface UseDataFetchReturn<T> {
   error: Error | undefined
 }
 
-// Default fetcher function
 const defaultFetcher = async <T>(url: string): Promise<ApiResponse<T>> => {
   const response = await fetch(url, {
     mode: "cors",
@@ -31,7 +30,6 @@ const defaultFetcher = async <T>(url: string): Promise<ApiResponse<T>> => {
   return response.json()
 }
 
-// Build query string from parameters
 const buildQueryString = (params: TableQueryParams): string => {
   const searchParams = new URLSearchParams()
 
@@ -67,7 +65,6 @@ export const useDataFetch = <T>({
   fetcher = defaultFetcher,
   ...params
 }: UseDataFetchParams<T>): UseDataFetchReturn<T> => {
-  // Set default values using central constants
   const queryParams: TableQueryParams = {
     limit: PAGE_SIZE,
     offset: 0,

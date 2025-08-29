@@ -3,6 +3,7 @@
   align-items: center;
   background: var(--header-bg);
   border-bottom: 1px solid var(--border-color);
+  width: 100%;
 }
 
 .table-header {
@@ -16,6 +17,7 @@
   background: var(--header-bg);
   transition: var(--transition);
   height: var(--header-height);
+  flex-shrink: 0;
 }
 
 .table-header:last-child {

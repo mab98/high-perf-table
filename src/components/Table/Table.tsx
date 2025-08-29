@@ -48,8 +48,8 @@ const Table = <T extends Record<string, unknown>>({
   onClearAllFilters,
   currentPage = 0,
   onPageChange,
-  tableWidth,
-  tableHeight,
+  tableWidth = 1200,
+  tableHeight = 600,
   numberOfRows = PAGE_SIZE
 }: TableProps<T>) => {
   const [visibleColumns, setVisibleColumns] = useState<string[]>(() =>
@@ -64,7 +64,7 @@ const Table = <T extends Record<string, unknown>>({
 
   const enhancedColDefs = visibleColDefs.map((col, index) => ({
     ...col,
-    width: columnWidths[index]?.width || col.width
+    width: columnWidths[index]?.width ?? col.width
   }))
 
   const containerStyle = {
