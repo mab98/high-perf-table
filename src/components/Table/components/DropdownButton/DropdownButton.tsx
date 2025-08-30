@@ -1,6 +1,6 @@
+import { DropdownArrow } from "@/components/Table/Icons"
+import "@/components/Table/components/DropdownButton/DropdownButton.css"
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
-import { DropdownArrow } from "../../Icons"
-import "./DropdownButton.css"
 
 interface DropdownButtonProps {
   label: string

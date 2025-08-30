@@ -1,4 +1,4 @@
-import "./TableStatus.css"
+import "@/components/Table/components/TableStatus/TableStatus.css"
 
 interface TableStatusProps {
   loadedRecords: number

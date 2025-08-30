@@ -1,5 +1,5 @@
+import "@/components/Toast/Toast.css"
 import { useState } from "react"
-import "./Toast.css"
 
 interface ToastProps {
   message: string

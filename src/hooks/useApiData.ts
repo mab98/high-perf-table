@@ -1,6 +1,6 @@
-import type { ApiData } from "../types/api"
-import type { TableQueryParams } from "../types/table"
-import { useDataFetch } from "./useDataFetch"
+import { useDataFetch } from "@/hooks/useDataFetch"
+import type { ApiData } from "@/types/api"
+import type { TableQueryParams } from "@/types/table"
 
 const API_BASE_URL = "/api"
 

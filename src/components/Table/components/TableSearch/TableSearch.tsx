@@ -1,5 +1,5 @@
-import { SearchIcon } from "../../Icons"
-import "./TableSearch.css"
+import { SearchIcon } from "@/components/Table/Icons"
+import "@/components/Table/components/TableSearch/TableSearch.css"
 
 interface TableSearchProps {
   value: string

@@ -1,7 +1,7 @@
+import { PAGE_SIZE } from "@/constants"
+import type { ApiResponse } from "@/types/api"
+import type { TableQueryParams } from "@/types/table"
 import useSWR from "swr"
-import { PAGE_SIZE } from "../constants"
-import type { ApiResponse } from "../types/api"
-import type { TableQueryParams } from "../types/table"
 
 interface UseDataFetchParams<T> extends TableQueryParams {
   endpoint: string

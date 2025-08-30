@@ -1,6 +1,6 @@
-import { CELL_MIN_WIDTH } from "../../../../constants"
-import type { Column } from "../../../../types/table"
-import "./TableHeader.css"
+import "@/components/Table/components/TableHeader/TableHeader.css"
+import { CELL_MIN_WIDTH } from "@/constants"
+import type { Column } from "@/types/table"
 
 interface ColumnWidthInfo {
   width: number

@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react"
-import "./App.css"
-import Table from "./components/Table"
-import Toast from "./components/Toast"
-import { colDefs } from "./config/colDefs"
-import { PAGE_SIZE } from "./constants"
-import { useApiData } from "./hooks/useApiData"
-import useDebounce from "./hooks/useDebounce"
-import type { ApiData } from "./types/api"
+import "@/App.css"
+import Table from "@/components/Table"
+import Toast from "@/components/Toast"
+import { colDefs } from "@/config/colDefs"
+import { PAGE_SIZE } from "@/constants"
+import { useApiData } from "@/hooks/useApiData"
+import useDebounce from "@/hooks/useDebounce"
+import type { ApiData } from "@/types/api"
 
 function App() {
   const [searchValue, setSearchValue] = useState("")

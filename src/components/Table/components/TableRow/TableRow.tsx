@@ -1,9 +1,9 @@
+import TableCell from "@/components/Table/components/TableCell"
+import "@/components/Table/components/TableRow/TableRow.css"
+import { CELL_MIN_WIDTH } from "@/constants"
+import type { Column } from "@/types/table"
 import type { ReactNode } from "react"
 import { memo } from "react"
-import { CELL_MIN_WIDTH } from "../../../../constants"
-import type { Column } from "../../../../types/table"
-import TableCell from "../TableCell"
-import "./TableRow.css"
 
 interface ColumnWidthInfo {
   width: number

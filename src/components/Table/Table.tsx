@@ -1,8 +1,9 @@
+import "@/components/Table/Table.css"
+import { PAGE_SIZE } from "@/constants"
+import { useColumnWidths } from "@/hooks/useColumnWidths"
+import type { Column } from "@/types/table"
 import { useMemo, useState } from "react"
 import { TableVirtuoso } from "react-virtuoso"
-import { PAGE_SIZE } from "../../constants"
-import { useColumnWidths } from "../../hooks/useColumnWidths"
-import type { Column } from "../../types/table"
 import {
   BlankSlate,
   ColumnsButton,
@@ -12,8 +13,7 @@ import {
   TableRow,
   TableSearch,
   TableStatus
-} from "./components"
-import "./Table.css"
+} from "@/components/Table/components"
 
 interface TableProps<T> {
   data: T[]

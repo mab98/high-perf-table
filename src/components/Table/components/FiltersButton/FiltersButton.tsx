@@ -1,7 +1,7 @@
-import type { Column } from "../../../../types/table"
-import { ClearIcon } from "../../Icons"
-import DropdownButton from "../DropdownButton"
-import "./FiltersButton.css"
+import { ClearIcon } from "@/components/Table/Icons"
+import DropdownButton from "@/components/Table/components/DropdownButton"
+import "@/components/Table/components/FiltersButton/FiltersButton.css"
+import type { Column } from "@/types/table"
 
 interface FiltersButtonProps<T> {
   colDefs: Column<T>[]

@@ -1,6 +1,6 @@
-import type { Column } from "../../../../types/table"
-import DropdownButton from "../DropdownButton"
-import "./ColumnsButton.css"
+import "@/components/Table/components/ColumnsButton/ColumnsButton.css"
+import DropdownButton from "@/components/Table/components/DropdownButton"
+import type { Column } from "@/types/table"
 
 interface ColumnsButtonProps<T> {
   colDefs: Column<T>[]

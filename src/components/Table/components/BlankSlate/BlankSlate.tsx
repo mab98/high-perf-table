@@ -1,5 +1,5 @@
-import { SearchIcon } from "../../Icons"
-import "./BlankSlate.css"
+import { SearchIcon } from "@/components/Table/Icons"
+import "@/components/Table/components/BlankSlate/BlankSlate.css"
 
 interface BlankSlateProps {
   text: string

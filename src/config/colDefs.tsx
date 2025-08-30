@@ -1,5 +1,5 @@
-import type { ApiData } from "../types/api"
-import type { Column } from "../types/table"
+import type { ApiData } from "@/types/api"
+import type { Column } from "@/types/table"
 
 export const colDefs: Column<ApiData>[] = [
   {

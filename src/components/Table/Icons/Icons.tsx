@@ -1,4 +1,4 @@
-import "./Icons.css"
+import "@/components/Table/Icons/Icons.css"
 
 export const ClearIcon = () => (
   <svg

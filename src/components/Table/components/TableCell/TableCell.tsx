@@ -1,6 +1,6 @@
+import "@/components/Table/components/TableCell/TableCell.css"
+import TableTooltip from "@/components/Table/components/TableTooltip"
 import React, { useState } from "react"
-import TableTooltip from "../TableTooltip"
-import "./TableCell.css"
 
 interface Position {
   x: number

@@ -1,6 +1,6 @@
+import "@/components/Table/components/TableTooltip/TableTooltip.css"
 import React from "react"
 import { createPortal } from "react-dom"
-import "./TableTooltip.css"
 
 interface Position {
   x: number
