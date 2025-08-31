@@ -51,11 +51,16 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  min-width: 100%;
   padding: var(--spacing-6);
-  position: relative;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background: var(--purple-50);
   border-top: 1px solid var(--purple-200);
   overflow: hidden;
+  z-index: 100;
 }
 
 .loading-container::before {

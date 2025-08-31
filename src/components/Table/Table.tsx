@@ -164,8 +164,8 @@ const Table = <T extends Record<string, unknown>>({
     [enhancedColDefs, columnWidths, handleCellHover]
   )
 
-  const renderFooter = useCallback(() => {
-    if (!loading) return null
+  const renderLoadingFooter = () => {
+    if (!loading || data.length === 0) return null
     return (
       <div className="loading-container">
         <div className="loading-indicator">
@@ -174,7 +174,7 @@ const Table = <T extends Record<string, unknown>>({
         </div>
       </div>
     )
-  }, [loading])
+  }
 
   const skeletonContent = useMemo(
     () => (
@@ -213,7 +213,6 @@ const Table = <T extends Record<string, unknown>>({
         data={data}
         fixedHeaderContent={renderHeader}
         itemContent={renderRow}
-        fixedFooterContent={renderFooter}
         endReached={handleEndReached}
       />
     )
@@ -224,7 +223,6 @@ const Table = <T extends Record<string, unknown>>({
     emptyState,
     renderHeader,
     renderRow,
-    renderFooter,
     handleEndReached
   ])
 
@@ -258,7 +256,10 @@ const Table = <T extends Record<string, unknown>>({
         </div>
       </div>
 
-      <div style={{ height: tableHeight }}>{renderTableContent}</div>
+      <div style={{ height: tableHeight, position: "relative" }}>
+        {renderTableContent}
+        {renderLoadingFooter()}
+      </div>
 
       {tooltip && (
         <TableTooltip
