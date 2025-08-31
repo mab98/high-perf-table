@@ -191,24 +191,6 @@
   transform: translateY(-50%) scale(0.95);
 }
 
-/* Custom scrollbar */
-.filters-menu-content::-webkit-scrollbar {
-  width: var(--scrollbar-width);
-}
-
-.filters-menu-content::-webkit-scrollbar-track {
-  background: var(--scrollbar-track);
-}
-
-.filters-menu-content::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 3px;
-}
-
-.filters-menu-content::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-thumb-hover);
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .dropdown-menu {

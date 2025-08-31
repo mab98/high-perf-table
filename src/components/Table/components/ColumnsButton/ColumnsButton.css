@@ -115,23 +115,6 @@
   color: var(--text-primary);
 }
 
-.columns-menu-content::-webkit-scrollbar {
-  width: var(--scrollbar-width);
-}
-
-.columns-menu-content::-webkit-scrollbar-track {
-  background: var(--scrollbar-track);
-}
-
-.columns-menu-content::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: 3px;
-}
-
-.columns-menu-content::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-thumb-hover);
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
   .columns-menu-content {

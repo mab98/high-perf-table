@@ -157,6 +157,12 @@
   --table-row-selected-bg: var(--purple-100);
   --spinner-size: 1.25rem;
 
+  /* Scrollbar */
+  --scrollbar-width: 0.65rem;
+  --scrollbar-track: var(--purple-50);
+  --scrollbar-thumb: var(--purple-200);
+  --scrollbar-thumb-hover: var(--purple-300);
+
   /* Toast */
   --toast-min-width: 22.5rem;
   --toast-max-width: 32.5rem;
