@@ -2,15 +2,19 @@
   display: flex;
   align-items: center;
   padding: var(--cell-padding);
-  border-right: 1px solid var(--border-color);
-  font-size: var(--font-size);
+  border-bottom: 1px solid var(--primary-200);
+  font-size: var(--font-size-sm);
   color: var(--text-primary);
   height: var(--row-height);
   flex-shrink: 0;
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-tight);
+  background: transparent;
+  transition: all var(--transition-fast);
 }
 
-.table-cell:last-child {
-  border-right: none;
+.table-cell:hover {
+  background: var(--purple-50);
 }
 
 .cell-value {
@@ -21,10 +25,17 @@
 }
 
 .cell-value a {
-  color: var(--blue-500);
+  color: var(--primary-600);
   text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  transition: all var(--transition-fast);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--border-radius-sm);
 }
 
 .cell-value a:hover {
+  color: var(--primary-700);
+  background: var(--primary-50);
   text-decoration: underline;
+  transform: translateY(-1px);
 }

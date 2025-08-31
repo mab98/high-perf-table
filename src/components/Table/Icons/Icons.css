@@ -1,5 +1,6 @@
 .dropdown-arrow {
-  transition: transform 0.2s ease;
+  transition: transform var(--transition-normal);
+  transform-origin: center;
 }
 
 .dropdown-arrow.rotated {

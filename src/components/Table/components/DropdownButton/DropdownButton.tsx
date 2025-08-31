@@ -60,24 +60,27 @@ const DropdownButton = ({
     <div className={`dropdown-button-container ${className}`}>
       <button
         ref={buttonRef}
-        className={`dropdown-button ${isMenuOpen ? "active" : ""} ${
-          isActive ? "has-active-state" : ""
+        type="button"
+        className={`dropdown-button ${isActive ? "has-active-state" : ""} ${
+          isMenuOpen ? "active" : ""
         }`}
         onClick={toggleMenu}
-        type="button"
+        aria-label={ariaLabel || label}
         aria-expanded={isMenuOpen}
         aria-haspopup="menu"
-        aria-label={ariaLabel || label}
       >
-        {label}
+        <span>{label}</span>
         <DropdownArrow isOpen={isMenuOpen} />
       </button>
 
-      {isMenuOpen && (
-        <div ref={menuRef} className="dropdown-menu">
-          {children}
-        </div>
-      )}
+      <div
+        ref={menuRef}
+        className={`dropdown-menu ${isMenuOpen ? "open" : ""}`}
+        role="menu"
+        aria-hidden={!isMenuOpen}
+      >
+        {children}
+      </div>
     </div>
   )
 }

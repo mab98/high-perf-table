@@ -1,9 +1,3 @@
-import "@/components/Table/Table.css"
-import { PAGE_SIZE } from "@/constants"
-import { useColumnWidths } from "@/hooks/useColumnWidths"
-import type { Column } from "@/types/table"
-import { useMemo, useState } from "react"
-import { TableVirtuoso } from "react-virtuoso"
 import {
   BlankSlate,
   ColumnsButton,
@@ -14,6 +8,12 @@ import {
   TableSearch,
   TableStatus
 } from "@/components/Table/components"
+import "@/components/Table/Table.css"
+import { PAGE_SIZE } from "@/constants"
+import { useColumnWidths } from "@/hooks/useColumnWidths"
+import type { Column } from "@/types/table"
+import { useMemo, useState } from "react"
+import { TableVirtuoso } from "react-virtuoso"
 
 interface TableProps<T> {
   data: T[]
@@ -129,11 +129,32 @@ const Table = <T extends Record<string, unknown>>({
     }
 
     if (data.length === 0) {
+      const hasActiveSearch = searchValue.trim() !== ""
+      const hasActiveFilters = Object.values(filters).some(
+        (value) => value.trim() !== ""
+      )
+      const hasAnyActiveFilters = hasActiveSearch || hasActiveFilters
+
+      const handleClearAll = () => {
+        // Clear search
+        if (onSearch && hasActiveSearch) {
+          onSearch("")
+        }
+        // Clear filters
+        if (onClearAllFilters && hasActiveFilters) {
+          onClearAllFilters()
+        }
+      }
+
       return (
         <div className="empty-state-container">
           {renderFixedHeader()}
           <div className="blankslate-wrapper">
-            <BlankSlate text="No records found." />
+            <BlankSlate
+              text="No records found."
+              onClearAll={hasAnyActiveFilters ? handleClearAll : undefined}
+              hasActiveFilters={hasAnyActiveFilters}
+            />
           </div>
         </div>
       )

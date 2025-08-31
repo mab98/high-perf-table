@@ -1,11 +1,22 @@
 .app {
+  min-height: 100vh;
+  background: var(--slate-50);
+  padding: var(--spacing-8);
   display: flex;
   justify-content: center;
-  padding: var(--spacing-xl);
+  align-items: flex-start;
+  font-family: var(--font-family);
+  position: relative;
 }
 
 @media (max-width: 768px) {
   .app {
-    padding: var(--spacing-sm);
+    padding: var(--spacing-4);
+  }
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding: var(--spacing-3);
   }
 }

@@ -1,4 +1,4 @@
-import { SearchIcon } from "@/components/Table/Icons"
+import { ClearIcon, SearchIcon } from "@/components/Table/Icons"
 import "@/components/Table/components/TableSearch/TableSearch.css"
 
 interface TableSearchProps {
@@ -17,7 +17,7 @@ const TableSearch = ({
   <div className="search-wrapper">
     <SearchIcon size="18" />
     <input
-      type="search"
+      type="text"
       name="search"
       className="search-input"
       placeholder={placeholder}
@@ -25,6 +25,17 @@ const TableSearch = ({
       onChange={(e) => onChange(e.target.value)}
       disabled={disabled}
     />
+    {value && !disabled && (
+      <button
+        type="button"
+        className="search-clear-button"
+        onClick={() => onChange("")}
+        aria-label="Clear search"
+        title="Clear search"
+      >
+        <ClearIcon />
+      </button>
+    )}
   </div>
 )
 

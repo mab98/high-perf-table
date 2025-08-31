@@ -31,9 +31,16 @@ const ColumnsButton = <T extends Record<string, unknown>>({
     onToggleAllColumns(shouldShowAll)
   }
 
+  const columnsLabel = `Columns (${visibleColumns.length}/${colDefs.length})`
+
   return (
-    <DropdownButton label="Columns" className="columns-dropdown">
+    <DropdownButton label={columnsLabel} className="columns-dropdown">
       <div className="columns-menu-header">
+        <div className="columns-header-content">
+          <h3 className="columns-title">Manage Columns</h3>
+        </div>
+      </div>
+      <div className="columns-menu-content">
         <label className="column-checkbox-item toggle-all">
           <input
             type="checkbox"
@@ -48,9 +55,7 @@ const ColumnsButton = <T extends Record<string, unknown>>({
           />
           <span className="column-label">Show/Hide All</span>
         </label>
-      </div>
 
-      <div className="columns-menu-content">
         {colDefs.map((col) => {
           const isVisible = visibleColumns.includes(col.key)
 

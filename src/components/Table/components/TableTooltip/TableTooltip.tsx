@@ -22,17 +22,17 @@ const TableTooltip: React.FC<TableTooltipProps> = ({
 }) => {
   if (!show || !text.trim()) return null
 
-  const tooltipStyle = {
+  const tooltipStyle: React.CSSProperties = {
     left: position.x,
     top: position.y,
-    transform: `translate(-50%, -100%)`
+    transform: "translate(-50%, -100%)"
   }
 
   return createPortal(
     <div
       role="tooltip"
       aria-hidden={!show}
-      className={`tooltip ${className}`}
+      className={`tooltip ${className || ""}`}
       style={tooltipStyle}
     >
       {text}

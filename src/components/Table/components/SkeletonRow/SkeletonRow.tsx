@@ -7,11 +7,11 @@ interface SkeletonRowProps<T> {
 }
 
 const SkeletonRow = <T,>({ colDefs }: SkeletonRowProps<T>) => (
-  <div className="table-row">
+  <div className="skeleton-row">
     {colDefs.map((col) => (
       <div
         key={col.key}
-        className="table-cell"
+        className="skeleton-cell"
         style={{
           width: `${col.width || CELL_MIN_WIDTH}px`,
           minWidth: `${col.width || CELL_MIN_WIDTH}px`,

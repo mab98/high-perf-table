@@ -1,20 +1,97 @@
 .table-status {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
-  padding: var(--spacing-sm) var(--spacing-xl);
-  border-top: 1px solid var(--border-color);
-  background-color: var(--header-bg);
-  height: var(--row-height);
-  font-size: var(--font-size);
-  color: var(--text-secondary);
-  font-weight: 500;
+  padding: var(--spacing-4) var(--spacing-6);
+  border-top: 1px solid var(--border-light);
+  background: var(--purple-50);
+  min-height: 56px;
+  font-size: var(--font-size-sm);
+  color: var(--purple-700);
+  font-weight: var(--font-weight-medium);
+  position: relative;
+}
+
+.table-status-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  color: var(--purple-600);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.loading-status {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  color: var(--primary-700);
+  font-weight: var(--font-weight-medium);
+  background: var(--primary-100);
+  padding: var(--spacing-3) var(--spacing-4);
+  border-radius: var(--border-radius-full);
+  border: 1px solid var(--primary-200);
+  box-shadow: var(--shadow-sm);
+  font-size: var(--font-size-xs);
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-status::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--primary-100);
+}
+
+.loading-mini-spinner {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--primary-200);
+  border-top: 1.5px solid var(--primary-500);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.table-status-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.status-highlight {
+  color: var(--purple-600);
+  font-weight: var(--font-weight-bold);
+  background: var(--purple-100);
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--purple-200);
+  box-shadow: var(--shadow-sm);
 }
 
 @media (max-width: 768px) {
   .table-status {
-    padding: var(--spacing-sm) var(--spacing-md);
-    height: var(--row-height);
-    font-size: var(--small-font-size);
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-md);
+  }
+
+  .table-status-left,
+  .table-status-right {
+    justify-content: center;
+    text-align: center;
   }
 }

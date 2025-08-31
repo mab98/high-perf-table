@@ -1,14 +1,53 @@
 @import url("@/styles/variables.css");
 
 /* Global resets */
-* {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+html {
+  font-size: var(--font-size-md);
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
-  background-color: var(--bg-secondary);
+  padding: 0;
+  background: var(--slate-50);
+  color: var(--text-primary);
   font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  min-height: 100vh;
+}
+
+/* Selection styles */
+::selection {
+  background: #e9d5ff;
+  color: var(--purple-900);
+  text-shadow: none;
+}
+
+/* Button reset */
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+/* Input reset */
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
 }

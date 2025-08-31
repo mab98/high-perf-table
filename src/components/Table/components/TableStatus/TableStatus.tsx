@@ -15,12 +15,17 @@ const TableStatus = ({
     if (!loading && totalRecords === 0) {
       return "No records found"
     }
-    return `Loaded ${loadedRecords.toLocaleString()} of ${totalRecords.toLocaleString()} records`
+    return `Showing ${loadedRecords.toLocaleString()} of ${totalRecords.toLocaleString()} records`
   }
 
   return (
     <div className="table-status">
-      <span>{getStatusText()}</span>
+      <div className="table-status-left">
+        {/* Loading status removed as requested */}
+      </div>
+      <div className="table-status-right">
+        <span className="status-highlight">{getStatusText()}</span>
+      </div>
     </div>
   )
 }

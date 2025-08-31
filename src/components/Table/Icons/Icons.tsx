@@ -12,7 +12,7 @@ export const ClearIcon = () => (
     strokeLinejoin="round"
     aria-hidden="true"
   >
-    <path d="M4 4L12 12M12 4L4 12" />
+    <path d="M3 3L11 11M11 3L3 11" />
   </svg>
 )
 
@@ -44,21 +44,13 @@ export const SearchIcon = ({ size = "64" }) => {
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
-      <circle
-        cx="11"
-        cy="11"
-        r="8"
-        fill="#f8fafc"
-        stroke="#6c757d"
-        strokeWidth="2"
-      />
-      <path
-        d="m21 21-4.35-4.35"
-        stroke="#6c757d"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.35-4.35" />
     </svg>
   )
 }

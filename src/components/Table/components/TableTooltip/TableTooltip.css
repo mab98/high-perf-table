@@ -4,27 +4,30 @@
   z-index: var(--z-tooltip);
   pointer-events: none;
 
-  /* Appearance */
+  /* Simple Appearance */
   background: var(--tooltip-bg);
   color: var(--tooltip-text);
   padding: var(--tooltip-padding);
-  border-radius: var(--border-radius);
+  border-radius: var(--tooltip-border-radius);
   box-shadow: var(--tooltip-shadow);
 
   /* Typography */
-  font-size: var(--font-size);
-  line-height: var(--line-height);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-tight);
 
   /* Content handling */
   max-width: var(--tooltip-max-width);
   word-wrap: break-word;
-  white-space: pre-wrap;
+  white-space: nowrap;
+  text-align: center;
 
-  /* Animation */
-  transition: var(--tooltip-transition);
+  /* Simple Animation */
+  opacity: 1;
+  transition: opacity 150ms ease;
 }
 
-/* Tooltip arrow */
+/* Simple tooltip arrow */
 .tooltip::before {
   content: "";
   position: absolute;

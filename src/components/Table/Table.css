@@ -2,26 +2,48 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  background-color: var(--bg-primary);
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius-xl);
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
+  position: relative;
+  transition: all var(--transition-normal);
+}
+
+.table-container:hover {
+  box-shadow: var(--shadow-xl);
+  border-color: var(--border-interactive);
 }
 
 .table-actions-bar {
-  padding: var(--spacing-md);
-  background-color: var(--header-bg);
-  border-bottom: 1px solid var(--border-color);
+  padding: var(--spacing-6);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-light);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--spacing-md);
+  gap: var(--spacing-4);
+  min-height: 4.5rem;
+  position: relative;
+  z-index: 1000;
 }
 
-.table-actions-bar > div {
+.table-actions-left,
+.table-actions-right {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-4);
+}
+
+.table-actions-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.table-actions-right {
+  flex-shrink: 0;
+  gap: var(--spacing-3);
 }
 
 .loading-container {
@@ -29,28 +51,68 @@
   align-items: center;
   justify-content: center;
   width: 100%;
+  padding: var(--spacing-6);
+  position: relative;
+  background: var(--purple-50);
+  border-top: 1px solid var(--purple-200);
+  overflow: hidden;
+}
+
+.loading-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--purple-100);
+  animation: loading-shimmer 2s linear infinite;
+}
+
+@keyframes loading-shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
 }
 
 .loading-indicator {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  color: var(--text-secondary);
-  font-size: var(--font-size);
-  background-color: var(--bg-primary);
-  padding: var(--spacing-lg);
-  border-radius: var(--border-radius);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  border: 1px solid var(--border-color);
+  gap: var(--spacing-3);
+  color: var(--purple-700);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  background: var(--white);
+  padding: var(--spacing-4) var(--spacing-6);
+  border-radius: var(--border-radius-full);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--purple-200);
+  position: relative;
+  transition: all var(--transition-normal);
+  z-index: 10;
+}
+
+.loading-indicator:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: var(--shadow-lg);
+  background: var(--purple-50);
+  border-color: var(--purple-300);
 }
 
 .loading-spinner {
-  width: var(--spinner-size);
-  height: var(--spinner-size);
-  border: var(--spinner-border-width) solid var(--gray-300);
-  border-top: var(--spinner-border-width) solid var(--gray-500);
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid transparent;
+  border-top: 2px solid var(--purple-600);
+  border-right: 2px solid var(--teal-500);
+  border-bottom: 2px solid var(--pink-500);
+  border-left: 2px solid var(--purple-400);
   border-radius: 50%;
-  animation: spin var(--spinner-duration) linear infinite;
+  animation: spin 1s linear infinite;
+  flex-shrink: 0;
 }
 
 @keyframes spin {
@@ -69,21 +131,36 @@
   width: 100%;
   height: 100%;
   overflow-x: auto;
+  background: var(--bg-canvas);
 }
 
 .blankslate-wrapper {
   display: flex;
   justify-content: center;
+  align-items: center;
   height: 100%;
+  min-height: 18.75rem;
 }
 
 @media (max-width: 768px) {
   .table-actions-bar {
-    padding: var(--spacing-sm);
+    padding: var(--spacing-md);
+    min-height: 3.75rem;
+    gap: var(--spacing-md);
+  }
+
+  .table-actions-bar::after {
+    left: var(--spacing-md);
+    right: var(--spacing-md);
+  }
+
+  .table-actions-left,
+  .table-actions-right {
+    gap: var(--spacing-sm);
   }
 
   .loading-indicator {
-    font-size: var(--small-font-size);
+    font-size: var(--font-size-xs);
     padding: var(--spacing-md);
   }
 
@@ -97,9 +174,22 @@
   .table-actions-bar {
     flex-direction: column;
     align-items: stretch;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    min-height: auto;
+  }
+
+  .table-actions-left,
+  .table-actions-right {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .table-actions-right {
+    order: -1;
   }
 
   .blankslate-wrapper {
-    min-height: 150px;
+    min-height: 12.5rem;
   }
 }

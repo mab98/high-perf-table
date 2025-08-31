@@ -1,16 +1,39 @@
 .table-row {
   display: flex;
   height: var(--row-height);
-  border-bottom: 1px solid var(--border-color);
-  background-color: var(--bg-primary);
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-canvas);
   align-items: center;
   width: 100%;
+  transition: all var(--transition-normal);
+  position: relative;
+}
+
+.table-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  background: var(--purple-500);
+  transition: width var(--transition-normal);
+  z-index: 1;
 }
 
 .table-row:hover {
-  background-color: var(--bg-hover);
+  background: var(--bg-hover);
+  box-shadow: var(--shadow-sm);
 }
 
-tr:nth-child(even) .table-row {
-  background: var(--bg-secondary);
+.table-row:hover::before {
+  width: 0.25rem;
+}
+
+.table-row:nth-child(even) {
+  background: var(--bg-surface);
+}
+
+.table-row:nth-child(even):hover {
+  background: var(--bg-hover);
 }
