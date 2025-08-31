@@ -1,13 +1,5 @@
-import {
-  BlankSlate,
-  ColumnsButton,
-  FiltersButton,
-  SkeletonRow,
-  TableHeader,
-  TableRow,
-  TableSearch,
-  TableStatus
-} from "@/components/Table/components"
+import { TableContainer } from "@/components/Table/components"
+import TableTooltip from "@/components/Table/components/TableTooltip"
 import "@/components/Table/Table.css"
 import {
   DEFAULT_TABLE_HEIGHT,
@@ -16,9 +8,7 @@ import {
 } from "@/constants"
 import { useColumnWidths } from "@/hooks/useColumnWidths"
 import type { Column, SortState } from "@/types/table"
-import { useCallback, useEffect, useMemo, useState } from "react"
-import { TableVirtuoso } from "react-virtuoso"
-import TableTooltip from "./components/TableTooltip"
+import { useCallback, useMemo, useState } from "react"
 
 interface TableProps<T> {
   data: T[]
@@ -67,11 +57,6 @@ const Table = <T extends Record<string, unknown>>({
     colDefs.map((col) => col.key)
   )
   const [tooltip, setTooltip] = useState<TooltipState | null>(null)
-
-  // Clear tooltip when data, search, or loading changes
-  useEffect(() => {
-    setTooltip(null)
-  }, [data, searchValue, loading])
 
   const visibleColDefs = useMemo(
     () => colDefs.filter((col) => visibleColumns.includes(col.key)),
@@ -138,128 +123,34 @@ const Table = <T extends Record<string, unknown>>({
     onSort?.({ column: "", direction: "asc" })
   }, [onSort])
 
-  const renderHeader = useCallback(
-    () => (
-      <TableHeader
-        colDefs={enhancedColDefs}
+  return (
+    <div className="table-wrapper">
+      <TableContainer
+        data={data}
+        totalRecords={totalRecords}
+        colDefs={colDefs}
+        enhancedColDefs={enhancedColDefs}
+        visibleColumns={visibleColumns}
+        loading={loading}
         currentSort={currentSort}
         onSort={onSort}
         onClearSort={handleClearSort}
-        columnWidths={columnWidths}
-      />
-    ),
-    [enhancedColDefs, currentSort, onSort, columnWidths, handleClearSort]
-  )
-
-  const renderRow = useCallback(
-    (index: number, row: T) => (
-      <TableRow
-        row={row}
-        colDefs={enhancedColDefs}
-        index={index}
+        searchValue={searchValue}
+        onSearch={onSearch}
+        filters={filters}
+        onFilterChange={onFilterChange}
+        onClearAllFilters={onClearAllFilters}
+        onColumnVisibilityChange={handleColumnVisibilityChange}
+        onToggleAllColumns={handleToggleAllColumns}
         columnWidths={columnWidths}
         onCellHover={handleCellHover}
+        onEndReached={handleEndReached}
+        numberOfRows={numberOfRows}
+        hasAnyFilters={hasAnyFilters}
+        onClearAll={handleClearAll}
+        tableWidth={tableWidth}
+        tableHeight={tableHeight}
       />
-    ),
-    [enhancedColDefs, columnWidths, handleCellHover]
-  )
-
-  const renderLoadingFooter = () => {
-    if (!loading || data.length === 0) return null
-    return (
-      <div className="loading-container">
-        <div className="loading-indicator">
-          <div className="loading-spinner" />
-          <strong>Loading more data...</strong>
-        </div>
-      </div>
-    )
-  }
-
-  const skeletonContent = useMemo(
-    () => (
-      <div className="skeleton-container">
-        {renderHeader()}
-        {Array.from({ length: numberOfRows }, (_, idx) => (
-          <SkeletonRow key={idx} colDefs={enhancedColDefs} />
-        ))}
-      </div>
-    ),
-    [numberOfRows, enhancedColDefs, renderHeader]
-  )
-
-  const emptyState = useMemo(
-    () => (
-      <div className="empty-state-container">
-        {renderHeader()}
-        <div className="blankslate-wrapper">
-          <BlankSlate
-            text="No records found."
-            onClearAll={hasAnyFilters ? handleClearAll : undefined}
-            hasActiveFilters={hasAnyFilters}
-          />
-        </div>
-      </div>
-    ),
-    [renderHeader, hasAnyFilters, handleClearAll]
-  )
-
-  const renderTableContent = useMemo(() => {
-    if (loading && data.length === 0) return skeletonContent
-    if (data.length === 0) return emptyState
-
-    return (
-      <TableVirtuoso
-        data={data}
-        fixedHeaderContent={renderHeader}
-        itemContent={renderRow}
-        endReached={handleEndReached}
-      />
-    )
-  }, [
-    data,
-    loading,
-    skeletonContent,
-    emptyState,
-    renderHeader,
-    renderRow,
-    handleEndReached
-  ])
-
-  return (
-    <div className="table-container" style={{ width: tableWidth }}>
-      <div className="table-actions-bar">
-        <div className="table-actions-left">
-          {onSearch && (
-            <TableSearch
-              value={searchValue}
-              onChange={onSearch}
-              disabled={loading}
-            />
-          )}
-        </div>
-        <div className="table-actions-right">
-          {onFilterChange && onClearAllFilters && (
-            <FiltersButton
-              colDefs={colDefs}
-              filters={filters}
-              onFilterChange={onFilterChange}
-              onClearAllFilters={onClearAllFilters}
-            />
-          )}
-          <ColumnsButton
-            colDefs={colDefs}
-            visibleColumns={visibleColumns}
-            onColumnVisibilityChange={handleColumnVisibilityChange}
-            onToggleAllColumns={handleToggleAllColumns}
-          />
-        </div>
-      </div>
-
-      <div style={{ height: tableHeight, position: "relative" }}>
-        {renderTableContent}
-        {renderLoadingFooter()}
-      </div>
 
       {tooltip && (
         <TableTooltip
@@ -267,12 +158,6 @@ const Table = <T extends Record<string, unknown>>({
           position={{ x: tooltip.x, y: tooltip.y }}
         />
       )}
-
-      <TableStatus
-        loadedRecords={data.length}
-        totalRecords={totalRecords}
-        loading={loading}
-      />
     </div>
   )
 }

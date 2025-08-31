@@ -9,17 +9,14 @@ import { memo, useMemo } from "react"
 interface TableRowProps<T> {
   row: T
   colDefs: Column<T>[]
-  index: number
+  index: number // Not used here, but required by TableVirtuoso API
   columnWidths: ColumnWidthInfo[]
   onCellHover: (text: string, element: HTMLElement | null) => void
 }
 
-const TableRow = <
-  T extends Record<string, unknown> & { id?: string | number }
->({
+const TableRow = <T extends Record<string, unknown>>({
   row,
   colDefs,
-  index,
   columnWidths,
   onCellHover
 }: TableRowProps<T>) => {
@@ -48,11 +45,7 @@ const TableRow = <
     [colDefs, columnWidths, row, onCellHover]
   )
 
-  return (
-    <div className="table-row" data-row-id={row.id || index}>
-      {cells}
-    </div>
-  )
+  return <div className="table-row">{cells}</div>
 }
 
 export default memo(TableRow) as typeof TableRow
