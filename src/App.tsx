@@ -1,76 +1,78 @@
-import { useEffect, useState } from "react"
 import "@/App.css"
+import ErrorToast from "@/components/ErrorToast"
 import Table from "@/components/Table"
-import Toast from "@/components/Toast"
 import { colDefs } from "@/config/colDefs"
 import { PAGE_SIZE } from "@/constants"
 import { useApiData } from "@/hooks/useApiData"
 import useDebounce from "@/hooks/useDebounce"
+import { useTableState } from "@/hooks/useTableState"
 import type { ApiData } from "@/types/api"
+import { useEffect, useState } from "react"
 
 function App() {
-  const [searchValue, setSearchValue] = useState("")
-  const [filters, setFilters] = useState<Record<string, string>>({})
-  const [sorting, setSorting] = useState<{
-    column: string
-    direction: "asc" | "desc"
-  }>()
-  const [pagination, setPagination] = useState({ page: 0 })
   const [fetchedRows, setFetchedRows] = useState<ApiData[]>([])
   const [totalRecords, setTotalRecords] = useState(0)
+
+  const {
+    searchValue,
+    setSearchValue,
+    filters,
+    sort,
+    offset,
+    setOffset,
+    resetOffset,
+    handleSort,
+    handleFilterChange,
+    handleClearAllFilters
+  } = useTableState()
 
   const debouncedSearch = useDebounce(searchValue)
   const debouncedFilters = useDebounce(filters)
 
   const apiParams = {
     limit: PAGE_SIZE,
-    offset: pagination.page * PAGE_SIZE,
-    sort: sorting ? `${sorting.column},${sorting.direction}` : undefined,
+    offset: offset * PAGE_SIZE,
+    sort: sort ? `${sort.column},${sort.direction}` : undefined,
     search: debouncedSearch,
     filters: debouncedFilters
   }
 
   const { data: apiData, isLoading, error } = useApiData(apiParams)
 
-  // Reset rows on search/sort/filter change
+  // Reset on search/sort/filter changes
   useEffect(() => {
     setFetchedRows([])
-    setPagination({ page: 0 })
-  }, [debouncedSearch, sorting, debouncedFilters])
+    resetOffset()
+  }, [debouncedSearch, sort, debouncedFilters, resetOffset])
 
-  // Update rows & total count on data change
+  // Update data when API response changes
   useEffect(() => {
     if (!apiData) return
-    setTotalRecords(apiData.total)
-    setFetchedRows((prev) =>
-      pagination.page === 0 ? apiData.data : [...prev, ...apiData.data]
-    )
-  }, [apiData, pagination.page])
 
-  // Handlers
-  const handleSort = (column: string, direction: "asc" | "desc") => {
-    setSorting(column ? { column, direction } : undefined)
-  }
+    const isFirstPage = offset === 0
 
-  const handleSearch = (term: string) => {
-    setSearchValue(term)
-  }
+    const updateData = (
+      newData: ApiData[],
+      total: number,
+      isFirstPage: boolean
+    ) => {
+      setTotalRecords(total)
+      setFetchedRows((prevRows) =>
+        isFirstPage ? newData : [...prevRows, ...newData]
+      )
+    }
 
-  const handleFilterChange = (key: string, value: string) => {
-    setFilters((prev) => ({ ...prev, [key]: value }))
-  }
+    updateData(apiData.data, apiData.total, isFirstPage)
+  }, [apiData, offset])
 
-  const handleClearAllFilters = () => {
-    setFilters({})
-  }
-
-  const handlePageChange = (page: number) => {
-    setPagination({ page })
+  const renderError = () => {
+    if (!error) return null
+    return <ErrorToast message={error.message} />
   }
 
   return (
     <div className="app">
-      {error && <Toast message={error.message} />}
+      {renderError()}
 
       <Table
         data={fetchedRows}
@@ -78,16 +80,14 @@ function App() {
         colDefs={colDefs}
         loading={isLoading}
         searchValue={searchValue}
-        onSearch={handleSearch}
+        onSearch={setSearchValue}
         filters={filters}
         onFilterChange={handleFilterChange}
         onClearAllFilters={handleClearAllFilters}
-        currentSort={sorting}
+        currentSort={sort}
         onSort={handleSort}
-        currentPage={pagination.page}
-        onPageChange={handlePageChange}
-        tableWidth={1400}
-        tableHeight={665}
+        offset={offset}
+        onOffsetChange={setOffset}
       />
     </div>
   )

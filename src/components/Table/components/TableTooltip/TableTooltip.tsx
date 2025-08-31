@@ -1,5 +1,5 @@
 import "@/components/Table/components/TableTooltip/TableTooltip.css"
-import React from "react"
+import clsx from "clsx"
 import { createPortal } from "react-dom"
 
 interface Position {
@@ -8,32 +8,23 @@ interface Position {
 }
 
 interface TableTooltipProps {
-  show: boolean
   text: string
-  position: Position
+  position: Position | null
   className?: string
 }
 
-const TableTooltip: React.FC<TableTooltipProps> = ({
-  show,
-  text,
-  position,
-  className
-}) => {
-  if (!show || !text.trim()) return null
-
-  const tooltipStyle: React.CSSProperties = {
-    left: position.x,
-    top: position.y,
-    transform: "translate(-50%, -100%)"
-  }
+const TableTooltip = ({ text, position, className }: TableTooltipProps) => {
+  if (!text.trim() || !position) return null
 
   return createPortal(
     <div
       role="tooltip"
-      aria-hidden={!show}
-      className={`tooltip ${className || ""}`}
-      style={tooltipStyle}
+      aria-hidden={!text.trim() || !position}
+      className={clsx("tooltip", className)}
+      style={{
+        left: position.x,
+        top: position.y
+      }}
     >
       {text}
     </div>,

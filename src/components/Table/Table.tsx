@@ -9,29 +9,40 @@ import {
   TableStatus
 } from "@/components/Table/components"
 import "@/components/Table/Table.css"
-import { PAGE_SIZE } from "@/constants"
+import {
+  DEFAULT_TABLE_HEIGHT,
+  DEFAULT_TABLE_WIDTH,
+  PAGE_SIZE
+} from "@/constants"
 import { useColumnWidths } from "@/hooks/useColumnWidths"
-import type { Column } from "@/types/table"
-import { useMemo, useState } from "react"
+import type { Column, SortState } from "@/types/table"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { TableVirtuoso } from "react-virtuoso"
+import TableTooltip from "./components/TableTooltip"
 
 interface TableProps<T> {
   data: T[]
   totalRecords: number
   colDefs: Column<T>[]
   loading?: boolean
-  currentSort?: { column: string; direction: "asc" | "desc" } | null
-  onSort?: (column: string, direction: "asc" | "desc") => void
+  currentSort?: SortState | null
+  onSort?: (params: SortState) => void
   searchValue?: string
   onSearch?: (searchTerm: string) => void
   filters?: Record<string, string>
-  onFilterChange?: (key: string, value: string) => void
+  onFilterChange?: (params: { key: string; value: string }) => void
   onClearAllFilters?: () => void
-  currentPage?: number
-  onPageChange?: (offset: number) => void
+  offset?: number
+  onOffsetChange?: (offset: number) => void
   tableWidth?: number
   tableHeight?: number
   numberOfRows?: number
+}
+
+interface TooltipState {
+  text: string
+  x: number
+  y: number
 }
 
 const Table = <T extends Record<string, unknown>>({
@@ -46,66 +57,115 @@ const Table = <T extends Record<string, unknown>>({
   filters = {},
   onFilterChange,
   onClearAllFilters,
-  currentPage = 0,
-  onPageChange,
-  tableWidth = 1200,
-  tableHeight = 600,
+  offset = 0,
+  onOffsetChange,
+  tableWidth = DEFAULT_TABLE_WIDTH,
+  tableHeight = DEFAULT_TABLE_HEIGHT,
   numberOfRows = PAGE_SIZE
 }: TableProps<T>) => {
   const [visibleColumns, setVisibleColumns] = useState<string[]>(() =>
     colDefs.map((col) => col.key)
   )
+  const [tooltip, setTooltip] = useState<TooltipState | null>(null)
 
-  const visibleColDefs = useMemo(() => {
-    return colDefs.filter((col) => visibleColumns.includes(col.key))
-  }, [colDefs, visibleColumns])
+  // Clear tooltip when data, search, or loading changes
+  useEffect(() => {
+    setTooltip(null)
+  }, [data, searchValue, loading])
+
+  const visibleColDefs = useMemo(
+    () => colDefs.filter((col) => visibleColumns.includes(col.key)),
+    [colDefs, visibleColumns]
+  )
 
   const columnWidths = useColumnWidths({ colDefs: visibleColDefs, tableWidth })
 
-  const enhancedColDefs = visibleColDefs.map((col, index) => ({
-    ...col,
-    width: columnWidths[index]?.width ?? col.width
-  }))
+  const enhancedColDefs = useMemo(
+    () =>
+      visibleColDefs.map((col, index) => ({
+        ...col,
+        width: columnWidths[index]?.width ?? col.width
+      })),
+    [visibleColDefs, columnWidths]
+  )
 
-  const handleColumnVisibilityChange = (key: string, visible: boolean) => {
+  const handleColumnVisibilityChange = (params: {
+    key: string
+    visible: boolean
+  }) => {
+    const { key, visible } = params
     setVisibleColumns((prev) =>
       visible ? [...prev, key] : prev.filter((id) => id !== key)
     )
   }
 
-  const handleToggleAllColumns = (visible: boolean) => {
-    setVisibleColumns(visible ? colDefs.map((c) => c.key) : [])
-  }
+  const handleToggleAllColumns = useCallback(
+    (visible: boolean) => {
+      setVisibleColumns(visible ? colDefs.map((c) => c.key) : [])
+    },
+    [colDefs]
+  )
 
-  const handleEndReached = () => {
-    const hasMoreData = data.length < totalRecords
-    if (!loading && hasMoreData && onPageChange) {
-      onPageChange(currentPage + 1)
+  const handleCellHover = useCallback(
+    (text: string, element: HTMLElement | null) => {
+      if (!element || !text) return setTooltip(null)
+      const rect = element.getBoundingClientRect()
+      setTooltip({
+        text,
+        x: rect.left + rect.width / 2 + window.scrollX,
+        y: rect.top - 5 + window.scrollY
+      })
+    },
+    []
+  )
+
+  const handleEndReached = useCallback(() => {
+    if (!loading && data.length < totalRecords && onOffsetChange) {
+      onOffsetChange(offset + 1)
     }
-  }
+  }, [data.length, totalRecords, loading, onOffsetChange, offset])
 
-  const renderFixedHeader = () => (
-    <TableHeader
-      colDefs={enhancedColDefs}
-      currentSort={currentSort}
-      onSort={onSort}
-      onClearSort={() => onSort?.("", "asc")}
-      columnWidths={columnWidths}
-    />
+  const hasActiveSearch = searchValue.trim() !== ""
+  const hasActiveFilters = Object.values(filters).some((v) => v.trim() !== "")
+  const hasAnyFilters = hasActiveSearch || hasActiveFilters
+
+  const handleClearAll = useCallback(() => {
+    if (onSearch && hasActiveSearch) onSearch("")
+    if (onClearAllFilters && hasActiveFilters) onClearAllFilters()
+  }, [onSearch, onClearAllFilters, hasActiveSearch, hasActiveFilters])
+
+  const handleClearSort = useCallback(() => {
+    onSort?.({ column: "", direction: "asc" })
+  }, [onSort])
+
+  const renderHeader = useCallback(
+    () => (
+      <TableHeader
+        colDefs={enhancedColDefs}
+        currentSort={currentSort}
+        onSort={onSort}
+        onClearSort={handleClearSort}
+        columnWidths={columnWidths}
+      />
+    ),
+    [enhancedColDefs, currentSort, onSort, columnWidths, handleClearSort]
   )
 
-  const renderItemContent = (index: number, row: T) => (
-    <TableRow
-      row={row}
-      colDefs={enhancedColDefs}
-      index={index}
-      columnWidths={columnWidths}
-    />
+  const renderRow = useCallback(
+    (index: number, row: T) => (
+      <TableRow
+        row={row}
+        colDefs={enhancedColDefs}
+        index={index}
+        columnWidths={columnWidths}
+        onCellHover={handleCellHover}
+      />
+    ),
+    [enhancedColDefs, columnWidths, handleCellHover]
   )
 
-  const renderFixedFooter = () => {
+  const renderFooter = useCallback(() => {
     if (!loading) return null
-
     return (
       <div className="loading-container">
         <div className="loading-indicator">
@@ -114,62 +174,59 @@ const Table = <T extends Record<string, unknown>>({
         </div>
       </div>
     )
-  }
+  }, [loading])
 
-  const renderTableContent = () => {
-    if (loading && data.length === 0) {
-      return (
-        <div className="skeleton-container">
-          {renderFixedHeader()}
-          {Array.from({ length: numberOfRows }, (_, index) => (
-            <SkeletonRow key={index} colDefs={enhancedColDefs} />
-          ))}
+  const skeletonContent = useMemo(
+    () => (
+      <div className="skeleton-container">
+        {renderHeader()}
+        {Array.from({ length: numberOfRows }, (_, idx) => (
+          <SkeletonRow key={idx} colDefs={enhancedColDefs} />
+        ))}
+      </div>
+    ),
+    [numberOfRows, enhancedColDefs, renderHeader]
+  )
+
+  const emptyState = useMemo(
+    () => (
+      <div className="empty-state-container">
+        {renderHeader()}
+        <div className="blankslate-wrapper">
+          <BlankSlate
+            text="No records found."
+            onClearAll={hasAnyFilters ? handleClearAll : undefined}
+            hasActiveFilters={hasAnyFilters}
+          />
         </div>
-      )
-    }
+      </div>
+    ),
+    [renderHeader, hasAnyFilters, handleClearAll]
+  )
 
-    if (data.length === 0) {
-      const hasActiveSearch = searchValue.trim() !== ""
-      const hasActiveFilters = Object.values(filters).some(
-        (value) => value.trim() !== ""
-      )
-      const hasAnyActiveFilters = hasActiveSearch || hasActiveFilters
-
-      const handleClearAll = () => {
-        // Clear search
-        if (onSearch && hasActiveSearch) {
-          onSearch("")
-        }
-        // Clear filters
-        if (onClearAllFilters && hasActiveFilters) {
-          onClearAllFilters()
-        }
-      }
-
-      return (
-        <div className="empty-state-container">
-          {renderFixedHeader()}
-          <div className="blankslate-wrapper">
-            <BlankSlate
-              text="No records found."
-              onClearAll={hasAnyActiveFilters ? handleClearAll : undefined}
-              hasActiveFilters={hasAnyActiveFilters}
-            />
-          </div>
-        </div>
-      )
-    }
+  const renderTableContent = useMemo(() => {
+    if (loading && data.length === 0) return skeletonContent
+    if (data.length === 0) return emptyState
 
     return (
       <TableVirtuoso
         data={data}
-        fixedHeaderContent={renderFixedHeader}
-        itemContent={renderItemContent}
-        fixedFooterContent={renderFixedFooter}
+        fixedHeaderContent={renderHeader}
+        itemContent={renderRow}
+        fixedFooterContent={renderFooter}
         endReached={handleEndReached}
       />
     )
-  }
+  }, [
+    data,
+    loading,
+    skeletonContent,
+    emptyState,
+    renderHeader,
+    renderRow,
+    renderFooter,
+    handleEndReached
+  ])
 
   return (
     <div className="table-container" style={{ width: tableWidth }}>
@@ -201,7 +258,14 @@ const Table = <T extends Record<string, unknown>>({
         </div>
       </div>
 
-      <div style={{ height: tableHeight }}>{renderTableContent()}</div>
+      <div style={{ height: tableHeight }}>{renderTableContent}</div>
+
+      {tooltip && (
+        <TableTooltip
+          text={tooltip.text}
+          position={{ x: tooltip.x, y: tooltip.y }}
+        />
+      )}
 
       <TableStatus
         loadedRecords={data.length}

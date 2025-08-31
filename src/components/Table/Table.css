@@ -144,24 +144,24 @@
 
 @media (max-width: 768px) {
   .table-actions-bar {
-    padding: var(--spacing-md);
+    padding: var(--spacing-4);
     min-height: 3.75rem;
-    gap: var(--spacing-md);
+    gap: var(--spacing-4);
   }
 
   .table-actions-bar::after {
-    left: var(--spacing-md);
-    right: var(--spacing-md);
+    left: var(--spacing-4);
+    right: var(--spacing-4);
   }
 
   .table-actions-left,
   .table-actions-right {
-    gap: var(--spacing-sm);
+    gap: var(--spacing-2);
   }
 
   .loading-indicator {
     font-size: var(--font-size-xs);
-    padding: var(--spacing-md);
+    padding: var(--spacing-4);
   }
 
   .loading-spinner {
@@ -174,8 +174,8 @@
   .table-actions-bar {
     flex-direction: column;
     align-items: stretch;
-    gap: var(--spacing-md);
-    padding: var(--spacing-md);
+    gap: var(--spacing-4);
+    padding: var(--spacing-4);
     min-height: auto;
   }
 

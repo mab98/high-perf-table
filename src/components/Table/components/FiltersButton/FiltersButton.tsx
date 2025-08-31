@@ -2,11 +2,12 @@ import { ClearIcon } from "@/components/Table/Icons"
 import DropdownButton from "@/components/Table/components/DropdownButton"
 import "@/components/Table/components/FiltersButton/FiltersButton.css"
 import type { Column } from "@/types/table"
+import { memo, useCallback, useMemo } from "react"
 
 interface FiltersButtonProps<T> {
   colDefs: Column<T>[]
   filters: Record<string, string>
-  onFilterChange: (key: string, value: string) => void
+  onFilterChange: (params: { key: string; value: string }) => void
   onClearAllFilters: () => void
 }
 
@@ -16,15 +17,26 @@ const FiltersButton = <T extends Record<string, unknown>>({
   onFilterChange,
   onClearAllFilters
 }: FiltersButtonProps<T>) => {
-  const filterableColumns = colDefs.filter((col) => col.filterable)
-  const activeFilterCount = Object.values(filters).filter(
-    (value) => value.trim() !== ""
-  ).length
+  const filterableColumns = useMemo(
+    () => colDefs.filter((col) => col.filterable),
+    [colDefs]
+  )
+
+  const activeFilterCount = useMemo(
+    () => Object.values(filters).filter((v) => v.trim() !== "").length,
+    [filters]
+  )
   const hasActiveFilters = activeFilterCount > 0
 
-  const filterLabel = hasActiveFilters
-    ? `Filters (${activeFilterCount})`
-    : "Filters"
+  const filterLabel = useMemo(
+    () => (hasActiveFilters ? `Filters (${activeFilterCount})` : "Filters"),
+    [hasActiveFilters, activeFilterCount]
+  )
+
+  const handleInputChange = useCallback(
+    (key: string, value: string) => onFilterChange({ key, value }),
+    [onFilterChange]
+  )
 
   return (
     <DropdownButton
@@ -55,37 +67,40 @@ const FiltersButton = <T extends Record<string, unknown>>({
         role="group"
         aria-label="Filter inputs"
       >
-        {filterableColumns.map((col) => (
-          <div key={col.key} className="filter-item" role="menuitem">
-            <label htmlFor={`filter-${col.key}`} className="filter-label">
-              {col.title}
-            </label>
-            <div className="filter-input-wrapper">
-              <input
-                id={`filter-${col.key}`}
-                type="text"
-                className="filter-input"
-                placeholder={`Filter by ${col.title.toLowerCase()}...`}
-                value={filters[col.key] || ""}
-                onChange={(e) => onFilterChange(col.key, e.target.value)}
-              />
-              {filters[col.key] && (
-                <button
-                  type="button"
-                  className="filter-clear-button"
-                  onClick={() => onFilterChange(col.key, "")}
-                  aria-label={`Clear ${col.title} filter`}
-                  title={`Clear ${col.title} filter`}
-                >
-                  <ClearIcon />
-                </button>
-              )}
+        {filterableColumns.map((col) => {
+          const value = filters[col.key] || ""
+          return (
+            <div key={col.key} className="filter-item" role="menuitem">
+              <label htmlFor={`filter-${col.key}`} className="filter-label">
+                {col.title}
+              </label>
+              <div className="filter-input-wrapper">
+                <input
+                  id={`filter-${col.key}`}
+                  type="text"
+                  className="filter-input"
+                  placeholder={`Filter by ${col.title.toLowerCase()}...`}
+                  value={value}
+                  onChange={(e) => handleInputChange(col.key, e.target.value)}
+                />
+                {value && (
+                  <button
+                    type="button"
+                    className="filter-clear-button"
+                    onClick={() => handleInputChange(col.key, "")}
+                    aria-label={`Clear ${col.title} filter`}
+                    title={`Clear ${col.title} filter`}
+                  >
+                    <ClearIcon />
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </DropdownButton>
   )
 }
 
-export default FiltersButton
+export default memo(FiltersButton) as typeof FiltersButton

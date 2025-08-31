@@ -8,9 +8,8 @@ const API_ENDPOINTS = {
   EMPLOYEE_LIST: "/list"
 } as const
 
-export const useApiData = (params: TableQueryParams = {}) => {
-  return useDataFetch<ApiData>({
+export const useApiData = (params: TableQueryParams = {}) =>
+  useDataFetch<ApiData>({
     endpoint: `${API_BASE_URL}${API_ENDPOINTS.EMPLOYEE_LIST}`,
     ...params
   })
-}

@@ -1,6 +1,15 @@
 import { DropdownArrow } from "@/components/Table/Icons"
 import "@/components/Table/components/DropdownButton/DropdownButton.css"
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react"
+import clsx from "clsx"
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode
+} from "react"
 
 interface DropdownButtonProps {
   label: string
@@ -21,28 +30,45 @@ const DropdownButton = ({
   const buttonRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
 
-  const closeMenu = () => setIsMenuOpen(false)
-  const toggleMenu = () => setIsMenuOpen((prev) => !prev)
+  const closeMenu = useCallback(() => setIsMenuOpen(false), [])
+  const toggleMenu = useCallback(() => setIsMenuOpen((prev) => !prev), [])
 
-  const handleClickOutside = useCallback((event: MouseEvent) => {
-    const target = event.target as Node
-
-    if (
-      menuRef.current?.contains(target) ||
-      buttonRef.current?.contains(target)
-    ) {
-      return
-    }
-
-    closeMenu()
-  }, [])
-
-  const handleEscapeKey = useCallback((event: KeyboardEvent) => {
-    if (event.key === "Escape") {
+  const handleClickOutside = useCallback(
+    (event: MouseEvent) => {
+      const target = event.target as Node
+      if (
+        menuRef.current?.contains(target) ||
+        buttonRef.current?.contains(target)
+      )
+        return
       closeMenu()
-      buttonRef.current?.focus()
-    }
-  }, [])
+    },
+    [closeMenu]
+  )
+
+  const handleEscapeKey = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeMenu()
+        buttonRef.current?.focus()
+      }
+    },
+    [closeMenu]
+  )
+
+  const buttonClasses = useMemo(
+    () =>
+      clsx("dropdown-button", {
+        "has-active-state": isActive,
+        active: isMenuOpen
+      }),
+    [isActive, isMenuOpen]
+  )
+
+  const menuClasses = useMemo(
+    () => clsx("dropdown-menu", { open: isMenuOpen }),
+    [isMenuOpen]
+  )
 
   useEffect(() => {
     if (!isMenuOpen) return
@@ -57,13 +83,11 @@ const DropdownButton = ({
   }, [isMenuOpen, handleClickOutside, handleEscapeKey])
 
   return (
-    <div className={`dropdown-button-container ${className}`}>
+    <div className={clsx("dropdown-button-container", className)}>
       <button
         ref={buttonRef}
         type="button"
-        className={`dropdown-button ${isActive ? "has-active-state" : ""} ${
-          isMenuOpen ? "active" : ""
-        }`}
+        className={buttonClasses}
         onClick={toggleMenu}
         aria-label={ariaLabel || label}
         aria-expanded={isMenuOpen}
@@ -73,16 +97,18 @@ const DropdownButton = ({
         <DropdownArrow isOpen={isMenuOpen} />
       </button>
 
-      <div
-        ref={menuRef}
-        className={`dropdown-menu ${isMenuOpen ? "open" : ""}`}
-        role="menu"
-        aria-hidden={!isMenuOpen}
-      >
-        {children}
-      </div>
+      {isMenuOpen && (
+        <div
+          ref={menuRef}
+          className={menuClasses}
+          role="menu"
+          aria-hidden={!isMenuOpen}
+        >
+          {children}
+        </div>
+      )}
     </div>
   )
 }
 
-export default DropdownButton
+export default memo(DropdownButton)

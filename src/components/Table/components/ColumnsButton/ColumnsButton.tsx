@@ -1,15 +1,14 @@
 import "@/components/Table/components/ColumnsButton/ColumnsButton.css"
 import DropdownButton from "@/components/Table/components/DropdownButton"
 import type { Column } from "@/types/table"
+import { memo, useCallback, useMemo } from "react"
 
 interface ColumnsButtonProps<T> {
   colDefs: Column<T>[]
   visibleColumns: string[]
-  onColumnVisibilityChange: (key: string, visible: boolean) => void
+  onColumnVisibilityChange: (params: { key: string; visible: boolean }) => void
   onToggleAllColumns: (visible: boolean) => void
 }
-
-type CheckboxState = "checked" | "unchecked" | "indeterminate"
 
 const ColumnsButton = <T extends Record<string, unknown>>({
   colDefs,
@@ -17,21 +16,69 @@ const ColumnsButton = <T extends Record<string, unknown>>({
   onColumnVisibilityChange,
   onToggleAllColumns
 }: ColumnsButtonProps<T>) => {
-  const checkboxState = (): CheckboxState => {
-    const visibleCount = visibleColumns.length
-    const totalCount = colDefs.length
+  const totalCount = colDefs.length
+  const visibleCount = visibleColumns.length
 
-    if (visibleCount === totalCount) return "checked"
-    if (visibleCount === 0) return "unchecked"
-    return "indeterminate"
-  }
+  const isAllVisible = visibleCount === totalCount
+  const isNoneVisible = visibleCount === 0
+  const isIndeterminate = !isAllVisible && !isNoneVisible
 
-  const handleToggleAll = () => {
-    const shouldShowAll = checkboxState() !== "checked"
-    onToggleAllColumns(shouldShowAll)
-  }
+  const columnsLabel = useMemo(
+    () => `Columns (${visibleCount}/${totalCount})`,
+    [visibleCount, totalCount]
+  )
 
-  const columnsLabel = `Columns (${visibleColumns.length}/${colDefs.length})`
+  const handleToggleAll = useCallback(
+    () => onToggleAllColumns(!isAllVisible),
+    [isAllVisible, onToggleAllColumns]
+  )
+
+  const handleColumnChange = useCallback(
+    (key: string, visible: boolean) =>
+      onColumnVisibilityChange({ key, visible }),
+    [onColumnVisibilityChange]
+  )
+
+  const setCheckboxRef = useCallback(
+    (input: HTMLInputElement | null) => {
+      if (input) input.indeterminate = isIndeterminate
+    },
+    [isIndeterminate]
+  )
+
+  const renderToggleAllCheckbox = useCallback(
+    () => (
+      <label className="column-checkbox-item toggle-all">
+        <input
+          type="checkbox"
+          checked={isAllVisible}
+          ref={setCheckboxRef}
+          onChange={handleToggleAll}
+          className="column-checkbox"
+        />
+        <span className="column-label">Show/Hide All</span>
+      </label>
+    ),
+    [isAllVisible, setCheckboxRef, handleToggleAll]
+  )
+
+  const renderColumnCheckbox = useCallback(
+    (col: Column<T>) => {
+      const isVisible = visibleColumns.includes(col.key)
+      return (
+        <label key={col.key} className="column-checkbox-item">
+          <input
+            type="checkbox"
+            checked={isVisible}
+            onChange={(e) => handleColumnChange(col.key, e.target.checked)}
+            className="column-checkbox"
+          />
+          <span className="column-label">{col.title}</span>
+        </label>
+      )
+    },
+    [visibleColumns, handleColumnChange]
+  )
 
   return (
     <DropdownButton label={columnsLabel} className="columns-dropdown">
@@ -41,41 +88,11 @@ const ColumnsButton = <T extends Record<string, unknown>>({
         </div>
       </div>
       <div className="columns-menu-content">
-        <label className="column-checkbox-item toggle-all">
-          <input
-            type="checkbox"
-            checked={checkboxState() === "checked"}
-            ref={(input) => {
-              if (input) {
-                input.indeterminate = checkboxState() === "indeterminate"
-              }
-            }}
-            onChange={handleToggleAll}
-            className="column-checkbox"
-          />
-          <span className="column-label">Show/Hide All</span>
-        </label>
-
-        {colDefs.map((col) => {
-          const isVisible = visibleColumns.includes(col.key)
-
-          return (
-            <label key={col.key} className="column-checkbox-item">
-              <input
-                type="checkbox"
-                checked={isVisible}
-                onChange={(e) =>
-                  onColumnVisibilityChange(col.key, e.target.checked)
-                }
-                className="column-checkbox"
-              />
-              <span className="column-label">{col.title}</span>
-            </label>
-          )
-        })}
+        {renderToggleAllCheckbox()}
+        {colDefs.map(renderColumnCheckbox)}
       </div>
     </DropdownButton>
   )
 }
 
-export default ColumnsButton
+export default memo(ColumnsButton) as typeof ColumnsButton

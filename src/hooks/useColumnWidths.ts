@@ -2,14 +2,14 @@ import { CELL_MIN_WIDTH } from "@/constants"
 import type { Column } from "@/types/table"
 import { useMemo } from "react"
 
+export interface ColumnWidthInfo {
+  width: number
+  minWidth: number
+}
+
 interface UseColumnWidthsParams<T> {
   colDefs: Column<T>[]
   tableWidth: number
-}
-
-interface ColumnWidthInfo {
-  width: number
-  minWidth: number
 }
 
 export const useColumnWidths = <T>({

@@ -1,20 +1,17 @@
 import TableCell from "@/components/Table/components/TableCell"
 import "@/components/Table/components/TableRow/TableRow.css"
 import { CELL_MIN_WIDTH } from "@/constants"
+import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
 import type { Column } from "@/types/table"
 import type { ReactNode } from "react"
-import { memo } from "react"
-
-interface ColumnWidthInfo {
-  width: number
-  minWidth: number
-}
+import { memo, useMemo } from "react"
 
 interface TableRowProps<T> {
   row: T
   colDefs: Column<T>[]
   index: number
   columnWidths: ColumnWidthInfo[]
+  onCellHover: (text: string, element: HTMLElement | null) => void
 }
 
 const TableRow = <
@@ -23,15 +20,14 @@ const TableRow = <
   row,
   colDefs,
   index,
-  columnWidths
+  columnWidths,
+  onCellHover
 }: TableRowProps<T>) => {
-  return (
-    <div className="table-row" data-row-id={row.id || index}>
-      {colDefs.map((col, colIndex) => {
-        const cellContent = col.renderer
-          ? col.renderer(row)
-          : (row[col.key] ?? "")
-        const tooltipText = typeof cellContent === "string" ? cellContent : ""
+  const cells = useMemo(
+    () =>
+      colDefs.map((col, colIndex) => {
+        const content = col.renderer ? col.renderer(row) : (row[col.key] ?? "")
+        const tooltipText = typeof content === "string" ? content : ""
         const widthInfo = columnWidths[colIndex]
 
         const cellStyle = {
@@ -42,12 +38,19 @@ const TableRow = <
         return (
           <TableCell
             key={col.key}
-            content={cellContent as ReactNode}
+            content={content as ReactNode}
             tooltipText={tooltipText}
             style={cellStyle}
+            onHover={onCellHover}
           />
         )
-      })}
+      }),
+    [colDefs, columnWidths, row, onCellHover]
+  )
+
+  return (
+    <div className="table-row" data-row-id={row.id || index}>
+      {cells}
     </div>
   )
 }

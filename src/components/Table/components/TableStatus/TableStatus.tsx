@@ -6,26 +6,27 @@ interface TableStatusProps {
   loading: boolean
 }
 
+const getStatusText = (
+  loadedRecords: number,
+  totalRecords: number,
+  loading: boolean
+): string => {
+  if (!loading && totalRecords === 0) {
+    return "No records found"
+  }
+  return `Showing ${loadedRecords.toLocaleString()} of ${totalRecords.toLocaleString()} records`
+}
+
 const TableStatus = ({
   loadedRecords,
   totalRecords,
   loading
 }: TableStatusProps) => {
-  const getStatusText = () => {
-    if (!loading && totalRecords === 0) {
-      return "No records found"
-    }
-    return `Showing ${loadedRecords.toLocaleString()} of ${totalRecords.toLocaleString()} records`
-  }
-
   return (
     <div className="table-status">
-      <div className="table-status-left">
-        {/* Loading status removed as requested */}
-      </div>
-      <div className="table-status-right">
-        <span className="status-highlight">{getStatusText()}</span>
-      </div>
+      <span className="status-highlight">
+        {getStatusText(loadedRecords, totalRecords, loading)}
+      </span>
     </div>
   )
 }

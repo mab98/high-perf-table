@@ -1,14 +1,33 @@
 import type { ApiData } from "@/types/api"
 import type { Column } from "@/types/table"
 
+// Formatters
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+  year: "numeric",
+  month: "short",
+  day: "numeric"
+})
+
+const currencyFormatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0
+})
+
+// --- Renderers ---
+const renderEmail = (apiData: ApiData) => (
+  <a href={`mailto:${apiData.email}`} onClick={(e) => e.stopPropagation()}>
+    {apiData.email}
+  </a>
+)
+
+const renderDate = (date: string) => dateFormatter.format(new Date(date))
+
+const renderSalary = (salary: number) => currencyFormatter.format(salary)
+
 export const colDefs: Column<ApiData>[] = [
-  {
-    key: "id",
-    title: "ID",
-    width: 80,
-    sortable: true,
-    filterable: true
-  },
+  { key: "id", title: "ID", width: 80, sortable: true, filterable: true },
   {
     key: "firstName",
     title: "First Name",
@@ -32,37 +51,16 @@ export const colDefs: Column<ApiData>[] = [
     editable: true,
     sortable: true,
     filterable: true,
-    renderer: (apiData: ApiData) => {
-      return (
-        <a
-          href={`mailto:${apiData.email}`}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {apiData.email}
-        </a>
-      )
-    }
+    renderer: renderEmail
   },
-  {
-    key: "phone",
-    title: "Phone",
-    width: 180,
-    editable: true
-  },
+  { key: "phone", title: "Phone", width: 180, editable: true },
   {
     key: "dateOfBirth",
     title: "Date of Birth",
     width: 120,
     editable: true,
     sortable: true,
-    renderer: (apiData: ApiData) => {
-      const date = new Date(apiData.dateOfBirth)
-      return date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric"
-      })
-    }
+    renderer: (row) => renderDate(row.dateOfBirth)
   },
   {
     key: "designation",
@@ -94,14 +92,7 @@ export const colDefs: Column<ApiData>[] = [
     width: 120,
     editable: true,
     sortable: true,
-    renderer: (apiData: ApiData) => {
-      const date = new Date(apiData.joinDate)
-      return date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "short",
-        day: "numeric"
-      })
-    }
+    renderer: (row) => renderDate(row.joinDate)
   },
   {
     key: "salary",
@@ -110,13 +101,6 @@ export const colDefs: Column<ApiData>[] = [
     editable: true,
     sortable: true,
     filterable: true,
-    renderer: (apiData: ApiData) => {
-      return new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-      }).format(apiData.salary)
-    }
+    renderer: (row) => renderSalary(row.salary)
   }
 ]

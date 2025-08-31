@@ -1,4 +1,5 @@
 import "@/components/Table/Icons/Icons.css"
+import clsx from "clsx"
 
 export const ClearIcon = () => (
   <svg
@@ -16,25 +17,27 @@ export const ClearIcon = () => (
   </svg>
 )
 
-export const DropdownArrow = ({ isOpen }: { isOpen: boolean }) => (
-  <svg
-    width="12"
-    height="12"
-    viewBox="0 0 12 12"
-    fill="currentColor"
-    className={`dropdown-arrow ${isOpen ? "rotated" : ""}`}
-    aria-hidden="true"
-  >
-    <path
-      d="M2.5 4.5L6 8l3.5-3.5"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      fill="none"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-)
+export const DropdownArrow = ({ isOpen }: { isOpen: boolean }) => {
+  return (
+    <svg
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="currentColor"
+      className={clsx("dropdown-arrow", { rotated: isOpen })}
+      aria-hidden="true"
+    >
+      <path
+        d="M2.5 4.5L6 8l3.5-3.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
 
 export const SearchIcon = ({ size = "64" }) => {
   return (

@@ -4,7 +4,7 @@
   align-items: center;
   justify-content: center;
   gap: var(--spacing-6);
-  padding: var(--spacing-12) var(--spacing-8);
+  padding: var(--spacing-8) var(--spacing-7);
   position: relative;
   text-align: center;
   background: var(--bg-canvas);
@@ -88,7 +88,7 @@
 @media (max-width: 768px) {
   .blank-slate {
     margin: var(--spacing-3);
-    padding: var(--spacing-8) var(--spacing-6);
+    padding: var(--spacing-7) var(--spacing-6);
   }
 
   .blank-slate-icon {

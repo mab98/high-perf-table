@@ -80,12 +80,12 @@
 
 @media (max-width: 768px) {
   .skeleton {
-    margin: var(--spacing-sm) 0;
+    margin: var(--spacing-2) 0;
   }
 }
 
 @media (max-width: 480px) {
   .skeleton {
-    margin: var(--spacing-xs) 0;
+    margin: var(--spacing-2) 0;
   }
 }

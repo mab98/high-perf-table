@@ -17,7 +17,7 @@ html {
 body {
   margin: 0;
   padding: 0;
-  background: var(--slate-50);
+  background: var(--slate-100);
   color: var(--text-primary);
   font-family: var(--font-family);
   font-size: var(--font-size-md);
@@ -31,7 +31,7 @@ body {
 /* Selection styles */
 ::selection {
   background: #e9d5ff;
-  color: var(--purple-900);
+  color: var(--purple-800);
   text-shadow: none;
 }
 
