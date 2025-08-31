@@ -1,5 +1,5 @@
 import "@/components/ErrorToast/ErrorToast.css"
-import { ClearIcon } from "@/components/Table/Icons"
+import { ClearIcon } from "@/components/Table/Icons/Icons"
 import { useState } from "react"
 
 interface ErrorToastProps {

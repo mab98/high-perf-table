@@ -1,4 +1,4 @@
-import { ClearIcon, SearchIcon } from "@/components/Table/Icons"
+import { ClearIcon, SearchIcon } from "@/components/Table/Icons/Icons"
 import "@/components/Table/components/TableSearch/TableSearch.css"
 
 interface TableSearchProps {

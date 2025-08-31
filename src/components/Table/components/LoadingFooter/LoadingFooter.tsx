@@ -1,4 +1,4 @@
-import "./LoadingFooter.css"
+import "@/components/Table/components/LoadingFooter/LoadingFooter.css"
 
 interface LoadingFooterProps {
   loading: boolean

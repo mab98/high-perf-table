@@ -1,4 +1,4 @@
-import { SearchIcon } from "@/components/Table/Icons"
+import { SearchIcon } from "@/components/Table/Icons/Icons"
 import "@/components/Table/components/BlankSlate/BlankSlate.css"
 
 interface BlankSlateProps {

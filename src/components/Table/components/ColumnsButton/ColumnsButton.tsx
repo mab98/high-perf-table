@@ -1,5 +1,5 @@
 import "@/components/Table/components/ColumnsButton/ColumnsButton.css"
-import DropdownButton from "@/components/Table/components/DropdownButton"
+import DropdownButton from "@/components/Table/components/DropdownButton/DropdownButton"
 import type { Column } from "@/types/table"
 import { memo, useCallback, useMemo } from "react"
 

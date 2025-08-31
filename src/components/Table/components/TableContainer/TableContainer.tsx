@@ -1,10 +1,10 @@
-import { TableStatus } from "@/components/Table/components"
+import LoadingFooter from "@/components/Table/components/LoadingFooter/LoadingFooter"
+import TableActionsBar from "@/components/Table/components/TableActionsBar/TableActionsBar"
+import "@/components/Table/components/TableContainer/TableContainer.css"
+import TableContent from "@/components/Table/components/TableContent/TableContent"
+import TableStatus from "@/components/Table/components/TableStatus/TableStatus"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
 import type { Column, SortState } from "@/types/table"
-import LoadingFooter from "../LoadingFooter"
-import TableActionsBar from "../TableActionsBar"
-import TableContent from "../TableContent"
-import "./TableContainer.css"
 
 interface TableContainerProps<T> {
   data: T[]

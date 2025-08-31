@@ -1,5 +1,5 @@
-import { ClearIcon } from "@/components/Table/Icons"
-import DropdownButton from "@/components/Table/components/DropdownButton"
+import { ClearIcon } from "@/components/Table/Icons/Icons"
+import DropdownButton from "@/components/Table/components/DropdownButton/DropdownButton"
 import "@/components/Table/components/FiltersButton/FiltersButton.css"
 import type { Column } from "@/types/table"
 import { memo, useCallback, useMemo } from "react"

@@ -1,10 +1,8 @@
-import {
-  ColumnsButton,
-  FiltersButton,
-  TableSearch
-} from "@/components/Table/components"
+import ColumnsButton from "@/components/Table/components/ColumnsButton/ColumnsButton"
+import FiltersButton from "@/components/Table/components/FiltersButton/FiltersButton"
+import "@/components/Table/components/TableActionsBar/TableActionsBar.css"
+import TableSearch from "@/components/Table/components/TableSearch/TableSearch"
 import type { Column } from "@/types/table"
-import "./TableActionsBar.css"
 
 interface TableActionsBarProps<T> {
   colDefs: Column<T>[]

@@ -1,10 +1,10 @@
 import "@/components/Table/components/TableHeader/TableHeader.css"
+import { renderSortIcon } from "@/components/Table/components/TableHeader/utils"
 import { CELL_MIN_WIDTH } from "@/constants"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
 import type { Column, SortState } from "@/types/table"
 import clsx from "clsx"
 import { memo, useCallback, useMemo } from "react"
-import { renderSortIcon } from "./utils"
 
 interface TableHeaderProps<T> {
   colDefs: Column<T>[]

@@ -1,5 +1,5 @@
-import { TableContainer } from "@/components/Table/components"
-import TableTooltip from "@/components/Table/components/TableTooltip"
+import TableContainer from "@/components/Table/components/TableContainer/TableContainer"
+import TableTooltip from "@/components/Table/components/TableTooltip/TableTooltip"
 import "@/components/Table/Table.css"
 import {
   DEFAULT_TABLE_HEIGHT,

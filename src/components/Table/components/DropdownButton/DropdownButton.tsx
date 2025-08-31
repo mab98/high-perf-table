@@ -1,4 +1,4 @@
-import { DropdownArrow } from "@/components/Table/Icons"
+import { DropdownArrow } from "@/components/Table/Icons/Icons"
 import "@/components/Table/components/DropdownButton/DropdownButton.css"
 import clsx from "clsx"
 import {

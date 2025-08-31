@@ -1,4 +1,4 @@
-import TableCell from "@/components/Table/components/TableCell"
+import TableCell from "@/components/Table/components/TableCell/TableCell"
 import "@/components/Table/components/TableRow/TableRow.css"
 import { CELL_MIN_WIDTH } from "@/constants"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"

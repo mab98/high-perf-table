@@ -1,14 +1,12 @@
-import {
-  BlankSlate,
-  SkeletonRow,
-  TableHeader,
-  TableRow
-} from "@/components/Table/components"
+import BlankSlate from "@/components/Table/components/BlankSlate/BlankSlate"
+import SkeletonRow from "@/components/Table/components/SkeletonRow/SkeletonRow"
+import "@/components/Table/components/TableContent/TableContent.css"
+import TableHeader from "@/components/Table/components/TableHeader/TableHeader"
+import TableRow from "@/components/Table/components/TableRow/TableRow"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
 import type { Column, SortState } from "@/types/table"
 import { useCallback, useMemo } from "react"
 import { TableVirtuoso } from "react-virtuoso"
-import "./TableContent.css"
 
 interface TableContentProps<T> {
   data: T[]

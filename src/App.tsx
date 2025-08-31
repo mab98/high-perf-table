@@ -1,6 +1,6 @@
 import "@/App.css"
-import ErrorToast from "@/components/ErrorToast"
-import Table from "@/components/Table"
+import ErrorToast from "@/components/ErrorToast/ErrorToast"
+import Table from "@/components/Table/Table"
 import { colDefs } from "@/config/colDefs"
 import { PAGE_SIZE } from "@/constants"
 import { useApiData } from "@/hooks/useApiData"
