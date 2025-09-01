@@ -1,6 +1,5 @@
 import TableContainer from "@/components/Table/components/TableContainer/TableContainer"
 import TableTooltip from "@/components/Table/components/TableTooltip/TableTooltip"
-import "@/components/Table/Table.css"
 import {
   DEFAULT_TABLE_HEIGHT,
   DEFAULT_TABLE_WIDTH,
@@ -125,7 +124,7 @@ const Table = <T extends Record<string, unknown>>({
   }, [onSort])
 
   return (
-    <div className="table-wrapper">
+    <>
       <TableContainer
         data={data}
         totalRecords={totalRecords}
@@ -160,7 +159,7 @@ const Table = <T extends Record<string, unknown>>({
           position={{ x: tooltip.x, y: tooltip.y }}
         />
       )}
-    </div>
+    </>
   )
 }
 
