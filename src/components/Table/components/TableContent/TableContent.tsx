@@ -21,6 +21,8 @@ interface TableContentProps<T> {
   numberOfRows: number
   hasAnyFilters: boolean
   onClearAll?: () => void
+  onColumnReorder?: (activeId: string, overId: string) => void
+  tableWidth?: number
 }
 
 const TableContent = <T extends Record<string, unknown>>({
@@ -35,7 +37,9 @@ const TableContent = <T extends Record<string, unknown>>({
   onEndReached,
   numberOfRows,
   hasAnyFilters,
-  onClearAll
+  onClearAll,
+  onColumnReorder,
+  tableWidth
 }: TableContentProps<T>) => {
   const renderHeader = useCallback(
     () => (
@@ -45,9 +49,19 @@ const TableContent = <T extends Record<string, unknown>>({
         onSort={onSort}
         onClearSort={onClearSort}
         columnWidths={columnWidths}
+        onColumnReorder={onColumnReorder}
+        tableWidth={tableWidth}
       />
     ),
-    [colDefs, currentSort, onSort, onClearSort, columnWidths]
+    [
+      colDefs,
+      currentSort,
+      onSort,
+      onClearSort,
+      columnWidths,
+      onColumnReorder,
+      tableWidth
+    ]
   )
 
   const renderRow = useCallback(

@@ -15,12 +15,6 @@
   --purple-700: #7c3aed;
   --purple-800: #581c87;
 
-  /* Teal Scale (Secondary) */
-  --teal-500: #14b8a6;
-
-  /* Pink Scale (Accent) */
-  --pink-500: #ec4899;
-
   /* Slate Scale (Neutral) */
   --slate-100: #f8fafc;
   --slate-200: #e2e8f0;
@@ -35,6 +29,12 @@
 
   /* Blue Scale */
   --blue-200: #bfdbfe;
+
+  /* Pink Scale */
+  --pink-500: #ec4899;
+
+  /* Teal Scale */
+  --teal-500: #14b8a6;
 
   /* Neutral Scale */
   --neutral-200: #e5e7eb;
@@ -114,6 +114,7 @@
   --transition-normal: 200ms ease;
 
   /* ===== Z-INDEX ===== */
+  --z-drag-overlay: 700;
   --z-dropdown: 1000;
   --z-tooltip: 1001;
   --z-toast: 1002;

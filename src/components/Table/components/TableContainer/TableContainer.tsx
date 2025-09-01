@@ -31,6 +31,7 @@ interface TableContainerProps<T> {
   onClearAll?: () => void
   tableWidth: number
   tableHeight: number
+  onColumnReorder: (activeId: string, overId: string) => void
 }
 
 const TableContainer = <T extends Record<string, unknown>>({
@@ -57,7 +58,8 @@ const TableContainer = <T extends Record<string, unknown>>({
   hasAnyFilters,
   onClearAll,
   tableWidth,
-  tableHeight
+  tableHeight,
+  onColumnReorder
 }: TableContainerProps<T>) => {
   return (
     <div className="table-container" style={{ width: tableWidth }}>
@@ -88,6 +90,8 @@ const TableContainer = <T extends Record<string, unknown>>({
           numberOfRows={numberOfRows}
           hasAnyFilters={hasAnyFilters}
           onClearAll={onClearAll}
+          onColumnReorder={onColumnReorder}
+          tableWidth={tableWidth}
         />
         <LoadingFooter loading={loading} hasData={data.length > 0} />
       </div>

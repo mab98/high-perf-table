@@ -39,12 +39,22 @@
   box-shadow: inset 0 -3px 0 var(--purple-500);
 }
 
+.table-header.draggable-header.dragging {
+  opacity: 0.4;
+}
+
 .header-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   gap: var(--spacing-2);
+}
+
+.header-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sort-icon {

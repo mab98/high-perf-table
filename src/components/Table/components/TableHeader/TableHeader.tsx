@@ -1,10 +1,25 @@
+import {
+  DndContext,
+  MouseSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragStartEvent,
+  type Modifier
+} from "@dnd-kit/core"
+import {
+  SortableContext,
+  horizontalListSortingStrategy
+} from "@dnd-kit/sortable"
+import { memo, useCallback, useMemo, useRef, useState } from "react"
+
+import ColumnDragOverlay from "@/components/Table/components/TableHeader/ColumnDragOverlay"
+import DraggableHeaderCell from "@/components/Table/components/TableHeader/DraggableHeaderCell"
 import "@/components/Table/components/TableHeader/TableHeader.css"
-import { renderSortIcon } from "@/components/Table/components/TableHeader/utils"
+
 import { CELL_MIN_WIDTH } from "@/constants"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
 import type { Column, SortState } from "@/types/table"
-import clsx from "clsx"
-import { memo, useCallback, useMemo } from "react"
 
 interface TableHeaderProps<T> {
   colDefs: Column<T>[]
@@ -12,6 +27,8 @@ interface TableHeaderProps<T> {
   onSort?: (params: SortState) => void
   onClearSort?: () => void
   columnWidths: ColumnWidthInfo[]
+  onColumnReorder?: (activeId: string, overId: string) => void
+  tableWidth?: number
 }
 
 const TableHeader = <T,>({
@@ -19,8 +36,44 @@ const TableHeader = <T,>({
   currentSort,
   onSort,
   onClearSort,
-  columnWidths
+  columnWidths,
+  onColumnReorder,
+  tableWidth
 }: TableHeaderProps<T>) => {
+  const [activeColumn, setActiveColumn] = useState<string | null>(null)
+  const tableHeaderRef = useRef<HTMLDivElement>(null)
+
+  /* Constrain drag horizontally within table bounds */
+  const constrainedHorizontalModifier: Modifier = ({
+    transform,
+    draggingNodeRect
+  }) => {
+    if (!draggingNodeRect || !tableWidth || !tableHeaderRef.current) {
+      return { x: transform.x, y: 0, scaleX: 1, scaleY: 1 }
+    }
+
+    const headerRect = tableHeaderRef.current.getBoundingClientRect()
+    const dragNodeWidth = draggingNodeRect.width
+
+    const leftBoundary = headerRect.left
+    const rightBoundary = headerRect.left + tableWidth
+
+    const currentLeft = draggingNodeRect.left + transform.x
+    const currentRight = currentLeft + dragNodeWidth
+
+    let constrainedX = transform.x
+    if (currentLeft < leftBoundary) {
+      constrainedX = leftBoundary - draggingNodeRect.left
+    }
+    if (currentRight > rightBoundary) {
+      constrainedX = rightBoundary - dragNodeWidth - draggingNodeRect.left
+    }
+
+    return { x: constrainedX, y: 0, scaleX: 1, scaleY: 1 }
+  }
+
+  const sensors = useSensors(useSensor(MouseSensor))
+
   const handleSort = useCallback(
     (col: Column<T>) => {
       if (!col.sortable || !onSort) return
@@ -40,6 +93,23 @@ const TableHeader = <T,>({
       }
     },
     [currentSort, onSort, onClearSort]
+  )
+
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    setActiveColumn(event.active.id as string)
+  }, [])
+
+  const handleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event
+
+      if (over && active.id !== over.id && onColumnReorder) {
+        onColumnReorder(active.id as string, over.id as string)
+      }
+
+      setActiveColumn(null)
+    },
+    [onColumnReorder]
   )
 
   const columnsMeta = useMemo(
@@ -65,28 +135,32 @@ const TableHeader = <T,>({
   )
 
   return (
-    <div className="table-header-row">
-      {columnsMeta.map(
-        ({ key, title, col, style, isActive, sortDirection }) => (
-          <div
-            key={key}
-            className={clsx("table-header", {
-              sortable: col.sortable,
-              active: isActive
-            })}
-            style={style}
-            role={col.sortable ? "button" : undefined}
-            tabIndex={col.sortable ? 0 : undefined}
-            onClick={() => handleSort(col)}
-          >
-            <div className="header-content">
-              <span className="header-title">{title}</span>
-              {renderSortIcon(col, sortDirection)}
-            </div>
-          </div>
-        )
-      )}
-    </div>
+    <DndContext
+      sensors={sensors}
+      onDragStart={handleDragStart}
+      onDragEnd={handleDragEnd}
+      autoScroll={false}
+      modifiers={[constrainedHorizontalModifier]}
+    >
+      <div className="table-header-row" ref={tableHeaderRef}>
+        <SortableContext
+          items={columnsMeta.map((c) => c.key)}
+          strategy={horizontalListSortingStrategy}
+        >
+          {columnsMeta.map(({ key, col, style, isActive, sortDirection }) => (
+            <DraggableHeaderCell
+              key={key}
+              col={col}
+              style={style}
+              isActive={isActive}
+              sortDirection={sortDirection}
+              onSort={handleSort}
+            />
+          ))}
+        </SortableContext>
+      </div>
+      <ColumnDragOverlay activeColumn={activeColumn} colDefs={colDefs} />
+    </DndContext>
   )
 }
 

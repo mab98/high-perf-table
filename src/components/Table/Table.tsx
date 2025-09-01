@@ -6,7 +6,9 @@ import {
   DEFAULT_TABLE_WIDTH,
   PAGE_SIZE
 } from "@/constants"
+import { useColumnOrder } from "@/hooks/useColumnOrder"
 import { useColumnWidths } from "@/hooks/useColumnWidths"
+import { useOptimizedTable } from "@/hooks/useOptimizedTable"
 import type { Column, SortState } from "@/types/table"
 import { useCallback, useMemo, useState } from "react"
 
@@ -58,9 +60,15 @@ const Table = <T extends Record<string, unknown>>({
   )
   const [tooltip, setTooltip] = useState<TooltipState | null>(null)
 
+  const { orderedColDefs, handleColumnReorder } = useColumnOrder(colDefs)
+  const { hasAnyFilters, createClearHandler } = useOptimizedTable({
+    searchValue,
+    filters
+  })
+
   const visibleColDefs = useMemo(
-    () => colDefs.filter((col) => visibleColumns.includes(col.key)),
-    [colDefs, visibleColumns]
+    () => orderedColDefs.filter((col) => visibleColumns.includes(col.key)),
+    [orderedColDefs, visibleColumns]
   )
 
   const columnWidths = useColumnWidths({ colDefs: visibleColDefs, tableWidth })
@@ -86,9 +94,9 @@ const Table = <T extends Record<string, unknown>>({
 
   const handleToggleAllColumns = useCallback(
     (visible: boolean) => {
-      setVisibleColumns(visible ? colDefs.map((c) => c.key) : [])
+      setVisibleColumns(visible ? orderedColDefs.map((c) => c.key) : [])
     },
-    [colDefs]
+    [orderedColDefs]
   )
 
   const handleCellHover = useCallback(
@@ -110,14 +118,7 @@ const Table = <T extends Record<string, unknown>>({
     }
   }, [data.length, totalRecords, loading, onOffsetChange, offset])
 
-  const hasActiveSearch = searchValue.trim() !== ""
-  const hasActiveFilters = Object.values(filters).some((v) => v.trim() !== "")
-  const hasAnyFilters = hasActiveSearch || hasActiveFilters
-
-  const handleClearAll = useCallback(() => {
-    if (onSearch && hasActiveSearch) onSearch("")
-    if (onClearAllFilters && hasActiveFilters) onClearAllFilters()
-  }, [onSearch, onClearAllFilters, hasActiveSearch, hasActiveFilters])
+  const handleClearAll = createClearHandler(onSearch, onClearAllFilters)
 
   const handleClearSort = useCallback(() => {
     onSort?.({ column: "", direction: "asc" })
@@ -128,7 +129,7 @@ const Table = <T extends Record<string, unknown>>({
       <TableContainer
         data={data}
         totalRecords={totalRecords}
-        colDefs={colDefs}
+        colDefs={orderedColDefs}
         enhancedColDefs={enhancedColDefs}
         visibleColumns={visibleColumns}
         loading={loading}
@@ -150,6 +151,7 @@ const Table = <T extends Record<string, unknown>>({
         onClearAll={handleClearAll}
         tableWidth={tableWidth}
         tableHeight={tableHeight}
+        onColumnReorder={handleColumnReorder}
       />
 
       {tooltip && (
