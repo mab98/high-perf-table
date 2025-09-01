@@ -42,8 +42,9 @@ const DraggableHeaderCell = <T,>({
     [transform, transition, style]
   )
 
-  const handleClick = () => {
-    if (!isDragging) onSort(col)
+  const handleClick = (event: React.MouseEvent) => {
+    // Only handle click if we're not dragging and it's a left click
+    if (!isDragging && event.button === 0) onSort(col)
   }
 
   return (

@@ -72,7 +72,9 @@ const TableHeader = <T,>({
     return { x: constrainedX, y: 0, scaleX: 1, scaleY: 1 }
   }
 
-  const sensors = useSensors(useSensor(MouseSensor))
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } })
+  )
 
   const handleSort = useCallback(
     (col: Column<T>) => {
