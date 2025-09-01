@@ -19,11 +19,6 @@
   transition: all var(--transition-normal);
 }
 
-.error-toast:hover {
-  box-shadow: var(--shadow-xl);
-  border-color: var(--border-interactive);
-}
-
 .error-toast-icon {
   font-size: var(--font-size-lg);
   line-height: 1;
