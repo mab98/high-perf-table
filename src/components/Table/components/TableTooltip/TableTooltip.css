@@ -25,7 +25,7 @@
 
   /* Simple Animation */
   opacity: 1;
-  transition: opacity 150ms ease;
+  transition: var(--transition-opacity);
 }
 
 /* Simple tooltip arrow */

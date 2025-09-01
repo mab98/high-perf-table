@@ -18,7 +18,7 @@
   width: 0;
   background: var(--purple-500);
   transition: width var(--transition-normal);
-  z-index: 1;
+  z-index: var(--z-base);
 }
 
 .table-row:hover {

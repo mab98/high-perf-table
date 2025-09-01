@@ -1,9 +1,7 @@
 .column-drag-overlay {
   border: 1px solid var(--purple-300);
   border-radius: var(--border-radius-sm);
-  box-shadow:
-    0 4px 8px rgba(0, 0, 0, 0.1),
-    0 2px 4px rgba(139, 92, 246, 0.1);
+  box-shadow: var(--shadow-drag);
   padding: var(--spacing-3) var(--spacing-4);
   z-index: var(--z-drag-overlay);
 }

@@ -12,7 +12,7 @@
   pointer-events: none;
   color: var(--search-icon-color);
   transition: all var(--transition-normal);
-  z-index: 2;
+  z-index: var(--z-table-search-icon);
   width: 1.125rem;
   height: 1.125rem;
 }
@@ -42,9 +42,7 @@
 .search-input:focus {
   border-color: var(--border-interactive);
   background: var(--bg-canvas);
-  box-shadow:
-    0 0 0 2px rgba(168, 85, 247, 0.15),
-    var(--shadow-md);
+  box-shadow: var(--shadow-focus), var(--shadow-md);
 }
 
 .search-input:focus + svg,
@@ -88,7 +86,7 @@
   padding: 0;
   margin: 0;
   flex-shrink: 0;
-  z-index: 3;
+  z-index: var(--z-table-search-clear);
 }
 
 .search-clear-button svg {

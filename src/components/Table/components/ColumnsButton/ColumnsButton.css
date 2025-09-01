@@ -74,11 +74,6 @@
   color: var(--text-primary);
 }
 
-.column-checkbox-item.toggle-all:hover {
-  background: var(--bg-hover);
-  border-color: var(--border-strong);
-}
-
 .column-checkbox {
   width: 1rem;
   height: 1rem;
@@ -92,14 +87,14 @@
 
 .column-checkbox:hover {
   border-color: var(--border-strong);
-  box-shadow: 0 0 0 2px var(--neutral-200);
+  box-shadow: var(--shadow-focus-neutral);
   transform: scale(1.05);
 }
 
 .column-checkbox:checked {
   background: var(--primary-500);
   border-color: var(--primary-500);
-  box-shadow: 0 0 0 2px var(--neutral-200);
+  box-shadow: var(--shadow-focus-neutral);
 }
 
 .column-label {

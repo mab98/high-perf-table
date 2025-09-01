@@ -53,7 +53,7 @@
 .dropdown-button:focus-visible {
   outline: none;
   border-color: var(--border-interactive);
-  box-shadow: 0 0 0 3px var(--purple-200);
+  box-shadow: var(--shadow-focus-thick);
 }
 
 .dropdown-button.active,

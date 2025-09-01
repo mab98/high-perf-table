@@ -83,6 +83,13 @@
   --shadow-lg: 0 10px 15px -3px #e5e7eb, 0 4px 6px -4px #f3f4f6;
   --shadow-xl: 0 20px 25px -5px #e5e7eb, 0 8px 10px -6px #f3f4f6;
 
+  /* Focus shadows */
+  --shadow-focus: 0 0 0 2px #e9d5ff; /* purple-200 focus ring */
+  --shadow-focus-thick: 0 0 0 3px #e9d5ff; /* purple-200 thicker focus ring */
+  --shadow-focus-neutral: 0 0 0 2px #e5e7eb; /* neutral-200 focus ring */
+  --shadow-drag:
+    0 4px 8px #0000001a, 0 2px 4px #8b5cf61a; /* black and purple with alpha */
+
   /* ===== SPACING ===== */
   --spacing-1: 0.25rem;
   --spacing-2: 0.5rem;
@@ -112,9 +119,26 @@
   /* ===== TRANSITIONS ===== */
   --transition-fast: 150ms ease;
   --transition-normal: 200ms ease;
+  --transition-opacity: opacity 150ms ease;
+
+  /* ===== ANIMATIONS ===== */
+  /* Skeleton animations */
+  --animation-skeleton-shimmer: skeleton-shimmer 1.5s ease-in-out infinite;
+  --animation-skeleton-highlight: skeleton-highlight 1.5s ease-in-out infinite;
+
+  /* Loading animations */
+  --animation-loading-shimmer: loading-shimmer 2s linear infinite;
+  --animation-spin: spin 1s linear infinite;
 
   /* ===== Z-INDEX ===== */
+  --z-base: 1;
+  --z-table-search-icon: 2;
+  --z-table-search-clear: 3;
+  --z-filter-clear: 3;
+  --z-loading-indicator: 10;
+  --z-loading-container: 100;
   --z-drag-overlay: 700;
+  --z-actions-bar: 1000;
   --z-dropdown: 1000;
   --z-tooltip: 1001;
   --z-toast: 1002;
@@ -149,4 +173,46 @@
 
   /* ===== SKELETON ===== */
   --skeleton-height: 1.5rem;
+}
+
+/* ===== KEYFRAMES ===== */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes skeleton-highlight {
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes loading-shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
