@@ -25,7 +25,11 @@ export const useTableState = (): UseTableStateReturn => {
   }, [])
 
   const handleSort = (params: SortState) => {
-    setSort(params)
+    if (!params.column) {
+      setSort(undefined)
+    } else {
+      setSort(params)
+    }
     resetOffset()
   }
 

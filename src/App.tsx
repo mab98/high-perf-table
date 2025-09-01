@@ -32,7 +32,7 @@ function App() {
   const apiParams = {
     limit: PAGE_SIZE,
     offset: offset * PAGE_SIZE,
-    sort: sort ? `${sort.column},${sort.direction}` : undefined,
+    sort: sort && sort.column ? `${sort.column},${sort.direction}` : undefined,
     search: debouncedSearch,
     filters: debouncedFilters
   }
