@@ -17,7 +17,8 @@ import {
   SortableContext,
   horizontalListSortingStrategy
 } from "@dnd-kit/sortable"
-import { memo, useCallback, useMemo, useRef, useState } from "react"
+import clsx from "clsx"
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
 
 interface TableHeaderProps<T> {
   colDefs: Column<T>[]
@@ -27,6 +28,15 @@ interface TableHeaderProps<T> {
   columnWidths: ColumnWidthInfo[]
   onColumnReorder?: (activeId: string, overId: string) => void
   tableWidth?: number
+  isResizing?: boolean
+  resizingColumn?: string | null
+  onResizeStart?: (
+    columnKey: string,
+    startX: number,
+    currentWidth: number
+  ) => void
+  onResizeMove?: (clientX: number) => void
+  onResizeEnd?: () => void
 }
 
 const TableHeader = <T,>({
@@ -36,10 +46,53 @@ const TableHeader = <T,>({
   onClearSort,
   columnWidths,
   onColumnReorder,
-  tableWidth
+  tableWidth,
+  isResizing,
+  resizingColumn,
+  onResizeStart,
+  onResizeMove,
+  onResizeEnd
 }: TableHeaderProps<T>) => {
   const [activeColumn, setActiveColumn] = useState<string | null>(null)
   const tableHeaderRef = useRef<HTMLDivElement>(null)
+
+  // Handle global mouse events for resizing
+  useEffect(() => {
+    if (!isResizing || !onResizeMove || !onResizeEnd) return
+
+    const handleMouseMove = (e: MouseEvent) => {
+      e.preventDefault()
+      onResizeMove(e.clientX)
+    }
+
+    const handleMouseUp = () => {
+      onResizeEnd()
+    }
+
+    document.addEventListener("mousemove", handleMouseMove)
+    document.addEventListener("mouseup", handleMouseUp)
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove)
+      document.removeEventListener("mouseup", handleMouseUp)
+    }
+  }, [isResizing, onResizeMove, onResizeEnd])
+
+  const handleResizeMouseDown = useCallback(
+    (e: React.MouseEvent, columnKey: string, currentWidth: number) => {
+      e.preventDefault()
+      e.stopPropagation()
+
+      if (!onResizeStart) return
+
+      // Prevent text selection during resize
+      document.body.style.userSelect = "none"
+      document.body.style.cursor = "col-resize"
+
+      onResizeStart(columnKey, e.clientX, currentWidth)
+    },
+    [onResizeStart]
+  )
 
   /* Constrain drag horizontally within table bounds */
   const constrainedHorizontalModifier: Modifier = ({
@@ -148,16 +201,61 @@ const TableHeader = <T,>({
           strategy={horizontalListSortingStrategy}
         >
           {columnsMeta.map(({ key, col, style, isActive, sortDirection }) => (
-            <DraggableHeaderCell
+            <div
               key={key}
-              col={col}
+              className={clsx("header-cell-container", {
+                resizing: isResizing && resizingColumn === col.key
+              })}
               style={style}
-              isActive={isActive}
-              sortDirection={sortDirection}
-              onSort={handleSort}
-            />
+            >
+              <DraggableHeaderCell
+                col={col}
+                style={{ width: "100%", minWidth: "inherit" }}
+                isActive={isActive}
+                sortDirection={sortDirection}
+                onSort={handleSort}
+              />
+            </div>
           ))}
         </SortableContext>
+
+        {/* Separate layer for resize handles positioned between columns */}
+        <div className="resize-handles-layer">
+          {columnsMeta.slice(0, -1).map((columnMeta, index) => {
+            // Only show resize handle if the current column is resizable
+            if (!columnMeta.col.resizable) {
+              return null
+            }
+
+            const cumulativeWidth = columnsMeta
+              .slice(0, index + 1)
+              .reduce(
+                (sum, { style }) =>
+                  sum + (parseInt(style.width as string, 10) || 100),
+                0
+              )
+
+            return (
+              <div
+                key={`resize-${index}`}
+                className={clsx("separated-resize-handle", {
+                  active:
+                    isResizing && resizingColumn === columnsMeta[index].key
+                })}
+                style={{ left: `${cumulativeWidth}px` }}
+                onMouseDown={(e) =>
+                  handleResizeMouseDown(
+                    e,
+                    columnsMeta[index].key,
+                    parseInt(columnsMeta[index].style.width as string, 10) ||
+                      100
+                  )
+                }
+                title="Resize column"
+              />
+            )
+          })}
+        </div>
       </div>
       <ColumnDragOverlay activeColumn={activeColumn} colDefs={colDefs} />
     </DndContext>

@@ -7,6 +7,7 @@ export type Column<T> = {
   editable?: boolean
   sortable?: boolean
   filterable?: boolean
+  resizable?: boolean
   renderer?: (rowData: T) => ReactNode
 }
 

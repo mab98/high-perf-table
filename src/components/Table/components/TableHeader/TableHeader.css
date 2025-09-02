@@ -7,6 +7,13 @@
   position: relative;
 }
 
+/* Header cell container for each column */
+.header-cell-container {
+  display: flex;
+  position: relative;
+  flex-shrink: 0;
+}
+
 .table-header {
   display: flex;
   align-items: center;
@@ -50,6 +57,7 @@
   justify-content: space-between;
   width: 100%;
   gap: var(--spacing-2);
+  cursor: pointer;
 }
 
 .header-title {
@@ -81,4 +89,81 @@
   box-shadow: var(--shadow-drag);
   padding: var(--spacing-3) var(--spacing-4);
   z-index: var(--z-drag-overlay);
+}
+
+/* Resize handles layer positioned on top of the header */
+.resize-handles-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
+}
+
+/* Individual separated resize handles */
+.separated-resize-handle {
+  position: absolute;
+  top: 0;
+  width: 8px;
+  height: 100%;
+  margin-left: -4px; /* Center on the column boundary */
+  cursor: col-resize;
+  background: transparent;
+  pointer-events: auto;
+  z-index: 20;
+  transition: all var(--transition-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Create a centered divider line */
+.separated-resize-handle::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: var(--border-light);
+  transition: all var(--transition-normal);
+}
+
+.separated-resize-handle:hover {
+  background: rgba(147, 51, 234, 0.1);
+}
+
+.separated-resize-handle:hover::before {
+  width: 2px;
+  background: var(--purple-400);
+}
+
+.separated-resize-handle:active::before,
+.separated-resize-handle.active::before {
+  width: 2px;
+  background: var(--purple-600);
+}
+
+.separated-resize-handle:active,
+.separated-resize-handle.active {
+  background: rgba(147, 51, 234, 0.2);
+}
+
+/* Remove old external resize handle styles */
+.external-resize-handle {
+  display: none;
+}
+
+.header-cell-container.resizing {
+  background: var(--purple-50);
+}
+
+/* Remove old resize handle and divider styles since we're moving them external */
+.resize-handle {
+  display: none;
+}
+
+.column-divider {
+  display: none;
 }

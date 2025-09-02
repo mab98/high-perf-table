@@ -25,6 +25,15 @@ interface TableContentProps<T> {
   onColumnReorder?: (activeId: string, overId: string) => void
   tableWidth?: number
   hasNoVisibleColumns?: boolean
+  isResizing?: boolean
+  resizingColumn?: string | null
+  onResizeStart?: (
+    columnKey: string,
+    startX: number,
+    currentWidth: number
+  ) => void
+  onResizeMove?: (clientX: number) => void
+  onResizeEnd?: () => void
 }
 
 const TableContent = <T extends Record<string, unknown>>({
@@ -42,7 +51,12 @@ const TableContent = <T extends Record<string, unknown>>({
   onClearAll,
   onColumnReorder,
   tableWidth,
-  hasNoVisibleColumns = false
+  hasNoVisibleColumns = false,
+  isResizing,
+  resizingColumn,
+  onResizeStart,
+  onResizeMove,
+  onResizeEnd
 }: TableContentProps<T>) => {
   const renderHeader = useCallback(
     () => (
@@ -54,6 +68,11 @@ const TableContent = <T extends Record<string, unknown>>({
         columnWidths={columnWidths}
         onColumnReorder={onColumnReorder}
         tableWidth={tableWidth}
+        isResizing={isResizing}
+        resizingColumn={resizingColumn}
+        onResizeStart={onResizeStart}
+        onResizeMove={onResizeMove}
+        onResizeEnd={onResizeEnd}
       />
     ),
     [
@@ -63,7 +82,12 @@ const TableContent = <T extends Record<string, unknown>>({
       onClearSort,
       columnWidths,
       onColumnReorder,
-      tableWidth
+      tableWidth,
+      isResizing,
+      resizingColumn,
+      onResizeStart,
+      onResizeMove,
+      onResizeEnd
     ]
   )
 

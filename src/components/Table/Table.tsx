@@ -8,6 +8,7 @@ import {
   PAGE_SIZE
 } from "@/constants"
 import { useColumnOrder } from "@/hooks/useColumnOrder"
+import { useColumnResize } from "@/hooks/useColumnResize"
 import { useColumnWidths } from "@/hooks/useColumnWidths"
 import useDebounce from "@/hooks/useDebounce"
 import { useSearchAndFilters } from "@/hooks/useSearchAndFilters"
@@ -125,6 +126,14 @@ const Table = ({
   }, [setOffset])
 
   const { orderedColDefs, handleColumnReorder } = useColumnOrder(colDefs)
+  const {
+    customWidths,
+    isResizing,
+    resizingColumn,
+    handleResizeStart,
+    handleResizeMove,
+    handleResizeEnd
+  } = useColumnResize()
   const { hasSearchOrFilters, createClearHandler } = useSearchAndFilters({
     search,
     filters
@@ -140,7 +149,8 @@ const Table = ({
   const columnWidths = useColumnWidths({
     colDefs: visibleColDefs,
     tableWidth,
-    allColDefs: orderedColDefs
+    allColDefs: orderedColDefs,
+    customWidths
   })
 
   const enhancedColDefs = useMemo(
@@ -227,6 +237,11 @@ const Table = ({
             onColumnReorder={handleColumnReorder}
             tableWidth={tableWidth}
             hasNoVisibleColumns={hasNoVisibleColumns}
+            isResizing={isResizing}
+            resizingColumn={resizingColumn}
+            onResizeStart={handleResizeStart}
+            onResizeMove={handleResizeMove}
+            onResizeEnd={handleResizeEnd}
           />
           <LoadingFooter loading={loading} hasData={fetchedRows.length > 0} />
         </div>

@@ -34,7 +34,8 @@ export const colDefs: Column<ApiData>[] = [
     width: 120,
     editable: true,
     sortable: true,
-    filterable: true
+    filterable: true,
+    resizable: true
   },
   {
     key: "lastName",
@@ -42,7 +43,8 @@ export const colDefs: Column<ApiData>[] = [
     width: 120,
     editable: true,
     sortable: true,
-    filterable: true
+    filterable: true,
+    resizable: true
   },
   {
     key: "email",
@@ -51,15 +53,23 @@ export const colDefs: Column<ApiData>[] = [
     editable: true,
     sortable: true,
     filterable: true,
+    resizable: true,
     renderer: renderEmail
   },
-  { key: "phone", title: "Phone", width: 180, editable: true },
+  {
+    key: "phone",
+    title: "Phone",
+    width: 180,
+    editable: true,
+    resizable: true
+  },
   {
     key: "dateOfBirth",
     title: "Date of Birth",
     width: 120,
     editable: true,
     sortable: true,
+    resizable: true,
     renderer: (row) => renderDate(row.dateOfBirth)
   },
   {
@@ -68,7 +78,8 @@ export const colDefs: Column<ApiData>[] = [
     width: 150,
     editable: true,
     sortable: true,
-    filterable: true
+    filterable: true,
+    resizable: true
   },
   {
     key: "city",
@@ -76,7 +87,8 @@ export const colDefs: Column<ApiData>[] = [
     width: 120,
     editable: true,
     sortable: true,
-    filterable: true
+    filterable: true,
+    resizable: true
   },
   {
     key: "country",
@@ -84,7 +96,8 @@ export const colDefs: Column<ApiData>[] = [
     width: 120,
     editable: true,
     sortable: true,
-    filterable: true
+    filterable: true,
+    resizable: true
   },
   {
     key: "joinDate",
@@ -92,6 +105,7 @@ export const colDefs: Column<ApiData>[] = [
     width: 120,
     editable: true,
     sortable: true,
+    resizable: true,
     renderer: (row) => renderDate(row.joinDate)
   },
   {
@@ -101,6 +115,7 @@ export const colDefs: Column<ApiData>[] = [
     editable: true,
     sortable: true,
     filterable: true,
+    resizable: true,
     renderer: (row) => renderSalary(row.salary)
   }
 ]
