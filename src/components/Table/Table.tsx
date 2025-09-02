@@ -68,6 +68,8 @@ const Table = <T extends Record<string, unknown>>({
     [orderedColDefs, visibleColumns]
   )
 
+  const hasNoVisibleColumns = visibleColDefs.length === 0
+
   const columnWidths = useColumnWidths({ colDefs: visibleColDefs, tableWidth })
 
   const enhancedColDefs = useMemo(
@@ -153,6 +155,7 @@ const Table = <T extends Record<string, unknown>>({
             onClearAll={handleClearAll}
             onColumnReorder={handleColumnReorder}
             tableWidth={tableWidth}
+            hasNoVisibleColumns={hasNoVisibleColumns}
           />
           <LoadingFooter loading={loading} hasData={data.length > 0} />
         </div>

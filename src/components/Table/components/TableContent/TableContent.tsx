@@ -3,6 +3,7 @@ import SkeletonRow from "@/components/Table/components/SkeletonRow/SkeletonRow"
 import "@/components/Table/components/TableContent/TableContent.css"
 import TableHeader from "@/components/Table/components/TableHeader/TableHeader"
 import TableRow from "@/components/Table/components/TableRow/TableRow"
+import { ColumnsIcon, SearchIcon } from "@/components/Table/Icons/Icons"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
 import type { Column, Sort } from "@/types/table"
 import { useCallback, useMemo } from "react"
@@ -23,6 +24,7 @@ interface TableContentProps<T> {
   onClearAll?: () => void
   onColumnReorder?: (activeId: string, overId: string) => void
   tableWidth?: number
+  hasNoVisibleColumns?: boolean
 }
 
 const TableContent = <T extends Record<string, unknown>>({
@@ -39,7 +41,8 @@ const TableContent = <T extends Record<string, unknown>>({
   hasSearchOrFilters,
   onClearAll,
   onColumnReorder,
-  tableWidth
+  tableWidth,
+  hasNoVisibleColumns = false
 }: TableContentProps<T>) => {
   const renderHeader = useCallback(
     () => (
@@ -94,15 +97,41 @@ const TableContent = <T extends Record<string, unknown>>({
       <div className="empty-state-container">
         {renderHeader()}
         <BlankSlate
-          text="No records found."
-          onClearAll={hasSearchOrFilters ? onClearAll : undefined}
-          hasSearchOrFilters={hasSearchOrFilters}
+          title="No records found."
+          icon={<SearchIcon size="48" />}
+          subtitle={
+            hasSearchOrFilters
+              ? "Try adjusting your search or filter criteria"
+              : undefined
+          }
+          actionButton={
+            hasSearchOrFilters && onClearAll
+              ? {
+                  text: "Clear All Filters",
+                  onClick: onClearAll
+                }
+              : undefined
+          }
         />
       </div>
     ),
     [hasSearchOrFilters, onClearAll, renderHeader]
   )
 
+  const noColumnsState = useMemo(
+    () => (
+      <div className="no-columns-container">
+        <BlankSlate
+          title="No columns are visible."
+          icon={<ColumnsIcon size="48" />}
+          subtitle="Use the 'Columns' button above to show columns."
+        />
+      </div>
+    ),
+    []
+  )
+
+  if (hasNoVisibleColumns) return noColumnsState
   if (loading && data.length === 0) return skeletonContent
   if (data.length === 0) return emptyState
 

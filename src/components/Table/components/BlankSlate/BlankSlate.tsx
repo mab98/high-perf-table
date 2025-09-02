@@ -1,35 +1,34 @@
-import { SearchIcon } from "@/components/Table/Icons/Icons"
 import "@/components/Table/components/BlankSlate/BlankSlate.css"
+import type { ReactNode } from "react"
 
 interface BlankSlateProps {
-  text: string
-  onClearAll?: () => void
-  hasSearchOrFilters?: boolean
+  title: string
+  icon: ReactNode
+  subtitle?: string
+  actionButton?: {
+    text: string
+    onClick: () => void
+  }
 }
 
 const BlankSlate = ({
-  text,
-  onClearAll,
-  hasSearchOrFilters
+  title,
+  icon,
+  subtitle,
+  actionButton
 }: BlankSlateProps) => (
   <div className="blank-slate">
-    <div className="blank-slate-icon">
-      <SearchIcon size="48" />
-    </div>
+    <div className="blank-slate-icon">{icon}</div>
     <div className="blank-slate-content">
-      <h3 className="blank-slate-text">{text}</h3>
-      {hasSearchOrFilters && (
-        <p className="blank-slate-subtitle">
-          Try adjusting your search or filter criteria
-        </p>
-      )}
-      {onClearAll && hasSearchOrFilters && (
+      <h3 className="blank-slate-title">{title}</h3>
+      {subtitle && <p className="blank-slate-subtitle">{subtitle}</p>}
+      {actionButton && (
         <button
           type="button"
-          className="blank-slate-clear-button"
-          onClick={onClearAll}
+          className="blank-slate-action-button"
+          onClick={actionButton.onClick}
         >
-          Clear All Filters
+          {actionButton.text}
         </button>
       )}
     </div>

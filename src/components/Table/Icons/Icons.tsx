@@ -57,3 +57,23 @@ export const SearchIcon = ({ size = "64" }) => {
     </svg>
   )
 }
+
+export const ColumnsIcon = ({ size = "64" }) => {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="6" width="18" height="12" rx="2" />
+      <path d="M9 6v12" />
+      <path d="M15 6v12" />
+    </svg>
+  )
+}
