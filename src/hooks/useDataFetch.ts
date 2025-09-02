@@ -1,7 +1,7 @@
 import { PAGE_SIZE } from "@/constants"
-import { buildQueryString, defaultFetcher } from "@/hooks/utils"
 import type { ApiResponse } from "@/types/api"
 import type { TableQueryParams } from "@/types/table"
+import { buildQueryString, defaultFetcher } from "@/utils/apiUtils"
 import useSWR from "swr"
 
 interface UseDataFetchParams<T> extends TableQueryParams {

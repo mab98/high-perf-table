@@ -73,3 +73,11 @@
   opacity: 1;
   color: var(--purple-600);
 }
+
+.column-drag-overlay {
+  border: 1px solid var(--purple-300);
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-drag);
+  padding: var(--spacing-3) var(--spacing-4);
+  z-index: var(--z-drag-overlay);
+}

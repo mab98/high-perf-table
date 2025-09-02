@@ -1,4 +1,4 @@
-import "@/components/Table/components/TableHeader/ColumnDragOverlay.css"
+import "@/components/Table/components/TableHeader/TableHeader.css"
 import type { Column } from "@/types/table"
 import { DragOverlay } from "@dnd-kit/core"
 import { memo } from "react"

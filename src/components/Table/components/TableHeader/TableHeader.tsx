@@ -1,3 +1,9 @@
+import ColumnDragOverlay from "@/components/Table/components/TableHeader/ColumnDragOverlay"
+import DraggableHeaderCell from "@/components/Table/components/TableHeader/DraggableHeaderCell"
+import "@/components/Table/components/TableHeader/TableHeader.css"
+import { CELL_MIN_WIDTH } from "@/constants"
+import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
+import type { Column, SortState } from "@/types/table"
 import {
   DndContext,
   MouseSensor,
@@ -12,14 +18,6 @@ import {
   horizontalListSortingStrategy
 } from "@dnd-kit/sortable"
 import { memo, useCallback, useMemo, useRef, useState } from "react"
-
-import ColumnDragOverlay from "@/components/Table/components/TableHeader/ColumnDragOverlay"
-import DraggableHeaderCell from "@/components/Table/components/TableHeader/DraggableHeaderCell"
-import "@/components/Table/components/TableHeader/TableHeader.css"
-
-import { CELL_MIN_WIDTH } from "@/constants"
-import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
-import type { Column, SortState } from "@/types/table"
 
 interface TableHeaderProps<T> {
   colDefs: Column<T>[]

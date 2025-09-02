@@ -23,7 +23,8 @@
       "@/hooks/*": ["hooks/*"],
       "@/types/*": ["types/*"],
       "@/config/*": ["config/*"],
-      "@/styles/*": ["styles/*"]
+      "@/styles/*": ["styles/*"],
+      "@/utils/*": ["utils/*"]
     },
 
     /* Linting */

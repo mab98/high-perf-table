@@ -1,6 +1,6 @@
 import "@/components/Table/components/TableCell/TableCell.css"
 import clsx from "clsx"
-import React, { memo, useCallback } from "react"
+import React, { memo, useCallback, useEffect } from "react"
 
 interface TableCellProps {
   content: React.ReactNode
@@ -9,8 +9,6 @@ interface TableCellProps {
   className?: string
   onHover?: (text: string, element: HTMLElement | null) => void
 }
-
-import { useEffect } from "react"
 
 const TableCell: React.FC<TableCellProps> = ({
   content,

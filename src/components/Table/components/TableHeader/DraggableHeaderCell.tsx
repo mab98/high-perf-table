@@ -1,10 +1,25 @@
 import "@/components/Table/components/TableHeader/TableHeader.css"
-import { renderSortIcon } from "@/components/Table/components/TableHeader/utils"
 import type { Column } from "@/types/table"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import clsx from "clsx"
 import { memo, useMemo } from "react"
+
+const renderSortIcon = <T,>(col: Column<T>, sortDirection: string | null) => {
+  if (!col.sortable) return null
+
+  const getSortIcon = (direction: string | null): string => {
+    if (direction === "asc") return "▲"
+    if (direction === "desc") return "▼"
+    return "⇅"
+  }
+
+  return (
+    <span className={clsx("sort-icon", sortDirection)}>
+      {getSortIcon(sortDirection)}
+    </span>
+  )
+}
 
 interface DraggableHeaderCellProps<T> {
   col: Column<T>
