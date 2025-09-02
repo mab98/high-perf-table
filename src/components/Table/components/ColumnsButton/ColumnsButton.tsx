@@ -1,20 +1,18 @@
 import "@/components/Table/components/ColumnsButton/ColumnsButton.css"
 import DropdownButton from "@/components/Table/components/DropdownButton/DropdownButton"
-import type { Column } from "@/types/table"
+import type { Column, ColumnVisibility } from "@/types/table"
 import { memo, useCallback, useMemo } from "react"
 
 interface ColumnsButtonProps<T> {
   colDefs: Column<T>[]
   visibleColumns: string[]
-  onColumnVisibilityChange: (params: { key: string; visible: boolean }) => void
-  onToggleAllColumns: (visible: boolean) => void
+  onColumnVisibility: (params: ColumnVisibility) => void
 }
 
 const ColumnsButton = <T extends Record<string, unknown>>({
   colDefs,
   visibleColumns,
-  onColumnVisibilityChange,
-  onToggleAllColumns
+  onColumnVisibility
 }: ColumnsButtonProps<T>) => {
   const totalCount = colDefs.length
   const visibleCount = visibleColumns.length
@@ -29,14 +27,13 @@ const ColumnsButton = <T extends Record<string, unknown>>({
   )
 
   const handleToggleAll = useCallback(
-    () => onToggleAllColumns(!isAllVisible),
-    [isAllVisible, onToggleAllColumns]
+    () => onColumnVisibility({ visible: !isAllVisible, all: true }),
+    [isAllVisible, onColumnVisibility]
   )
 
   const handleColumnChange = useCallback(
-    (key: string, visible: boolean) =>
-      onColumnVisibilityChange({ key, visible }),
-    [onColumnVisibilityChange]
+    (key: string, visible: boolean) => onColumnVisibility({ key, visible }),
+    [onColumnVisibility]
   )
 
   const setCheckboxRef = useCallback(

@@ -14,8 +14,8 @@ function App() {
   const [totalRecords, setTotalRecords] = useState(0)
 
   const {
-    searchValue,
-    setSearchValue,
+    search,
+    setSearch,
     filters,
     sort,
     offset,
@@ -26,7 +26,7 @@ function App() {
     handleClearAllFilters
   } = useTableState()
 
-  const debouncedSearch = useDebounce(searchValue)
+  const debouncedSearch = useDebounce(search)
   const debouncedFilters = useDebounce(filters)
 
   const apiParams = {
@@ -79,8 +79,8 @@ function App() {
         totalRecords={totalRecords}
         colDefs={colDefs}
         loading={isLoading}
-        searchValue={searchValue}
-        onSearch={setSearchValue}
+        search={search}
+        setSearch={setSearch}
         filters={filters}
         onFilterChange={handleFilterChange}
         onClearAllFilters={handleClearAllFilters}

@@ -4,7 +4,7 @@ import "@/components/Table/components/TableContent/TableContent.css"
 import TableHeader from "@/components/Table/components/TableHeader/TableHeader"
 import TableRow from "@/components/Table/components/TableRow/TableRow"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
-import type { Column, SortState } from "@/types/table"
+import type { Column, Sort } from "@/types/table"
 import { useCallback, useMemo } from "react"
 import { TableVirtuoso } from "react-virtuoso"
 
@@ -12,14 +12,14 @@ interface TableContentProps<T> {
   data: T[]
   colDefs: Column<T>[]
   loading: boolean
-  sort?: SortState | null
-  onSort?: (params: SortState) => void
+  sort?: Sort | null
+  onSort?: (params: Sort) => void
   onClearSort: () => void
   columnWidths: ColumnWidthInfo[]
   onCellHover: (text: string, element: HTMLElement | null) => void
   onEndReached: () => void
   numberOfRows: number
-  hasAnyFilters: boolean
+  hasSearchOrFilters: boolean
   onClearAll?: () => void
   onColumnReorder?: (activeId: string, overId: string) => void
   tableWidth?: number
@@ -36,7 +36,7 @@ const TableContent = <T extends Record<string, unknown>>({
   onCellHover,
   onEndReached,
   numberOfRows,
-  hasAnyFilters,
+  hasSearchOrFilters,
   onClearAll,
   onColumnReorder,
   tableWidth
@@ -95,12 +95,12 @@ const TableContent = <T extends Record<string, unknown>>({
         {renderHeader()}
         <BlankSlate
           text="No records found."
-          onClearAll={hasAnyFilters ? onClearAll : undefined}
-          hasActiveFilters={hasAnyFilters}
+          onClearAll={hasSearchOrFilters ? onClearAll : undefined}
+          hasSearchOrFilters={hasSearchOrFilters}
         />
       </div>
     ),
-    [hasAnyFilters, onClearAll, renderHeader]
+    [hasSearchOrFilters, onClearAll, renderHeader]
   )
 
   if (loading && data.length === 0) return skeletonContent

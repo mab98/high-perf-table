@@ -1,30 +1,30 @@
-import type { SortState } from "@/types/table"
+import type { Sort } from "@/types/table"
 import { useCallback, useState } from "react"
 
-interface UseTableStateReturn {
-  searchValue: string
-  setSearchValue: (value: string) => void
+interface UseTableState {
+  search: string
+  setSearch: (value: string) => void
   filters: Record<string, string>
-  sort?: SortState
+  sort?: Sort
   offset: number
-  handleSort: (params: SortState) => void
+  handleSort: (params: Sort) => void
   handleFilterChange: (params: { key: string; value: string }) => void
   handleClearAllFilters: () => void
   setOffset: (offset: number) => void
   resetOffset: () => void
 }
 
-export const useTableState = (): UseTableStateReturn => {
-  const [searchValue, setSearchValue] = useState("")
+export const useTableState = (): UseTableState => {
+  const [search, setSearch] = useState("")
   const [filters, setFilters] = useState<Record<string, string>>({})
-  const [sort, setSort] = useState<SortState>()
+  const [sort, setSort] = useState<Sort>()
   const [offset, setOffset] = useState(0)
 
   const resetOffset = useCallback(() => {
     setOffset(0)
   }, [])
 
-  const handleSort = (params: SortState) => {
+  const handleSort = (params: Sort) => {
     if (!params.column) {
       setSort(undefined)
     } else {
@@ -45,8 +45,8 @@ export const useTableState = (): UseTableStateReturn => {
   }
 
   return {
-    searchValue,
-    setSearchValue,
+    search,
+    setSearch,
     filters,
     sort,
     offset,

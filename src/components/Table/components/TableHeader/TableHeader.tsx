@@ -3,7 +3,7 @@ import DraggableHeaderCell from "@/components/Table/components/TableHeader/Dragg
 import "@/components/Table/components/TableHeader/TableHeader.css"
 import { CELL_MIN_WIDTH } from "@/constants"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
-import type { Column, SortState } from "@/types/table"
+import type { Column, Sort } from "@/types/table"
 import {
   DndContext,
   MouseSensor,
@@ -21,8 +21,8 @@ import { memo, useCallback, useMemo, useRef, useState } from "react"
 
 interface TableHeaderProps<T> {
   colDefs: Column<T>[]
-  sort?: SortState | null
-  onSort?: (params: SortState) => void
+  sort?: Sort | null
+  onSort?: (params: Sort) => void
   onClearSort?: () => void
   columnWidths: ColumnWidthInfo[]
   onColumnReorder?: (activeId: string, overId: string) => void

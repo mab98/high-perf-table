@@ -10,12 +10,14 @@ export type Column<T> = {
   renderer?: (rowData: T) => ReactNode
 }
 
-export type SortDirection = "asc" | "desc"
-
-export interface SortState {
+export type Sort = {
   column: string
-  direction: SortDirection
+  direction: "asc" | "desc"
 }
+
+export type ColumnVisibility = {
+  visible: boolean
+} & ({ key: string } | { all: boolean })
 
 export type TableQueryParams = {
   limit?: number
@@ -23,4 +25,9 @@ export type TableQueryParams = {
   sort?: string
   search?: string
   filters?: Record<string, string>
+}
+
+export type Tooltip = {
+  text: string
+  position: { x: number; y: number }
 }

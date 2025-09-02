@@ -4,13 +4,13 @@ import "@/components/Table/components/BlankSlate/BlankSlate.css"
 interface BlankSlateProps {
   text: string
   onClearAll?: () => void
-  hasActiveFilters?: boolean
+  hasSearchOrFilters?: boolean
 }
 
 const BlankSlate = ({
   text,
   onClearAll,
-  hasActiveFilters
+  hasSearchOrFilters
 }: BlankSlateProps) => (
   <div className="blank-slate">
     <div className="blank-slate-icon">
@@ -18,12 +18,12 @@ const BlankSlate = ({
     </div>
     <div className="blank-slate-content">
       <h3 className="blank-slate-text">{text}</h3>
-      {hasActiveFilters && (
+      {hasSearchOrFilters && (
         <p className="blank-slate-subtitle">
           Try adjusting your search or filter criteria
         </p>
       )}
-      {onClearAll && hasActiveFilters && (
+      {onClearAll && hasSearchOrFilters && (
         <button
           type="button"
           className="blank-slate-clear-button"

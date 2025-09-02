@@ -1,5 +1,4 @@
 import TableContainer from "@/components/Table/components/TableContainer/TableContainer"
-import TableTooltip from "@/components/Table/components/TableTooltip/TableTooltip"
 import {
   DEFAULT_TABLE_HEIGHT,
   DEFAULT_TABLE_WIDTH,
@@ -7,19 +6,20 @@ import {
 } from "@/constants"
 import { useColumnOrder } from "@/hooks/useColumnOrder"
 import { useColumnWidths } from "@/hooks/useColumnWidths"
-import { useOptimizedTable } from "@/hooks/useOptimizedTable"
-import type { Column, SortState } from "@/types/table"
+import { useSearchAndFilters } from "@/hooks/useSearchAndFilters"
+import type { Column, ColumnVisibility, Sort, Tooltip } from "@/types/table"
 import { useCallback, useMemo, useState } from "react"
+import TableTooltip from "./components/TableTooltip/TableTooltip"
 
 interface TableProps<T> {
   data: T[]
   totalRecords: number
   colDefs: Column<T>[]
   loading?: boolean
-  sort?: SortState | null
-  onSort?: (params: SortState) => void
-  searchValue?: string
-  onSearch?: (searchTerm: string) => void
+  sort?: Sort | null
+  onSort?: (params: Sort) => void
+  search?: string
+  setSearch?: (term: string) => void
   filters?: Record<string, string>
   onFilterChange?: (params: { key: string; value: string }) => void
   onClearAllFilters?: () => void
@@ -30,12 +30,6 @@ interface TableProps<T> {
   numberOfRows?: number
 }
 
-interface TooltipState {
-  text: string
-  x: number
-  y: number
-}
-
 const Table = <T extends Record<string, unknown>>({
   data,
   totalRecords,
@@ -43,8 +37,8 @@ const Table = <T extends Record<string, unknown>>({
   loading = false,
   sort,
   onSort,
-  searchValue = "",
-  onSearch,
+  search = "",
+  setSearch,
   filters = {},
   onFilterChange,
   onClearAllFilters,
@@ -57,11 +51,11 @@ const Table = <T extends Record<string, unknown>>({
   const [visibleColumns, setVisibleColumns] = useState<string[]>(() =>
     colDefs.map((col) => col.key)
   )
-  const [tooltip, setTooltip] = useState<TooltipState | null>(null)
+  const [tooltip, setTooltip] = useState<Tooltip | null>(null)
 
   const { orderedColDefs, handleColumnReorder } = useColumnOrder(colDefs)
-  const { hasAnyFilters, createClearHandler } = useOptimizedTable({
-    searchValue,
+  const { hasSearchOrFilters, createClearHandler } = useSearchAndFilters({
+    search,
     filters
   })
 
@@ -81,19 +75,18 @@ const Table = <T extends Record<string, unknown>>({
     [visibleColDefs, columnWidths]
   )
 
-  const handleColumnVisibilityChange = (params: {
-    key: string
-    visible: boolean
-  }) => {
-    const { key, visible } = params
-    setVisibleColumns((prev) =>
-      visible ? [...prev, key] : prev.filter((id) => id !== key)
-    )
-  }
+  const handleColumnVisibility = useCallback(
+    (params: ColumnVisibility) => {
+      const { visible } = params
 
-  const handleToggleAllColumns = useCallback(
-    (visible: boolean) => {
-      setVisibleColumns(visible ? orderedColDefs.map((c) => c.key) : [])
+      if ("all" in params) {
+        setVisibleColumns(visible ? orderedColDefs.map((c) => c.key) : [])
+      } else if ("key" in params) {
+        const { key } = params
+        setVisibleColumns((prev) =>
+          visible ? [...prev, key] : prev.filter((id) => id !== key)
+        )
+      }
     },
     [orderedColDefs]
   )
@@ -104,8 +97,10 @@ const Table = <T extends Record<string, unknown>>({
       const rect = element.getBoundingClientRect()
       setTooltip({
         text,
-        x: rect.left + rect.width / 2 + window.scrollX,
-        y: rect.top - 5 + window.scrollY
+        position: {
+          x: rect.left + rect.width / 2 + window.scrollX,
+          y: rect.top - 5 + window.scrollY
+        }
       })
     },
     []
@@ -117,7 +112,7 @@ const Table = <T extends Record<string, unknown>>({
     }
   }, [data.length, totalRecords, loading, onOffsetChange, offset])
 
-  const handleClearAll = createClearHandler(onSearch, onClearAllFilters)
+  const handleClearAll = createClearHandler(setSearch, onClearAllFilters)
 
   const handleClearSort = useCallback(() => {
     onSort?.({ column: "", direction: "asc" })
@@ -135,30 +130,24 @@ const Table = <T extends Record<string, unknown>>({
         sort={sort}
         onSort={onSort}
         onClearSort={handleClearSort}
-        searchValue={searchValue}
-        onSearch={onSearch}
+        search={search}
+        setSearch={setSearch}
         filters={filters}
         onFilterChange={onFilterChange}
         onClearAllFilters={onClearAllFilters}
-        onColumnVisibilityChange={handleColumnVisibilityChange}
-        onToggleAllColumns={handleToggleAllColumns}
+        onColumnVisibility={handleColumnVisibility}
         columnWidths={columnWidths}
         onCellHover={handleCellHover}
         onEndReached={handleEndReached}
         numberOfRows={numberOfRows}
-        hasAnyFilters={hasAnyFilters}
+        hasSearchOrFilters={hasSearchOrFilters}
         onClearAll={handleClearAll}
         tableWidth={tableWidth}
         tableHeight={tableHeight}
         onColumnReorder={handleColumnReorder}
       />
 
-      {tooltip && (
-        <TableTooltip
-          text={tooltip.text}
-          position={{ x: tooltip.x, y: tooltip.y }}
-        />
-      )}
+      {tooltip && <TableTooltip {...tooltip} />}
     </>
   )
 }

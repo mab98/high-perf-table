@@ -4,7 +4,7 @@ import "@/components/Table/components/TableContainer/TableContainer.css"
 import TableContent from "@/components/Table/components/TableContent/TableContent"
 import TableStatus from "@/components/Table/components/TableStatus/TableStatus"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
-import type { Column, SortState } from "@/types/table"
+import type { Column, ColumnVisibility, Sort } from "@/types/table"
 
 interface TableContainerProps<T> {
   data: T[]
@@ -13,21 +13,20 @@ interface TableContainerProps<T> {
   enhancedColDefs: Column<T>[]
   visibleColumns: string[]
   loading: boolean
-  sort?: SortState | null
-  onSort?: (params: SortState) => void
+  sort?: Sort | null
+  onSort?: (params: Sort) => void
   onClearSort: () => void
-  searchValue?: string
-  onSearch?: (searchTerm: string) => void
+  search?: string
+  setSearch?: (term: string) => void
   filters?: Record<string, string>
   onFilterChange?: (params: { key: string; value: string }) => void
   onClearAllFilters?: () => void
-  onColumnVisibilityChange: (params: { key: string; visible: boolean }) => void
-  onToggleAllColumns: (visible: boolean) => void
+  onColumnVisibility: (params: ColumnVisibility) => void
   columnWidths: ColumnWidthInfo[]
   onCellHover: (text: string, element: HTMLElement | null) => void
   onEndReached: () => void
   numberOfRows: number
-  hasAnyFilters: boolean
+  hasSearchOrFilters: boolean
   onClearAll?: () => void
   tableWidth: number
   tableHeight: number
@@ -44,18 +43,17 @@ const TableContainer = <T extends Record<string, unknown>>({
   sort,
   onSort,
   onClearSort,
-  searchValue,
-  onSearch,
+  search,
+  setSearch,
   filters,
   onFilterChange,
   onClearAllFilters,
-  onColumnVisibilityChange,
-  onToggleAllColumns,
+  onColumnVisibility,
   columnWidths,
   onCellHover,
   onEndReached,
   numberOfRows,
-  hasAnyFilters,
+  hasSearchOrFilters,
   onClearAll,
   tableWidth,
   tableHeight,
@@ -66,13 +64,12 @@ const TableContainer = <T extends Record<string, unknown>>({
       <TableActionsBar
         colDefs={colDefs}
         visibleColumns={visibleColumns}
-        searchValue={searchValue}
-        onSearch={onSearch}
+        search={search}
+        setSearch={setSearch}
         filters={filters}
         onFilterChange={onFilterChange}
         onClearAllFilters={onClearAllFilters}
-        onColumnVisibilityChange={onColumnVisibilityChange}
-        onToggleAllColumns={onToggleAllColumns}
+        onColumnVisibility={onColumnVisibility}
         loading={loading}
       />
 
@@ -88,7 +85,7 @@ const TableContainer = <T extends Record<string, unknown>>({
           onCellHover={onCellHover}
           onEndReached={onEndReached}
           numberOfRows={numberOfRows}
-          hasAnyFilters={hasAnyFilters}
+          hasSearchOrFilters={hasSearchOrFilters}
           onClearAll={onClearAll}
           onColumnReorder={onColumnReorder}
           tableWidth={tableWidth}

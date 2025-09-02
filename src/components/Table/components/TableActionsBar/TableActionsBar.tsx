@@ -2,42 +2,36 @@ import ColumnsButton from "@/components/Table/components/ColumnsButton/ColumnsBu
 import FiltersButton from "@/components/Table/components/FiltersButton/FiltersButton"
 import "@/components/Table/components/TableActionsBar/TableActionsBar.css"
 import TableSearch from "@/components/Table/components/TableSearch/TableSearch"
-import type { Column } from "@/types/table"
+import type { Column, ColumnVisibility } from "@/types/table"
 
 interface TableActionsBarProps<T> {
   colDefs: Column<T>[]
   visibleColumns: string[]
-  searchValue?: string
-  onSearch?: (searchTerm: string) => void
+  search?: string
+  setSearch?: (term: string) => void
   filters?: Record<string, string>
   onFilterChange?: (params: { key: string; value: string }) => void
   onClearAllFilters?: () => void
-  onColumnVisibilityChange: (params: { key: string; visible: boolean }) => void
-  onToggleAllColumns: (visible: boolean) => void
+  onColumnVisibility: (params: ColumnVisibility) => void
   loading?: boolean
 }
 
 const TableActionsBar = <T extends Record<string, unknown>>({
   colDefs,
   visibleColumns,
-  searchValue = "",
-  onSearch,
+  search = "",
+  setSearch,
   filters = {},
   onFilterChange,
   onClearAllFilters,
-  onColumnVisibilityChange,
-  onToggleAllColumns,
+  onColumnVisibility,
   loading = false
 }: TableActionsBarProps<T>) => {
   return (
     <div className="table-actions-bar">
       <div className="table-actions-left">
-        {onSearch && (
-          <TableSearch
-            value={searchValue}
-            onChange={onSearch}
-            disabled={loading}
-          />
+        {setSearch && (
+          <TableSearch value={search} onChange={setSearch} disabled={loading} />
         )}
       </div>
       <div className="table-actions-right">
@@ -52,8 +46,7 @@ const TableActionsBar = <T extends Record<string, unknown>>({
         <ColumnsButton
           colDefs={colDefs}
           visibleColumns={visibleColumns}
-          onColumnVisibilityChange={onColumnVisibilityChange}
-          onToggleAllColumns={onToggleAllColumns}
+          onColumnVisibility={onColumnVisibility}
         />
       </div>
     </div>

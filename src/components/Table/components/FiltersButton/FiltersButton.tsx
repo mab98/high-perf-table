@@ -26,11 +26,11 @@ const FiltersButton = <T extends Record<string, unknown>>({
     () => Object.values(filters).filter((v) => v.trim() !== "").length,
     [filters]
   )
-  const hasActiveFilters = activeFilterCount > 0
+  const hasFilters = activeFilterCount > 0
 
   const filterLabel = useMemo(
-    () => (hasActiveFilters ? `Filters (${activeFilterCount})` : "Filters"),
-    [hasActiveFilters, activeFilterCount]
+    () => (hasFilters ? `Filters (${activeFilterCount})` : "Filters"),
+    [hasFilters, activeFilterCount]
   )
 
   const handleInputChange = useCallback(
@@ -41,14 +41,14 @@ const FiltersButton = <T extends Record<string, unknown>>({
   return (
     <DropdownButton
       label={filterLabel}
-      isActive={hasActiveFilters}
-      ariaLabel={`Filters${hasActiveFilters ? ` (${activeFilterCount} active)` : ""}`}
+      isActive={hasFilters}
+      ariaLabel={`Filters${hasFilters ? ` (${activeFilterCount} active)` : ""}`}
       className="filters-dropdown"
     >
       <header className="filters-menu-header">
         <div className="filters-header-content">
           <h3 className="filters-title">Column Filters</h3>
-          {hasActiveFilters && (
+          {hasFilters && (
             <button
               type="button"
               className="clear-all-button"
