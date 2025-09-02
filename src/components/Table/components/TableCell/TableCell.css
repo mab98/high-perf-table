@@ -11,10 +11,51 @@
   line-height: var(--line-height-tight);
   background: transparent;
   transition: all var(--transition-fast);
+  position: relative;
 }
 
 .table-cell:hover {
   background: var(--purple-50);
+}
+
+.table-cell--editable {
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.table-cell--editable .cell-value {
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: background-color var(--transition-fast);
+}
+
+.table-cell--editable:hover {
+  background: var(--purple-100);
+  border-bottom-color: var(--purple-200);
+}
+
+.table-cell--editable:hover .cell-value {
+  background: var(--purple-200);
+}
+
+.table-cell--editing {
+  background: white !important;
+  border-bottom: 2px solid var(--purple-500) !important;
+  box-shadow: 0 0 0 2px var(--purple-100);
+  z-index: 10;
+}
+
+.table-cell__input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: inherit;
+  font-family: inherit;
+  color: inherit;
+  line-height: inherit;
+  padding: 0;
+  margin: 0;
 }
 
 .cell-value {

@@ -12,20 +12,49 @@ interface TableRowProps<T> {
   index: number // Not used here, but required by TableVirtuoso API
   columnWidths: ColumnWidthInfo[]
   onCellHover: (text: string, element: HTMLElement | null) => void
+  // Inline editing props
+  isEditing?: (rowId: string | number, columnKey: string) => boolean
+  editValue?: string
+  onStartEdit?: (
+    rowId: string | number,
+    columnKey: string,
+    currentValue: string
+  ) => void
+  onCancelEdit?: () => void
+  onSaveEdit?: () => void
+  onEditValueChange?: (value: string) => void
+  getRowId?: (row: T) => string | number
 }
 
 const TableRow = <T extends Record<string, unknown>>({
   row,
   colDefs,
+  index,
   columnWidths,
-  onCellHover
+  onCellHover,
+  isEditing,
+  editValue,
+  onStartEdit,
+  onCancelEdit,
+  onSaveEdit,
+  onEditValueChange,
+  getRowId
 }: TableRowProps<T>) => {
+  const rowId = getRowId
+    ? getRowId(row)
+    : (row.id as string | number) || `row-${index}`
+
   const cells = useMemo(
     () =>
       colDefs.map((col, colIndex) => {
         const content = col.renderer ? col.renderer(row) : (row[col.key] ?? "")
         const tooltipText = typeof content === "string" ? content : ""
         const widthInfo = columnWidths[colIndex]
+        const isCurrentlyEditing = isEditing?.(rowId, col.key) || false
+        const currentValue =
+          typeof row[col.key] === "string"
+            ? (row[col.key] as string)
+            : String(row[col.key] || "")
 
         const cellStyle = {
           width: `${widthInfo?.width || CELL_MIN_WIDTH}px`,
@@ -39,10 +68,33 @@ const TableRow = <T extends Record<string, unknown>>({
             tooltipText={tooltipText}
             style={cellStyle}
             onHover={onCellHover}
+            isEditable={col.editable}
+            isEditing={isCurrentlyEditing}
+            editValue={
+              isCurrentlyEditing && editValue !== undefined
+                ? editValue
+                : currentValue
+            }
+            onStartEdit={() => onStartEdit?.(rowId, col.key, currentValue)}
+            onCancelEdit={onCancelEdit}
+            onSaveEdit={onSaveEdit}
+            onEditValueChange={onEditValueChange}
           />
         )
       }),
-    [colDefs, columnWidths, row, onCellHover]
+    [
+      colDefs,
+      columnWidths,
+      row,
+      onCellHover,
+      rowId,
+      isEditing,
+      editValue,
+      onStartEdit,
+      onCancelEdit,
+      onSaveEdit,
+      onEditValueChange
+    ]
   )
 
   return <div className="table-row">{cells}</div>

@@ -34,6 +34,18 @@ interface TableContentProps<T> {
   ) => void
   onResizeMove?: (clientX: number) => void
   onResizeEnd?: () => void
+  // Inline editing props
+  isEditing?: (rowId: string | number, columnKey: string) => boolean
+  editValue?: string
+  onStartEdit?: (
+    rowId: string | number,
+    columnKey: string,
+    currentValue: string
+  ) => void
+  onCancelEdit?: () => void
+  onSaveEdit?: () => void
+  onEditValueChange?: (value: string) => void
+  getRowId?: (row: T) => string | number
 }
 
 const TableContent = <T extends Record<string, unknown>>({
@@ -56,7 +68,15 @@ const TableContent = <T extends Record<string, unknown>>({
   resizingColumn,
   onResizeStart,
   onResizeMove,
-  onResizeEnd
+  onResizeEnd,
+  // Inline editing props
+  isEditing,
+  editValue,
+  onStartEdit,
+  onCancelEdit,
+  onSaveEdit,
+  onEditValueChange,
+  getRowId
 }: TableContentProps<T>) => {
   const renderHeader = useCallback(
     () => (
@@ -99,9 +119,27 @@ const TableContent = <T extends Record<string, unknown>>({
         index={index}
         columnWidths={columnWidths}
         onCellHover={onCellHover}
+        isEditing={isEditing}
+        editValue={editValue}
+        onStartEdit={onStartEdit}
+        onCancelEdit={onCancelEdit}
+        onSaveEdit={onSaveEdit}
+        onEditValueChange={onEditValueChange}
+        getRowId={getRowId}
       />
     ),
-    [colDefs, columnWidths, onCellHover]
+    [
+      colDefs,
+      columnWidths,
+      onCellHover,
+      isEditing,
+      editValue,
+      onStartEdit,
+      onCancelEdit,
+      onSaveEdit,
+      onEditValueChange,
+      getRowId
+    ]
   )
 
   const skeletonContent = useMemo(

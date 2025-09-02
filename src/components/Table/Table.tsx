@@ -11,6 +11,7 @@ import { useColumnOrder } from "@/hooks/useColumnOrder"
 import { useColumnResize } from "@/hooks/useColumnResize"
 import { useColumnWidths } from "@/hooks/useColumnWidths"
 import useDebounce from "@/hooks/useDebounce"
+import { useInlineEdit } from "@/hooks/useInlineEdit"
 import { useSearchAndFilters } from "@/hooks/useSearchAndFilters"
 import type { ApiData, ApiResponse } from "@/types/api"
 import type { Column, ColumnVisibility, Sort, Tooltip } from "@/types/table"
@@ -134,6 +135,62 @@ const Table = ({
     handleResizeMove,
     handleResizeEnd
   } = useColumnResize()
+
+  // Inline editing functionality - memoize callbacks for stability
+  const handleSave = useCallback(
+    async (rowId: string | number, columnKey: string, value: string) => {
+      console.log("onSave called with:", { rowId, columnKey, value })
+      // Update the local data optimistically
+      setFetchedRows((prevRows) =>
+        prevRows.map((row) =>
+          row.id === rowId ? { ...row, [columnKey]: value } : row
+        )
+      )
+
+      // Here you would typically make an API call to save the data
+      // await saveDataToAPI(rowId, columnKey, value)
+      console.log("Saving edit:", { rowId, columnKey, value })
+    },
+    []
+  )
+
+  const handleCancel = useCallback(() => {
+    console.log("Edit cancelled")
+  }, [])
+
+  const handleValidate = useCallback((columnKey: string, value: string) => {
+    // Basic validation for email fields
+    if (columnKey === "email") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!emailRegex.test(value)) {
+        return "Please enter a valid email address"
+      }
+    }
+
+    // Validation for required fields
+    if (
+      ["firstName", "lastName", "email"].includes(columnKey) &&
+      !value.trim()
+    ) {
+      return "This field is required"
+    }
+
+    return null // No validation error
+  }, [])
+
+  const {
+    editState,
+    startEdit,
+    cancelEdit,
+    saveEdit,
+    updateEditValue,
+    isEditing
+  } = useInlineEdit({
+    onSave: handleSave,
+    onCancel: handleCancel,
+    onValidate: handleValidate
+  })
+
   const { hasSearchOrFilters, createClearHandler } = useSearchAndFilters({
     search,
     filters
@@ -242,6 +299,13 @@ const Table = ({
             onResizeStart={handleResizeStart}
             onResizeMove={handleResizeMove}
             onResizeEnd={handleResizeEnd}
+            isEditing={isEditing}
+            editValue={editState?.value}
+            onStartEdit={startEdit}
+            onCancelEdit={cancelEdit}
+            onSaveEdit={saveEdit}
+            onEditValueChange={updateEditValue}
+            getRowId={(row) => row.id as string | number}
           />
           <LoadingFooter loading={loading} hasData={fetchedRows.length > 0} />
         </div>
