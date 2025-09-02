@@ -9,53 +9,120 @@ import {
 } from "@/constants"
 import { useColumnOrder } from "@/hooks/useColumnOrder"
 import { useColumnWidths } from "@/hooks/useColumnWidths"
+import useDebounce from "@/hooks/useDebounce"
 import { useSearchAndFilters } from "@/hooks/useSearchAndFilters"
+import type { ApiData, ApiResponse } from "@/types/api"
 import type { Column, ColumnVisibility, Sort, Tooltip } from "@/types/table"
-import { useCallback, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import TableTooltip from "./components/TableTooltip/TableTooltip"
 import "./Table.css"
 
-interface TableProps<T> {
-  data: T[]
-  totalRecords: number
-  colDefs: Column<T>[]
-  loading?: boolean
-  sort?: Sort | null
-  onSort?: (params: Sort) => void
-  search?: string
-  setSearch?: (term: string) => void
-  filters?: Record<string, string>
-  onFilterChange?: (params: { key: string; value: string }) => void
-  onClearAllFilters?: () => void
-  offset?: number
-  onOffsetChange?: (offset: number) => void
+interface TableProps {
+  colDefs: Column<ApiData>[]
+  data: ApiResponse<ApiData> | undefined
+  loading: boolean
+  onSearchChange: (search: string) => void
+  onFiltersChange: (filters: Record<string, string>) => void
+  sort: Sort | undefined
+  setSort: (sort: Sort | undefined) => void
+  offset: number
+  setOffset: (offset: number) => void
   tableWidth?: number
   tableHeight?: number
   numberOfRows?: number
 }
 
-const Table = <T extends Record<string, unknown>>({
-  data,
-  totalRecords,
+const Table = ({
   colDefs,
-  loading = false,
+  data,
+  loading,
+  onSearchChange,
+  onFiltersChange,
   sort,
-  onSort,
-  search = "",
-  setSearch,
-  filters = {},
-  onFilterChange,
-  onClearAllFilters,
-  offset = 0,
-  onOffsetChange,
+  setSort,
+  offset,
+  setOffset,
   tableWidth = DEFAULT_TABLE_WIDTH,
   tableHeight = DEFAULT_TABLE_HEIGHT,
   numberOfRows = PAGE_SIZE
-}: TableProps<T>) => {
+}: TableProps) => {
+  // Internal states for search and filters
+  const [search, setSearch] = useState("")
+  const [filters, setFilters] = useState<Record<string, string>>({})
+
+  const [fetchedRows, setFetchedRows] = useState<ApiData[]>([])
+  const [totalRecords, setTotalRecords] = useState(0)
   const [visibleColumns, setVisibleColumns] = useState<string[]>(() =>
     colDefs.map((col) => col.key)
   )
   const [tooltip, setTooltip] = useState<Tooltip | null>(null)
+
+  // Debounce search and filters for API calls
+  const debouncedSearch = useDebounce(search)
+  const debouncedFilters = useDebounce(filters)
+
+  // Notify parent when debounced values change (for API calls)
+  useEffect(() => {
+    onSearchChange(debouncedSearch)
+  }, [debouncedSearch, onSearchChange])
+
+  useEffect(() => {
+    onFiltersChange(debouncedFilters)
+  }, [debouncedFilters, onFiltersChange])
+
+  // Reset data on search/sort/filter changes
+  useEffect(() => {
+    setFetchedRows([])
+    setOffset(0)
+  }, [debouncedSearch, sort, debouncedFilters, setOffset])
+
+  // Update data when API response changes
+  useEffect(() => {
+    if (!data) return
+
+    const isFirstPage = offset === 0
+
+    const updateData = (
+      newData: ApiData[],
+      total: number,
+      isFirstPage: boolean
+    ) => {
+      setTotalRecords(total)
+      setFetchedRows((prevRows) =>
+        isFirstPage ? newData : [...prevRows, ...newData]
+      )
+    }
+
+    updateData(data.data, data.total, isFirstPage)
+  }, [data, offset])
+
+  // Table handlers that update parent state
+  const handleSort = useCallback(
+    (params: Sort) => {
+      if (!params.column) {
+        setSort(undefined)
+      } else {
+        setSort(params)
+      }
+      setOffset(0)
+    },
+    [setSort, setOffset]
+  )
+
+  const handleFilterChange = useCallback(
+    (params: { key: string; value: string }) => {
+      const { key, value } = params
+      const updatedFilters = { ...filters, [key]: value }
+      setFilters(updatedFilters)
+      setOffset(0)
+    },
+    [filters, setOffset]
+  )
+
+  const handleClearAllFilters = useCallback(() => {
+    setFilters({})
+    setOffset(0)
+  }, [setOffset])
 
   const { orderedColDefs, handleColumnReorder } = useColumnOrder(colDefs)
   const { hasSearchOrFilters, createClearHandler } = useSearchAndFilters({
@@ -117,16 +184,16 @@ const Table = <T extends Record<string, unknown>>({
   )
 
   const handleEndReached = useCallback(() => {
-    if (!loading && data.length < totalRecords && onOffsetChange) {
-      onOffsetChange(offset + 1)
+    if (!loading && fetchedRows.length < totalRecords) {
+      setOffset(offset + 1)
     }
-  }, [data.length, totalRecords, loading, onOffsetChange, offset])
+  }, [fetchedRows.length, totalRecords, loading, offset, setOffset])
 
-  const handleClearAll = createClearHandler(setSearch, onClearAllFilters)
+  const handleClearAll = createClearHandler(setSearch, handleClearAllFilters)
 
   const handleClearSort = useCallback(() => {
-    onSort?.({ column: "", direction: "asc" })
-  }, [onSort])
+    handleSort({ column: "", direction: "asc" })
+  }, [handleSort])
 
   return (
     <>
@@ -137,19 +204,19 @@ const Table = <T extends Record<string, unknown>>({
           search={search}
           setSearch={setSearch}
           filters={filters}
-          onFilterChange={onFilterChange}
-          onClearAllFilters={onClearAllFilters}
+          onFilterChange={handleFilterChange}
+          onClearAllFilters={handleClearAllFilters}
           onColumnVisibility={handleColumnVisibility}
           loading={loading}
         />
 
         <div className="table-content-wrapper" style={{ height: tableHeight }}>
           <TableContent
-            data={data}
+            data={fetchedRows}
             colDefs={enhancedColDefs}
             loading={loading}
             sort={sort}
-            onSort={onSort}
+            onSort={handleSort}
             onClearSort={handleClearSort}
             columnWidths={columnWidths}
             onCellHover={handleCellHover}
@@ -161,11 +228,11 @@ const Table = <T extends Record<string, unknown>>({
             tableWidth={tableWidth}
             hasNoVisibleColumns={hasNoVisibleColumns}
           />
-          <LoadingFooter loading={loading} hasData={data.length > 0} />
+          <LoadingFooter loading={loading} hasData={fetchedRows.length > 0} />
         </div>
 
         <TableStatus
-          loadedRecords={data.length}
+          loadedRecords={fetchedRows.length}
           totalRecords={totalRecords}
           loading={loading}
         />

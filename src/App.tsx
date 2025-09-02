@@ -4,66 +4,25 @@ import Table from "@/components/Table/Table"
 import { colDefs } from "@/config/colDefs"
 import { PAGE_SIZE } from "@/constants"
 import { useApiData } from "@/hooks/useApiData"
-import useDebounce from "@/hooks/useDebounce"
-import { useTableState } from "@/hooks/useTableState"
-import type { ApiData } from "@/types/api"
-import { useEffect, useState } from "react"
+import { useState } from "react"
+import type { Sort } from "./types/table"
 
 function App() {
-  const [fetchedRows, setFetchedRows] = useState<ApiData[]>([])
-  const [totalRecords, setTotalRecords] = useState(0)
-
-  const {
-    search,
-    setSearch,
-    filters,
-    sort,
-    offset,
-    setOffset,
-    resetOffset,
-    handleSort,
-    handleFilterChange,
-    handleClearAllFilters
-  } = useTableState()
-
-  const debouncedSearch = useDebounce(search)
-  const debouncedFilters = useDebounce(filters)
+  // API-related states
+  const [search, setSearch] = useState("")
+  const [filters, setFilters] = useState<Record<string, string>>({})
+  const [sort, setSort] = useState<Sort | undefined>()
+  const [offset, setOffset] = useState(0)
 
   const apiParams = {
     limit: PAGE_SIZE,
     offset: offset * PAGE_SIZE,
     sort: sort && sort.column ? `${sort.column},${sort.direction}` : undefined,
-    search: debouncedSearch,
-    filters: debouncedFilters
+    search,
+    filters
   }
 
-  const { data: apiData, isLoading, error } = useApiData(apiParams)
-
-  // Reset on search/sort/filter changes
-  useEffect(() => {
-    setFetchedRows([])
-    resetOffset()
-  }, [debouncedSearch, sort, debouncedFilters, resetOffset])
-
-  // Update data when API response changes
-  useEffect(() => {
-    if (!apiData) return
-
-    const isFirstPage = offset === 0
-
-    const updateData = (
-      newData: ApiData[],
-      total: number,
-      isFirstPage: boolean
-    ) => {
-      setTotalRecords(total)
-      setFetchedRows((prevRows) =>
-        isFirstPage ? newData : [...prevRows, ...newData]
-      )
-    }
-
-    updateData(apiData.data, apiData.total, isFirstPage)
-  }, [apiData, offset])
+  const { data, isLoading, error } = useApiData(apiParams)
 
   const renderError = () => {
     if (!error) return null
@@ -75,19 +34,15 @@ function App() {
       {renderError()}
 
       <Table
-        data={fetchedRows}
-        totalRecords={totalRecords}
         colDefs={colDefs}
+        data={data}
         loading={isLoading}
-        search={search}
-        setSearch={setSearch}
-        filters={filters}
-        onFilterChange={handleFilterChange}
-        onClearAllFilters={handleClearAllFilters}
+        onSearchChange={setSearch}
+        onFiltersChange={setFilters}
         sort={sort}
-        onSort={handleSort}
+        setSort={setSort}
         offset={offset}
-        onOffsetChange={setOffset}
+        setOffset={setOffset}
       />
     </div>
   )
