@@ -122,9 +122,9 @@ const TableContent = <T extends Record<string, unknown>>({
     () => (
       <div className="no-columns-container">
         <BlankSlate
-          title="No columns are visible."
+          title="No columns visible."
           icon={<ColumnsIcon size="48" />}
-          subtitle="Use the 'Columns' button above to show columns."
+          subtitle="Try enabling them using the 'Columns' button."
         />
       </div>
     ),
