@@ -21,7 +21,7 @@ import { memo, useCallback, useMemo, useRef, useState } from "react"
 
 interface TableHeaderProps<T> {
   colDefs: Column<T>[]
-  currentSort?: SortState | null
+  sort?: SortState | null
   onSort?: (params: SortState) => void
   onClearSort?: () => void
   columnWidths: ColumnWidthInfo[]
@@ -31,7 +31,7 @@ interface TableHeaderProps<T> {
 
 const TableHeader = <T,>({
   colDefs,
-  currentSort,
+  sort,
   onSort,
   onClearSort,
   columnWidths,
@@ -78,8 +78,8 @@ const TableHeader = <T,>({
     (col: Column<T>) => {
       if (!col.sortable || !onSort) return
 
-      const isCurrentColumn = currentSort?.column === col.key
-      const direction = currentSort?.direction
+      const isCurrentColumn = sort?.column === col.key
+      const direction = sort?.direction
 
       if (!isCurrentColumn) {
         // First click → sort ascending
@@ -92,7 +92,7 @@ const TableHeader = <T,>({
         onClearSort()
       }
     },
-    [currentSort, onSort, onClearSort]
+    [sort, onSort, onClearSort]
   )
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
@@ -116,8 +116,8 @@ const TableHeader = <T,>({
     () =>
       colDefs.map((col, index) => {
         const widthInfo = columnWidths[index]
-        const isActive = currentSort?.column === col.key
-        const sortDirection = isActive ? currentSort.direction : null
+        const isActive = sort?.column === col.key
+        const sortDirection = isActive ? sort.direction : null
 
         return {
           key: col.key,
@@ -131,7 +131,7 @@ const TableHeader = <T,>({
           sortDirection
         }
       }),
-    [colDefs, columnWidths, currentSort]
+    [colDefs, columnWidths, sort]
   )
 
   return (

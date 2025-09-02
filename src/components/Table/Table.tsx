@@ -16,7 +16,7 @@ interface TableProps<T> {
   totalRecords: number
   colDefs: Column<T>[]
   loading?: boolean
-  currentSort?: SortState | null
+  sort?: SortState | null
   onSort?: (params: SortState) => void
   searchValue?: string
   onSearch?: (searchTerm: string) => void
@@ -41,7 +41,7 @@ const Table = <T extends Record<string, unknown>>({
   totalRecords,
   colDefs,
   loading = false,
-  currentSort,
+  sort,
   onSort,
   searchValue = "",
   onSearch,
@@ -132,7 +132,7 @@ const Table = <T extends Record<string, unknown>>({
         enhancedColDefs={enhancedColDefs}
         visibleColumns={visibleColumns}
         loading={loading}
-        currentSort={currentSort}
+        sort={sort}
         onSort={onSort}
         onClearSort={handleClearSort}
         searchValue={searchValue}

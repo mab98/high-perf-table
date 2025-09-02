@@ -84,7 +84,7 @@ function App() {
         filters={filters}
         onFilterChange={handleFilterChange}
         onClearAllFilters={handleClearAllFilters}
-        currentSort={sort}
+        sort={sort}
         onSort={handleSort}
         offset={offset}
         onOffsetChange={setOffset}

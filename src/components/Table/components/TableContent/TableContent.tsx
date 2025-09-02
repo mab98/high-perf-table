@@ -12,7 +12,7 @@ interface TableContentProps<T> {
   data: T[]
   colDefs: Column<T>[]
   loading: boolean
-  currentSort?: SortState | null
+  sort?: SortState | null
   onSort?: (params: SortState) => void
   onClearSort: () => void
   columnWidths: ColumnWidthInfo[]
@@ -29,7 +29,7 @@ const TableContent = <T extends Record<string, unknown>>({
   data,
   colDefs,
   loading,
-  currentSort,
+  sort,
   onSort,
   onClearSort,
   columnWidths,
@@ -45,7 +45,7 @@ const TableContent = <T extends Record<string, unknown>>({
     () => (
       <TableHeader
         colDefs={colDefs}
-        currentSort={currentSort}
+        sort={sort}
         onSort={onSort}
         onClearSort={onClearSort}
         columnWidths={columnWidths}
@@ -55,7 +55,7 @@ const TableContent = <T extends Record<string, unknown>>({
     ),
     [
       colDefs,
-      currentSort,
+      sort,
       onSort,
       onClearSort,
       columnWidths,

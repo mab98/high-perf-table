@@ -13,7 +13,7 @@ interface TableContainerProps<T> {
   enhancedColDefs: Column<T>[]
   visibleColumns: string[]
   loading: boolean
-  currentSort?: SortState | null
+  sort?: SortState | null
   onSort?: (params: SortState) => void
   onClearSort: () => void
   searchValue?: string
@@ -41,7 +41,7 @@ const TableContainer = <T extends Record<string, unknown>>({
   enhancedColDefs,
   visibleColumns,
   loading,
-  currentSort,
+  sort,
   onSort,
   onClearSort,
   searchValue,
@@ -81,7 +81,7 @@ const TableContainer = <T extends Record<string, unknown>>({
           data={data}
           colDefs={enhancedColDefs}
           loading={loading}
-          currentSort={currentSort}
+          sort={sort}
           onSort={onSort}
           onClearSort={onClearSort}
           columnWidths={columnWidths}
