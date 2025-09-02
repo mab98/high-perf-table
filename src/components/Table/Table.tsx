@@ -1,4 +1,7 @@
-import TableContainer from "@/components/Table/components/TableContainer/TableContainer"
+import LoadingFooter from "@/components/Table/components/LoadingFooter/LoadingFooter"
+import TableActionsBar from "@/components/Table/components/TableActionsBar/TableActionsBar"
+import TableContent from "@/components/Table/components/TableContent/TableContent"
+import TableStatus from "@/components/Table/components/TableStatus/TableStatus"
 import {
   DEFAULT_TABLE_HEIGHT,
   DEFAULT_TABLE_WIDTH,
@@ -10,6 +13,7 @@ import { useSearchAndFilters } from "@/hooks/useSearchAndFilters"
 import type { Column, ColumnVisibility, Sort, Tooltip } from "@/types/table"
 import { useCallback, useMemo, useState } from "react"
 import TableTooltip from "./components/TableTooltip/TableTooltip"
+import "./Table.css"
 
 interface TableProps<T> {
   data: T[]
@@ -120,32 +124,45 @@ const Table = <T extends Record<string, unknown>>({
 
   return (
     <>
-      <TableContainer
-        data={data}
-        totalRecords={totalRecords}
-        colDefs={orderedColDefs}
-        enhancedColDefs={enhancedColDefs}
-        visibleColumns={visibleColumns}
-        loading={loading}
-        sort={sort}
-        onSort={onSort}
-        onClearSort={handleClearSort}
-        search={search}
-        setSearch={setSearch}
-        filters={filters}
-        onFilterChange={onFilterChange}
-        onClearAllFilters={onClearAllFilters}
-        onColumnVisibility={handleColumnVisibility}
-        columnWidths={columnWidths}
-        onCellHover={handleCellHover}
-        onEndReached={handleEndReached}
-        numberOfRows={numberOfRows}
-        hasSearchOrFilters={hasSearchOrFilters}
-        onClearAll={handleClearAll}
-        tableWidth={tableWidth}
-        tableHeight={tableHeight}
-        onColumnReorder={handleColumnReorder}
-      />
+      <div className="table-container" style={{ width: tableWidth }}>
+        <TableActionsBar
+          colDefs={orderedColDefs}
+          visibleColumns={visibleColumns}
+          search={search}
+          setSearch={setSearch}
+          filters={filters}
+          onFilterChange={onFilterChange}
+          onClearAllFilters={onClearAllFilters}
+          onColumnVisibility={handleColumnVisibility}
+          loading={loading}
+        />
+
+        <div className="table-content-wrapper" style={{ height: tableHeight }}>
+          <TableContent
+            data={data}
+            colDefs={enhancedColDefs}
+            loading={loading}
+            sort={sort}
+            onSort={onSort}
+            onClearSort={handleClearSort}
+            columnWidths={columnWidths}
+            onCellHover={handleCellHover}
+            onEndReached={handleEndReached}
+            numberOfRows={numberOfRows}
+            hasSearchOrFilters={hasSearchOrFilters}
+            onClearAll={handleClearAll}
+            onColumnReorder={handleColumnReorder}
+            tableWidth={tableWidth}
+          />
+          <LoadingFooter loading={loading} hasData={data.length > 0} />
+        </div>
+
+        <TableStatus
+          loadedRecords={data.length}
+          totalRecords={totalRecords}
+          loading={loading}
+        />
+      </div>
 
       {tooltip && <TableTooltip {...tooltip} />}
     </>
