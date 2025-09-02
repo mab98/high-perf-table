@@ -70,7 +70,11 @@ const Table = <T extends Record<string, unknown>>({
 
   const hasNoVisibleColumns = visibleColDefs.length === 0
 
-  const columnWidths = useColumnWidths({ colDefs: visibleColDefs, tableWidth })
+  const columnWidths = useColumnWidths({
+    colDefs: visibleColDefs,
+    tableWidth,
+    allColDefs: orderedColDefs
+  })
 
   const enhancedColDefs = useMemo(
     () =>
