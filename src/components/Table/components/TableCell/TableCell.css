@@ -34,10 +34,6 @@
   border-bottom-color: var(--purple-200);
 }
 
-.table-cell--editable:hover .cell-value {
-  background: var(--purple-200);
-}
-
 .table-cell--editing {
   background: white !important;
   border-bottom: 2px solid var(--purple-500) !important;
