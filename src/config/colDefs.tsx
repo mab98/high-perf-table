@@ -57,7 +57,14 @@ const renderDate = (date: string) => dateFormatter.format(new Date(date))
 const renderSalary = (salary: number) => currencyFormatter.format(salary)
 
 export const colDefs: Column<ApiData>[] = [
-  { key: "id", title: "ID", width: 100, sortable: true, filterable: true },
+  {
+    key: "id",
+    title: "ID",
+    width: 100,
+    sortable: true,
+    filterable: true,
+    alwaysVisible: true // This column will always stay visible and won't appear in columns menu
+  },
   {
     key: "firstName",
     title: "First Name",
@@ -66,7 +73,8 @@ export const colDefs: Column<ApiData>[] = [
     sortable: true,
     filterable: true,
     resizable: true,
-    tooltip: true
+    tooltip: true,
+    alwaysVisible: true // This column will always stay visible
   },
   {
     key: "lastName",

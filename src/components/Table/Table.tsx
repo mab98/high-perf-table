@@ -214,13 +214,33 @@ const Table = ({
     (params: ColumnVisibility) => {
       const { visible } = params
 
+      // Always include columns that should stay visible
+      const keepVisibleKeys = orderedColDefs
+        .filter((col) => col.alwaysVisible)
+        .map((col) => col.key)
+
       if ("all" in params) {
-        setVisibleColumns(visible ? orderedColDefs.map((c) => c.key) : [])
+        if (visible) {
+          // Show all columns
+          setVisibleColumns(orderedColDefs.map((c) => c.key))
+        } else {
+          // Hide all toggleable columns but keep the alwaysVisible ones
+          setVisibleColumns(keepVisibleKeys)
+        }
       } else if ("key" in params) {
         const { key } = params
-        setVisibleColumns((prev) =>
-          visible ? [...prev, key] : prev.filter((id) => id !== key)
-        )
+        setVisibleColumns((prev) => {
+          if (visible) {
+            return [...prev, key]
+          } else {
+            // Don't allow hiding alwaysVisible columns
+            const col = orderedColDefs.find((c) => c.key === key)
+            if (col?.alwaysVisible) {
+              return prev // Don't hide alwaysVisible columns
+            }
+            return prev.filter((id) => id !== key)
+          }
+        })
       }
     },
     [orderedColDefs]

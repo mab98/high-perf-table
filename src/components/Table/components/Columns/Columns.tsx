@@ -14,8 +14,26 @@ const Columns = <T extends Record<string, unknown>>({
   visibleColumns,
   onColumnVisibility
 }: ColumnsProps<T>) => {
-  const totalCount = colDefs.length
-  const visibleCount = visibleColumns.length
+  // Filter out columns that should always stay visible
+  const toggleableColumns = useMemo(
+    () => colDefs.filter((col) => !col.alwaysVisible),
+    [colDefs]
+  )
+
+  const alwaysVisibleColumns = useMemo(
+    () => colDefs.filter((col) => col.alwaysVisible),
+    [colDefs]
+  )
+
+  const totalCount = toggleableColumns.length
+  const visibleToggleableColumns = useMemo(
+    () =>
+      visibleColumns.filter((key) =>
+        toggleableColumns.some((col) => col.key === key)
+      ),
+    [visibleColumns, toggleableColumns]
+  )
+  const visibleCount = visibleToggleableColumns.length
 
   const isAllVisible = visibleCount === totalCount
   const isNoneVisible = visibleCount === 0
@@ -26,10 +44,10 @@ const Columns = <T extends Record<string, unknown>>({
     [visibleCount, totalCount]
   )
 
-  const handleToggleAll = useCallback(
-    () => onColumnVisibility({ visible: !isAllVisible, all: true }),
-    [isAllVisible, onColumnVisibility]
-  )
+  const handleToggleAll = useCallback(() => {
+    // When toggling all, only affect toggleable columns
+    onColumnVisibility({ visible: !isAllVisible, all: true })
+  }, [isAllVisible, onColumnVisibility])
 
   const handleColumnChange = useCallback(
     (key: string, visible: boolean) => onColumnVisibility({ key, visible }),
@@ -83,10 +101,18 @@ const Columns = <T extends Record<string, unknown>>({
         <div className="columns-header-content">
           <h3 className="columns-title">Manage Columns</h3>
         </div>
+        {alwaysVisibleColumns.length > 0 && (
+          <div className="always-visible-note">
+            <small>
+              Always visible:{" "}
+              {alwaysVisibleColumns.map((col) => col.title).join(", ")}.
+            </small>
+          </div>
+        )}
       </div>
       <div className="columns-menu-content">
         {renderToggleAllCheckbox()}
-        {colDefs.map(renderColumnCheckbox)}
+        {toggleableColumns.map(renderColumnCheckbox)}
       </div>
     </DropdownButton>
   )

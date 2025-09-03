@@ -14,6 +14,7 @@ export type Column<T> = {
   filterable?: boolean
   resizable?: boolean
   tooltip?: boolean
+  alwaysVisible?: boolean // When true, column is always visible and excluded from columns menu
   renderer?: (rowData: T) => ReactNode
 }
 
