@@ -33,7 +33,8 @@ interface TableHeaderProps<T> {
   onResizeStart?: (
     columnKey: string,
     startX: number,
-    currentWidth: number
+    currentWidth: number,
+    clickedElement?: HTMLElement
   ) => void
   onResizeMove?: (clientX: number) => void
   onResizeEnd?: () => void
@@ -69,8 +70,9 @@ const TableHeader = <T,>({
       onResizeEnd()
     }
 
-    document.addEventListener("mousemove", handleMouseMove)
-    document.addEventListener("mouseup", handleMouseUp)
+    // Use passive: false for preventDefault to work, but optimize where possible
+    document.addEventListener("mousemove", handleMouseMove, { passive: false })
+    document.addEventListener("mouseup", handleMouseUp, { passive: true })
 
     return () => {
       document.removeEventListener("mousemove", handleMouseMove)
@@ -89,7 +91,9 @@ const TableHeader = <T,>({
       document.body.style.userSelect = "none"
       document.body.style.cursor = "col-resize"
 
-      onResizeStart(columnKey, e.clientX, currentWidth)
+      // Pass the clicked element to the resize start handler
+      const clickedElement = e.currentTarget as HTMLElement
+      onResizeStart(columnKey, e.clientX, currentWidth, clickedElement)
     },
     [onResizeStart]
   )
@@ -195,7 +199,10 @@ const TableHeader = <T,>({
       autoScroll={false}
       modifiers={[constrainedHorizontalModifier]}
     >
-      <div className="table-header-row" ref={tableHeaderRef}>
+      <div
+        className={clsx("table-header-row", { resizing: isResizing })}
+        ref={tableHeaderRef}
+      >
         <SortableContext
           items={columnsMeta.map((c) => c.key)}
           strategy={horizontalListSortingStrategy}
@@ -203,6 +210,7 @@ const TableHeader = <T,>({
           {columnsMeta.map(({ key, col, style, isActive, sortDirection }) => (
             <div
               key={key}
+              data-column-key={col.key}
               className={clsx("header-cell-container", {
                 resizing: isResizing && resizingColumn === col.key
               })}
@@ -221,9 +229,14 @@ const TableHeader = <T,>({
 
         {/* Separate layer for resize handles positioned between columns */}
         <div className="resize-handles-layer">
-          {columnsMeta.slice(0, -1).map((columnMeta, index) => {
+          {columnsMeta.map((columnMeta, index) => {
             // Only show resize handle if the current column is resizable
             if (!columnMeta.col.resizable) {
+              return null
+            }
+
+            // Skip the last column for now - we'll handle it separately below
+            if (index === columnsMeta.length - 1) {
               return null
             }
 
@@ -238,23 +251,46 @@ const TableHeader = <T,>({
             return (
               <div
                 key={`resize-${index}`}
-                className={clsx("separated-resize-handle", {
-                  active:
-                    isResizing && resizingColumn === columnsMeta[index].key
-                })}
+                className="separated-resize-handle"
                 style={{ left: `${cumulativeWidth}px` }}
                 onMouseDown={(e) =>
                   handleResizeMouseDown(
                     e,
-                    columnsMeta[index].key,
-                    parseInt(columnsMeta[index].style.width as string, 10) ||
-                      100
+                    columnMeta.key,
+                    parseInt(columnMeta.style.width as string, 10) || 100
                   )
                 }
                 title="Resize column"
               />
             )
           })}
+
+          {/* Special resize handle for the last column */}
+          {columnsMeta.length > 0 &&
+            columnsMeta[columnsMeta.length - 1].col.resizable && (
+              <div
+                key="resize-last"
+                className="separated-resize-handle last-column-resize"
+                style={{
+                  left: `${columnsMeta.reduce(
+                    (sum, { style }) =>
+                      sum + (parseInt(style.width as string, 10) || 100),
+                    0
+                  )}px`
+                }}
+                onMouseDown={(e) =>
+                  handleResizeMouseDown(
+                    e,
+                    columnsMeta[columnsMeta.length - 1].key,
+                    parseInt(
+                      columnsMeta[columnsMeta.length - 1].style.width as string,
+                      10
+                    ) || 100
+                  )
+                }
+                title="Resize last column"
+              />
+            )}
         </div>
       </div>
       <ColumnDragOverlay activeColumn={activeColumn} colDefs={colDefs} />

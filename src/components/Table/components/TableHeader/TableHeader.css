@@ -7,13 +7,38 @@
   position: relative;
 }
 
+.table-header-row.resizing {
+  pointer-events: none;
+}
+.table-header-row.resizing .separated-resize-handle {
+  pointer-events: auto;
+}
+
+/* Disable transitions during resize to prevent flicker */
+.table-header-row.resizing .separated-resize-handle,
+.table-header-row.resizing .separated-resize-handle::before {
+  transition: none !important;
+}
+
 /* Header cell container for each column */
 .header-cell-container {
   display: flex;
   position: relative;
   flex-shrink: 0;
+  transition: width var(--transition-normal);
+}
+.header-cell-container.resizing {
+  transition: none;
+  will-change: width;
+  transform: translateZ(0); /* Force GPU acceleration */
+  background: var(--purple-50);
+}
+.header-cell-container.resizing * {
+  transition: none;
+  transform: translateZ(0);
 }
 
+/* Table header text */
 .table-header {
   display: flex;
   align-items: center;
@@ -33,24 +58,22 @@
 .table-header.draggable-header {
   cursor: pointer;
 }
-
 .table-header.sortable:hover {
   background: var(--purple-100);
   color: var(--purple-700);
   transform: translateY(-2px) scale(1.01);
   box-shadow: inset 0 -3px 0 var(--purple-400);
 }
-
 .table-header.sortable.active {
   background: var(--purple-100);
   color: var(--purple-700);
   box-shadow: inset 0 -3px 0 var(--purple-500);
 }
-
 .table-header.draggable-header.dragging {
   opacity: 0.4;
 }
 
+/* Header content layout */
 .header-content {
   display: flex;
   align-items: center;
@@ -68,6 +91,7 @@
   flex: 1;
 }
 
+/* Edit indicator */
 .edit-indicator {
   display: flex;
   align-items: center;
@@ -76,8 +100,6 @@
   transition: all var(--transition-fast);
   flex-shrink: 0;
 }
-
-.table-header.sortable:hover .edit-indicator,
 .table-header:hover .edit-indicator {
   opacity: 1;
   color: var(--purple-500);
@@ -95,17 +117,16 @@
   color: var(--purple-400);
   transition: all var(--transition-normal);
 }
-
 .table-header.sortable:hover .sort-icon {
   opacity: 0.8;
   color: var(--purple-500);
 }
-
 .table-header.sortable.active .sort-icon {
   opacity: 1;
   color: var(--purple-600);
 }
 
+/* Drag overlay */
 .column-drag-overlay {
   border: 1px solid var(--purple-300);
   border-radius: var(--border-radius-sm);
@@ -114,12 +135,10 @@
   z-index: var(--z-drag-overlay);
 }
 
-/* Resize handles layer positioned on top of the header */
+/* Resize handles layer */
 .resize-handles-layer {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  inset: 0;
   height: 100%;
   pointer-events: none;
   z-index: 15;
@@ -131,62 +150,37 @@
   top: 0;
   width: 8px;
   height: 100%;
-  margin-left: -4px; /* Center on the column boundary */
+  margin-left: -8px; /* Position at the right edge of the previous cell */
   cursor: col-resize;
   background: transparent;
   pointer-events: auto;
   z-index: 20;
-  transition: all var(--transition-normal);
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
-/* Create a centered divider line */
 .separated-resize-handle::before {
   content: "";
   position: absolute;
   top: 8px;
   bottom: 8px;
-  width: 1px;
-  background: var(--border-light);
-  transition: all var(--transition-normal);
-}
-
-.separated-resize-handle:hover {
-  background: rgba(147, 51, 234, 0.1);
-}
-
-.separated-resize-handle:hover::before {
+  left: 6px;
   width: 2px;
-  background: var(--purple-400);
+  background: var(--purple-300);
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(147, 51, 234, 0.2);
 }
 
-.separated-resize-handle:active::before,
-.separated-resize-handle.active::before {
-  width: 2px;
-  background: var(--purple-600);
+/* Last column resize handle */
+.separated-resize-handle.last-column-resize::before {
+  background: var(--purple-300);
+  border-radius: 2px 3px 3px 2px; /* Slightly rounded right edge */
+  box-shadow: 0 1px 2px rgba(147, 51, 234, 0.2);
 }
 
-.separated-resize-handle:active,
-.separated-resize-handle.active {
-  background: rgba(147, 51, 234, 0.2);
-}
-
-/* Remove old external resize handle styles */
-.external-resize-handle {
-  display: none;
-}
-
-.header-cell-container.resizing {
-  background: var(--purple-50);
-}
-
-/* Remove old resize handle and divider styles since we're moving them external */
-.resize-handle {
-  display: none;
-}
-
+/* Deprecated handles */
+.external-resize-handle,
+.resize-handle,
 .column-divider {
   display: none;
 }

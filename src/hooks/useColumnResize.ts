@@ -1,8 +1,5 @@
-import { CELL_MIN_WIDTH } from "@/constants"
-import { useCallback, useRef, useState } from "react"
-
-const CELL_MAX_WIDTH = 500 // Maximum column width
-const RESIZE_SNAP_INCREMENT = 5 // Snap to 5px increments
+import { CELL_MAX_WIDTH, CELL_MIN_WIDTH } from "@/constants"
+import { useCallback, useState } from "react"
 
 export interface UseColumnResizeReturn {
   customWidths: Record<string, number>
@@ -12,7 +9,8 @@ export interface UseColumnResizeReturn {
   handleResizeStart: (
     columnKey: string,
     startX: number,
-    currentWidth: number
+    currentWidth: number,
+    clickedElement?: HTMLElement
   ) => void
   handleResizeMove: (clientX: number) => void
   handleResizeEnd: () => void
@@ -34,95 +32,167 @@ export const useColumnResize = (): UseColumnResizeReturn => {
     columnKey: string
   } | null>(null)
 
-  const throttleRef = useRef<number | null>(null)
+  /** --- Helpers --- */
+  const constrainWidth = (width: number) =>
+    Math.min(CELL_MAX_WIDTH, Math.max(CELL_MIN_WIDTH, width))
 
-  // Utility function to snap width to increments
-  const snapToIncrement = (width: number): number => {
-    return Math.round(width / RESIZE_SNAP_INCREMENT) * RESIZE_SNAP_INCREMENT
-  }
+  const getHeaderContainers = () =>
+    document.querySelectorAll<HTMLElement>(".header-cell-container")
 
-  // Utility function to constrain width within min/max bounds
-  const constrainWidth = (width: number): number => {
-    return Math.min(CELL_MAX_WIDTH, Math.max(CELL_MIN_WIDTH, width))
-  }
+  const getResizeHandles = () =>
+    document.querySelectorAll<HTMLElement>(".separated-resize-handle")
+
+  const getCells = (columnKey: string) =>
+    document.querySelectorAll<HTMLElement>(`[data-cell-key="${columnKey}"]`)
+
+  const cleanupHandles = useCallback(() => {
+    getResizeHandles().forEach((handle) => {
+      // Temporarily disable transitions to prevent blink
+      handle.style.transition = "none"
+      handle.style.transform = ""
+
+      // Only restore visibility for handles that were dragging
+      if (handle.dataset.isDragging === "true") {
+        handle.style.visibility = "visible"
+
+        // Re-enable transitions after cleanup
+        setTimeout(() => {
+          handle.style.transition = ""
+        }, 10)
+      }
+
+      delete handle.dataset.isDragging
+      delete handle.dataset.originalLeft
+    })
+  }, []) /** --- Core Logic --- */
+  const updateResizeHandlesPosition = useCallback(
+    (columnKey: string, newWidth: number) => {
+      const headers = getHeaderContainers()
+      const handles = getResizeHandles()
+
+      const resizedIndex = Array.from(headers).findIndex(
+        (c) => c.dataset.columnKey === columnKey
+      )
+      if (resizedIndex === -1) return
+
+      // Store visibility state before hiding dragging handles
+      const visibilityState = new Map<HTMLElement, string>()
+      handles.forEach((h) => {
+        visibilityState.set(h, h.style.visibility || "visible")
+        if (h.dataset.isDragging === "true") h.style.visibility = "hidden"
+        // Temporarily disable transitions during position updates
+        h.style.transition = "none"
+      })
+
+      // Recalculate cumulative widths
+      for (let i = resizedIndex; i < handles.length; i++) {
+        let cumulative = 0
+        for (let j = 0; j <= i; j++) {
+          const width =
+            j === resizedIndex
+              ? newWidth
+              : parseInt(headers[j].style.width) || headers[j].offsetWidth
+          cumulative += width
+        }
+
+        const handle = handles[i]
+        if (!handle) continue
+        handle.style.left = `${cumulative}px`
+        handle.style.transform = ""
+
+        // Only restore visibility if it wasn't the dragging handle
+        if (handle.dataset.isDragging !== "true") {
+          const originalVisibility = visibilityState.get(handle) || "visible"
+          handle.style.visibility = originalVisibility
+        }
+      }
+    },
+    []
+  )
 
   const handleResizeStart = useCallback(
-    (columnKey: string, startX: number, currentWidth: number) => {
+    (
+      columnKey: string,
+      startX: number,
+      currentWidth: number,
+      clickedElement?: HTMLElement
+    ) => {
       setIsResizing(true)
       setResizingColumn(columnKey)
       setCurrentResizeWidth(currentWidth)
       setResizeState({ startX, startWidth: currentWidth, columnKey })
 
-      // Prevent text selection during resize
+      cleanupHandles()
+
+      if (clickedElement) {
+        // Just mark as dragging for internal tracking
+        clickedElement.dataset.originalLeft =
+          clickedElement.style.left || getComputedStyle(clickedElement).left
+        clickedElement.dataset.isDragging = "true"
+      }
+
       document.body.style.userSelect = "none"
       document.body.style.cursor = "col-resize"
     },
-    []
+    [cleanupHandles]
   )
 
   const handleResizeMove = useCallback(
     (clientX: number) => {
       if (!resizeState) return
+      const { startX, startWidth, columnKey } = resizeState
+      const constrained = constrainWidth(startWidth + (clientX - startX))
+      const finalWidth = Math.round(constrained)
 
-      // Throttle updates for better performance
-      if (throttleRef.current) {
-        cancelAnimationFrame(throttleRef.current)
-      }
-
-      throttleRef.current = requestAnimationFrame(() => {
-        const { startX, startWidth, columnKey } = resizeState
-        const deltaX = clientX - startX
-        const rawWidth = startWidth + deltaX
-        const constrainedWidth = constrainWidth(rawWidth)
-        const snappedWidth = snapToIncrement(constrainedWidth)
-
-        setCurrentResizeWidth(snappedWidth)
-        setCustomWidths((prev) => ({
-          ...prev,
-          [columnKey]: snappedWidth
-        }))
+      getHeaderContainers().forEach((c) => {
+        if (c.dataset.columnKey === columnKey) c.style.width = `${finalWidth}px`
       })
+      getCells(columnKey).forEach((cell) => {
+        cell.style.width = `${finalWidth}px`
+      })
+
+      updateResizeHandlesPosition(columnKey, finalWidth)
+      setCurrentResizeWidth(finalWidth)
     },
-    [resizeState]
+    [resizeState, updateResizeHandlesPosition]
   )
 
   const handleResizeEnd = useCallback(() => {
-    if (throttleRef.current) {
-      cancelAnimationFrame(throttleRef.current)
-      throttleRef.current = null
+    // Keep resizing state active during cleanup to maintain disabled transitions
+    cleanupHandles()
+
+    if (resizeState && currentResizeWidth !== null) {
+      setCustomWidths((prev) => ({
+        ...prev,
+        [resizeState.columnKey]: currentResizeWidth
+      }))
     }
 
-    setIsResizing(false)
-    setResizingColumn(null)
-    setCurrentResizeWidth(null)
-    setResizeState(null)
+    // Use requestAnimationFrame to ensure DOM updates are complete before re-enabling transitions
+    requestAnimationFrame(() => {
+      setIsResizing(false)
+      setResizingColumn(null)
+      setCurrentResizeWidth(null)
+      setResizeState(null)
 
-    // Restore default cursor and text selection
+      // Re-enable transitions after state updates
+      setTimeout(() => {
+        getResizeHandles().forEach((handle) => {
+          handle.style.transition = ""
+        })
+      }, 10)
+    })
+
     document.body.style.userSelect = ""
     document.body.style.cursor = ""
-  }, [])
+  }, [resizeState, currentResizeWidth, cleanupHandles])
 
-  // Double-click to auto-resize (reset to original width and redistribute space)
-  const handleDoubleClickResize = useCallback((columnKey: string) => {
-    setCustomWidths((prev) => {
-      const newWidths = { ...prev }
-      delete newWidths[columnKey]
-      return newWidths
-    })
-  }, [])
-
-  // Reset individual column width
   const resetColumnWidth = useCallback((columnKey: string) => {
     setCustomWidths((prev) => {
       const newWidths = { ...prev }
       delete newWidths[columnKey]
       return newWidths
     })
-  }, [])
-
-  // Reset all custom widths (will trigger space redistribution)
-  const resetAllWidths = useCallback(() => {
-    setCustomWidths({})
   }, [])
 
   return {
@@ -133,8 +203,8 @@ export const useColumnResize = (): UseColumnResizeReturn => {
     handleResizeStart,
     handleResizeMove,
     handleResizeEnd,
-    handleDoubleClickResize,
+    handleDoubleClickResize: resetColumnWidth, // same logic
     resetColumnWidth,
-    resetAllWidths
+    resetAllWidths: () => setCustomWidths({})
   }
 }

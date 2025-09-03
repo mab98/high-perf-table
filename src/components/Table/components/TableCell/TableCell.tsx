@@ -7,6 +7,7 @@ interface TableCellProps {
   tooltipText: string
   style?: React.CSSProperties
   className?: string
+  columnKey?: string
   onHover?: (text: string, element: HTMLElement | null) => void
   isEditable?: boolean
   isEditing?: boolean
@@ -23,6 +24,7 @@ const TableCell: React.FC<TableCellProps> = ({
   tooltipText,
   style,
   className = "",
+  columnKey,
   onHover,
   isEditable = false,
   isEditing = false,
@@ -55,8 +57,7 @@ const TableCell: React.FC<TableCellProps> = ({
         }
       }, 0)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEditing]) // Only depend on isEditing to avoid re-selecting text
+  }, [isEditing, editValue, onHover])
 
   const handleMouseEnter = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -129,6 +130,7 @@ const TableCell: React.FC<TableCellProps> = ({
         isEditing && "table-cell--editing"
       )}
       style={style}
+      data-cell-key={columnKey}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onDoubleClick={handleDoubleClick}

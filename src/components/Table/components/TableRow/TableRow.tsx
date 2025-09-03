@@ -3,6 +3,7 @@ import "@/components/Table/components/TableRow/TableRow.css"
 import { CELL_MIN_WIDTH } from "@/constants"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
 import type { Column } from "@/types/table"
+import clsx from "clsx"
 import type { ReactNode } from "react"
 import { memo, useMemo } from "react"
 
@@ -12,6 +13,7 @@ interface TableRowProps<T> {
   index: number // Not used here, but required by TableVirtuoso API
   columnWidths: ColumnWidthInfo[]
   onCellHover: (text: string, element: HTMLElement | null) => void
+  isResizing?: boolean
   // Inline editing props
   isEditing?: (rowId: string | number, columnKey: string) => boolean
   editValue?: string
@@ -33,6 +35,7 @@ const TableRow = <T extends Record<string, unknown>>({
   index,
   columnWidths,
   onCellHover,
+  isResizing = false,
   isEditing,
   editValue,
   editError,
@@ -69,6 +72,7 @@ const TableRow = <T extends Record<string, unknown>>({
             content={content as ReactNode}
             tooltipText={tooltipText}
             style={cellStyle}
+            columnKey={col.key}
             onHover={onCellHover}
             isEditable={!!col.editable}
             isEditing={isCurrentlyEditing}
@@ -101,7 +105,9 @@ const TableRow = <T extends Record<string, unknown>>({
     ]
   )
 
-  return <div className="table-row">{cells}</div>
+  return (
+    <div className={clsx("table-row", { resizing: isResizing })}>{cells}</div>
+  )
 }
 
 export default memo(TableRow) as typeof TableRow

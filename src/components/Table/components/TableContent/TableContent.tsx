@@ -121,6 +121,7 @@ const TableContent = <T extends Record<string, unknown>>({
         index={index}
         columnWidths={columnWidths}
         onCellHover={onCellHover}
+        isResizing={isResizing}
         isEditing={isEditing}
         editValue={editValue}
         editError={editError}
@@ -135,6 +136,7 @@ const TableContent = <T extends Record<string, unknown>>({
       colDefs,
       columnWidths,
       onCellHover,
+      isResizing,
       isEditing,
       editValue,
       editError,

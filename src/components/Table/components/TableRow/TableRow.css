@@ -9,6 +9,12 @@
   position: relative;
 }
 
+.table-row.resizing,
+.table-row.resizing * {
+  transition: none !important;
+  transform: translateZ(0); /* Force GPU acceleration */
+}
+
 .table-row::before {
   content: "";
   position: absolute;

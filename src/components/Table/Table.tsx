@@ -198,7 +198,6 @@ const Table = ({
   const columnWidths = useColumnWidths({
     colDefs: visibleColDefs,
     tableWidth,
-    allColDefs: orderedColDefs,
     customWidths
   })
 

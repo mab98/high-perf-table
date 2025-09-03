@@ -57,7 +57,7 @@ const renderDate = (date: string) => dateFormatter.format(new Date(date))
 const renderSalary = (salary: number) => currencyFormatter.format(salary)
 
 export const colDefs: Column<ApiData>[] = [
-  { key: "id", title: "ID", width: 80, sortable: true, filterable: false },
+  { key: "id", title: "ID", width: 100, sortable: true, filterable: true },
   {
     key: "firstName",
     title: "First Name",
@@ -93,8 +93,6 @@ export const colDefs: Column<ApiData>[] = [
     key: "phone",
     title: "Phone",
     width: 180,
-    sortable: false,
-    filterable: false,
     resizable: true,
     tooltip: true
   },
@@ -103,9 +101,7 @@ export const colDefs: Column<ApiData>[] = [
     title: "Date of Birth",
     width: 120,
     sortable: true,
-    filterable: false,
     resizable: true,
-    tooltip: false,
     renderer: (row) => renderDate(row.dateOfBirth)
   },
   {
@@ -122,10 +118,9 @@ export const colDefs: Column<ApiData>[] = [
     key: "city",
     title: "City",
     width: 120,
-    editable: { validation: validateRequired, showEditIconInHeader: false },
+    editable: { validation: validateRequired },
     sortable: true,
     filterable: true,
-    resizable: false,
     tooltip: true
   },
   {
@@ -134,15 +129,13 @@ export const colDefs: Column<ApiData>[] = [
     width: 120,
     sortable: true,
     filterable: true,
-    resizable: true,
-    tooltip: false
+    resizable: true
   },
   {
     key: "joinDate",
     title: "Join Date",
     width: 120,
     sortable: true,
-    filterable: false,
     resizable: true,
     tooltip: true,
     renderer: (row) => renderDate(row.joinDate)
