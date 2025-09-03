@@ -1,22 +1,23 @@
-import { ClearIcon } from "@/components/Table/Icons/Icons"
+import ClearButton from "@/components/Table/components/ClearButton/ClearButton"
+import DebouncedInput from "@/components/Table/components/DebouncedInput/DebouncedInput"
 import DropdownButton from "@/components/Table/components/DropdownButton/DropdownButton"
-import "@/components/Table/components/FiltersButton/FiltersButton.css"
+import "@/components/Table/components/Filters/Filters.css"
 import type { Column } from "@/types/table"
 import { memo, useCallback, useMemo } from "react"
 
-interface FiltersButtonProps<T> {
+interface FiltersProps<T> {
   colDefs: Column<T>[]
   filters: Record<string, string>
   onFilterChange: (params: { key: string; value: string }) => void
   onClearAllFilters: () => void
 }
 
-const FiltersButton = <T extends Record<string, unknown>>({
+const Filters = <T extends Record<string, unknown>>({
   colDefs,
   filters,
   onFilterChange,
   onClearAllFilters
-}: FiltersButtonProps<T>) => {
+}: FiltersProps<T>) => {
   const filterableColumns = useMemo(
     () => colDefs.filter((col) => col.filterable),
     [colDefs]
@@ -49,15 +50,12 @@ const FiltersButton = <T extends Record<string, unknown>>({
         <div className="filters-header-content">
           <h3 className="filters-title">Column Filters</h3>
           {hasFilters && (
-            <button
-              type="button"
-              className="clear-all-button"
+            <ClearButton
               onClick={onClearAllFilters}
-              aria-label="Clear all filters"
+              className="header-clear"
+              ariaLabel="Clear all filters"
               title="Clear all filters"
-            >
-              <ClearIcon />
-            </button>
+            />
           )}
         </div>
       </header>
@@ -74,27 +72,15 @@ const FiltersButton = <T extends Record<string, unknown>>({
               <label htmlFor={`filter-${col.key}`} className="filter-label">
                 {col.title}
               </label>
-              <div className="filter-input-wrapper">
-                <input
-                  id={`filter-${col.key}`}
-                  type="text"
-                  className="filter-input"
-                  placeholder={`Filter by ${col.title.toLowerCase()}...`}
-                  value={value}
-                  onChange={(e) => handleInputChange(col.key, e.target.value)}
-                />
-                {value && (
-                  <button
-                    type="button"
-                    className="filter-clear-button"
-                    onClick={() => handleInputChange(col.key, "")}
-                    aria-label={`Clear ${col.title} filter`}
-                    title={`Clear ${col.title} filter`}
-                  >
-                    <ClearIcon />
-                  </button>
-                )}
-              </div>
+              <DebouncedInput
+                id={`filter-${col.key}`}
+                className="filter-input"
+                placeholder={`Filter by ${col.title.toLowerCase()}...`}
+                value={value}
+                onChange={(newValue) => handleInputChange(col.key, newValue)}
+                clearButton={true}
+                onClear={() => handleInputChange(col.key, "")}
+              />
             </div>
           )
         })}
@@ -103,4 +89,4 @@ const FiltersButton = <T extends Record<string, unknown>>({
   )
 }
 
-export default memo(FiltersButton) as typeof FiltersButton
+export default memo(Filters) as typeof Filters

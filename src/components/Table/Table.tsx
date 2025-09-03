@@ -10,7 +10,6 @@ import {
 import { useColumnOrder } from "@/hooks/useColumnOrder"
 import { useColumnResize } from "@/hooks/useColumnResize"
 import { useColumnWidths } from "@/hooks/useColumnWidths"
-import useDebounce from "@/hooks/useDebounce"
 import { useInlineEdit } from "@/hooks/useInlineEdit"
 import { useSearchAndFilters } from "@/hooks/useSearchAndFilters"
 import type { ApiData, ApiResponse } from "@/types/api"
@@ -59,24 +58,20 @@ const Table = ({
   )
   const [tooltip, setTooltip] = useState<Tooltip | null>(null)
 
-  // Debounce search and filters for API calls
-  const debouncedSearch = useDebounce(search)
-  const debouncedFilters = useDebounce(filters)
-
-  // Notify parent when debounced values change (for API calls)
+  // Notify parent when search and filters change (now handled by DebouncedInput)
   useEffect(() => {
-    onSearchChange(debouncedSearch)
-  }, [debouncedSearch, onSearchChange])
+    onSearchChange(search)
+  }, [search, onSearchChange])
 
   useEffect(() => {
-    onFiltersChange(debouncedFilters)
-  }, [debouncedFilters, onFiltersChange])
+    onFiltersChange(filters)
+  }, [filters, onFiltersChange])
 
   // Reset data on search/sort/filter changes
   useEffect(() => {
     setFetchedRows([])
     setOffset(0)
-  }, [debouncedSearch, sort, debouncedFilters, setOffset])
+  }, [search, sort, filters, setOffset])
 
   // Update data when API response changes
   useEffect(() => {

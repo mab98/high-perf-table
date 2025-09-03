@@ -1,0 +1,112 @@
+.filters-menu-header {
+  padding: var(--spacing-5);
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--border-light);
+  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+  position: relative;
+}
+
+.filters-menu-header::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: var(--spacing-4);
+  right: var(--spacing-4);
+  height: 1px;
+  background: var(--blue-200);
+  border-radius: 1px;
+  opacity: 0.6;
+}
+
+.filters-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+}
+
+.filters-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+  margin: 0;
+  letter-spacing: var(--letter-spacing-tight);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.filters-menu-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  padding: var(--spacing-4);
+  max-height: 18.75rem;
+  overflow-y: auto;
+  background: var(--white);
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-3);
+  padding: var(--spacing-2) var(--spacing-3);
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-normal);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  position: relative;
+  min-width: 0;
+}
+
+.filter-item:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-default);
+}
+
+.filter-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  letter-spacing: var(--letter-spacing-normal);
+  width: 5rem;
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dropdown-menu {
+    width: 17.5rem;
+    max-width: calc(100vw - 2rem);
+  }
+
+  .filters-menu-content {
+    padding: var(--spacing-3);
+  }
+
+  .filter-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-2);
+  }
+
+  .filter-label {
+    width: auto;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .dropdown-menu {
+    width: 16.25rem;
+    max-width: calc(100vw - 1.5rem);
+  }
+
+  .filter-item {
+    padding: var(--spacing-2);
+  }
+}

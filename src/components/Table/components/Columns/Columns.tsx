@@ -1,19 +1,19 @@
-import "@/components/Table/components/ColumnsButton/ColumnsButton.css"
+import "@/components/Table/components/Columns/Columns.css"
 import DropdownButton from "@/components/Table/components/DropdownButton/DropdownButton"
 import type { Column, ColumnVisibility } from "@/types/table"
 import { memo, useCallback, useMemo } from "react"
 
-interface ColumnsButtonProps<T> {
+interface ColumnsProps<T> {
   colDefs: Column<T>[]
   visibleColumns: string[]
   onColumnVisibility: (params: ColumnVisibility) => void
 }
 
-const ColumnsButton = <T extends Record<string, unknown>>({
+const Columns = <T extends Record<string, unknown>>({
   colDefs,
   visibleColumns,
   onColumnVisibility
-}: ColumnsButtonProps<T>) => {
+}: ColumnsProps<T>) => {
   const totalCount = colDefs.length
   const visibleCount = visibleColumns.length
 
@@ -92,4 +92,4 @@ const ColumnsButton = <T extends Record<string, unknown>>({
   )
 }
 
-export default memo(ColumnsButton) as typeof ColumnsButton
+export default memo(Columns) as typeof Columns

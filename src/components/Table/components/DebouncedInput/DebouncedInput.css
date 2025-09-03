@@ -1,0 +1,47 @@
+.debounced-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.debounced-input-icon {
+  position: absolute;
+  left: 12px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  color: var(--text-secondary);
+}
+
+.debounced-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--border-radius-md);
+  font-size: var(--font-size-sm);
+  background-color: var(--bg-canvas);
+  color: var(--text-primary);
+  transition: border-color var(--transition-normal);
+}
+
+.debounced-input:focus {
+  outline: none;
+  border-color: var(--border-interactive);
+}
+
+.debounced-input:disabled {
+  background-color: var(--bg-disabled);
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.debounced-input-wrapper:has(.debounced-input-icon) .debounced-input {
+  padding-left: 40px;
+}
+
+.debounced-input-wrapper:has(.clear-button.input-clear) .debounced-input {
+  padding-right: 40px;
+}

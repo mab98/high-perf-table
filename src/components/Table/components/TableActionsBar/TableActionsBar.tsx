@@ -1,5 +1,5 @@
-import ColumnsButton from "@/components/Table/components/ColumnsButton/ColumnsButton"
-import FiltersButton from "@/components/Table/components/FiltersButton/FiltersButton"
+import Columns from "@/components/Table/components/Columns/Columns"
+import Filters from "@/components/Table/components/Filters/Filters"
 import "@/components/Table/components/TableActionsBar/TableActionsBar.css"
 import TableSearch from "@/components/Table/components/TableSearch/TableSearch"
 import type { Column, ColumnVisibility } from "@/types/table"
@@ -36,14 +36,14 @@ const TableActionsBar = <T extends Record<string, unknown>>({
       </div>
       <div className="table-actions-right">
         {onFilterChange && onClearAllFilters && (
-          <FiltersButton
+          <Filters
             colDefs={colDefs}
             filters={filters}
             onFilterChange={onFilterChange}
             onClearAllFilters={onClearAllFilters}
           />
         )}
-        <ColumnsButton
+        <Columns
           colDefs={colDefs}
           visibleColumns={visibleColumns}
           onColumnVisibility={onColumnVisibility}
