@@ -35,7 +35,8 @@ export const colDefs: Column<ApiData>[] = [
     editable: true,
     sortable: true,
     filterable: true,
-    resizable: true
+    resizable: true,
+    tooltip: true
   },
   {
     key: "lastName",
@@ -44,7 +45,8 @@ export const colDefs: Column<ApiData>[] = [
     editable: true,
     sortable: true,
     filterable: true,
-    resizable: true
+    resizable: true,
+    tooltip: true
   },
   {
     key: "email",
@@ -54,6 +56,7 @@ export const colDefs: Column<ApiData>[] = [
     sortable: true,
     filterable: true,
     resizable: true,
+    tooltip: true,
     renderer: renderEmail
   },
   {
@@ -61,7 +64,8 @@ export const colDefs: Column<ApiData>[] = [
     title: "Phone",
     width: 180,
     editable: true,
-    resizable: true
+    resizable: true,
+    tooltip: true
   },
   {
     key: "dateOfBirth",
@@ -79,7 +83,8 @@ export const colDefs: Column<ApiData>[] = [
     editable: true,
     sortable: true,
     filterable: true,
-    resizable: true
+    resizable: true,
+    tooltip: true
   },
   {
     key: "city",
@@ -88,7 +93,8 @@ export const colDefs: Column<ApiData>[] = [
     editable: true,
     sortable: true,
     filterable: true,
-    resizable: true
+    resizable: true,
+    tooltip: true
   },
   {
     key: "country",
@@ -97,7 +103,8 @@ export const colDefs: Column<ApiData>[] = [
     editable: true,
     sortable: true,
     filterable: true,
-    resizable: true
+    resizable: true,
+    tooltip: true
   },
   {
     key: "joinDate",

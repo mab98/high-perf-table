@@ -48,7 +48,7 @@ const TableRow = <T extends Record<string, unknown>>({
     () =>
       colDefs.map((col, colIndex) => {
         const content = col.renderer ? col.renderer(row) : (row[col.key] ?? "")
-        const tooltipText = typeof content === "string" ? content : ""
+        const tooltipText = col.tooltip ? String(row[col.key] || "") : ""
         const widthInfo = columnWidths[colIndex]
         const isCurrentlyEditing = isEditing?.(rowId, col.key) || false
         const currentValue =

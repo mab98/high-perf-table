@@ -8,6 +8,7 @@ export type Column<T> = {
   sortable?: boolean
   filterable?: boolean
   resizable?: boolean
+  tooltip?: boolean
   renderer?: (rowData: T) => ReactNode
 }
 
