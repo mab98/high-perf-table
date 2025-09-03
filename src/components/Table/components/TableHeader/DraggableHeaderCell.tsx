@@ -82,6 +82,7 @@ const DraggableHeaderCell = <T,>({
       <div className="header-content">
         <div className="header-left">
           <span className="header-title">{col.title}</span>
+          {renderSortIcon(col, sortDirection)}
           {typeof col.editable === "object" &&
             col.editable.showEditIconInHeader && (
               <span className="edit-indicator" title="This column is editable">
@@ -89,7 +90,6 @@ const DraggableHeaderCell = <T,>({
               </span>
             )}
         </div>
-        {renderSortIcon(col, sortDirection)}
       </div>
     </div>
   )

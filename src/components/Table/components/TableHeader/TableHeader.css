@@ -77,9 +77,7 @@
 .header-content {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   width: 100%;
-  gap: var(--spacing-2);
   cursor: pointer;
 }
 
