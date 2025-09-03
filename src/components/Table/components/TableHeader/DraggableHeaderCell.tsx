@@ -1,4 +1,5 @@
 import "@/components/Table/components/TableHeader/TableHeader.css"
+import { EditIcon } from "@/components/Table/Icons/Icons"
 import type { Column } from "@/types/table"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
@@ -79,7 +80,15 @@ const DraggableHeaderCell = <T,>({
       {...listeners}
     >
       <div className="header-content">
-        <span className="header-title">{col.title}</span>
+        <div className="header-left">
+          <span className="header-title">{col.title}</span>
+          {typeof col.editable === "object" &&
+            col.editable.showEditIconInHeader && (
+              <span className="edit-indicator" title="This column is editable">
+                <EditIcon />
+              </span>
+            )}
+        </div>
         {renderSortIcon(col, sortDirection)}
       </div>
     </div>

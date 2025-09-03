@@ -37,6 +37,7 @@ interface TableContentProps<T> {
   // Inline editing props
   isEditing?: (rowId: string | number, columnKey: string) => boolean
   editValue?: string
+  editError?: string
   onStartEdit?: (
     rowId: string | number,
     columnKey: string,
@@ -72,6 +73,7 @@ const TableContent = <T extends Record<string, unknown>>({
   // Inline editing props
   isEditing,
   editValue,
+  editError,
   onStartEdit,
   onCancelEdit,
   onSaveEdit,
@@ -121,6 +123,7 @@ const TableContent = <T extends Record<string, unknown>>({
         onCellHover={onCellHover}
         isEditing={isEditing}
         editValue={editValue}
+        editError={editError}
         onStartEdit={onStartEdit}
         onCancelEdit={onCancelEdit}
         onSaveEdit={onSaveEdit}
@@ -134,6 +137,7 @@ const TableContent = <T extends Record<string, unknown>>({
       onCellHover,
       isEditing,
       editValue,
+      editError,
       onStartEdit,
       onCancelEdit,
       onSaveEdit,

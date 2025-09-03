@@ -15,6 +15,7 @@ interface TableRowProps<T> {
   // Inline editing props
   isEditing?: (rowId: string | number, columnKey: string) => boolean
   editValue?: string
+  editError?: string
   onStartEdit?: (
     rowId: string | number,
     columnKey: string,
@@ -34,6 +35,7 @@ const TableRow = <T extends Record<string, unknown>>({
   onCellHover,
   isEditing,
   editValue,
+  editError,
   onStartEdit,
   onCancelEdit,
   onSaveEdit,
@@ -68,13 +70,14 @@ const TableRow = <T extends Record<string, unknown>>({
             tooltipText={tooltipText}
             style={cellStyle}
             onHover={onCellHover}
-            isEditable={col.editable}
+            isEditable={!!col.editable}
             isEditing={isCurrentlyEditing}
             editValue={
               isCurrentlyEditing && editValue !== undefined
                 ? editValue
                 : currentValue
             }
+            editError={isCurrentlyEditing ? editError : undefined}
             onStartEdit={() => onStartEdit?.(rowId, col.key, currentValue)}
             onCancelEdit={onCancelEdit}
             onSaveEdit={onSaveEdit}
@@ -90,6 +93,7 @@ const TableRow = <T extends Record<string, unknown>>({
       rowId,
       isEditing,
       editValue,
+      editError,
       onStartEdit,
       onCancelEdit,
       onSaveEdit,

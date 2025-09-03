@@ -60,6 +60,29 @@
   cursor: pointer;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  overflow: hidden;
+  flex: 1;
+}
+
+.edit-indicator {
+  display: flex;
+  align-items: center;
+  color: var(--purple-400);
+  opacity: 0.7;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.table-header.sortable:hover .edit-indicator,
+.table-header:hover .edit-indicator {
+  opacity: 1;
+  color: var(--purple-500);
+}
+
 .header-title {
   overflow: hidden;
   text-overflow: ellipsis;

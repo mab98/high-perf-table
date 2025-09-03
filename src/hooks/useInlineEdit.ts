@@ -4,6 +4,7 @@ export interface EditState {
   rowId: string | number
   columnKey: string
   value: string
+  error?: string // Add error field
 }
 
 export interface UseInlineEditReturn {
@@ -53,26 +54,21 @@ export const useInlineEdit = ({
   }, [onCancel])
 
   const saveEdit = useCallback(async () => {
-    console.log("saveEdit called, editState:", editState)
     if (!editState) return
 
     // Validate the value if validator is provided
     if (onValidate) {
       const validationError = onValidate(editState.columnKey, editState.value)
       if (validationError) {
-        console.error("Validation error:", validationError)
-        // Could emit an error event or show toast notification
+        // Update edit state with error to show in UI
+        setEditState((prev) =>
+          prev ? { ...prev, error: validationError } : null
+        )
         return
       }
     }
 
     try {
-      console.log(
-        "Calling onSave with:",
-        editState.rowId,
-        editState.columnKey,
-        editState.value
-      )
       await onSave?.(editState.rowId, editState.columnKey, editState.value)
       setEditState(null)
     } catch (error) {
@@ -82,7 +78,7 @@ export const useInlineEdit = ({
   }, [editState, onSave, onValidate])
 
   const updateEditValue = useCallback((value: string) => {
-    setEditState((prev) => (prev ? { ...prev, value } : null))
+    setEditState((prev) => (prev ? { ...prev, value, error: undefined } : null))
   }, [])
 
   const isEditing = useCallback(

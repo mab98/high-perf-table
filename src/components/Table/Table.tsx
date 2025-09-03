@@ -134,7 +134,6 @@ const Table = ({
   // Inline editing functionality - memoize callbacks for stability
   const handleSave = useCallback(
     async (rowId: string | number, columnKey: string, value: string) => {
-      console.log("onSave called with:", { rowId, columnKey, value })
       // Update the local data optimistically
       setFetchedRows((prevRows) =>
         prevRows.map((row) =>
@@ -144,34 +143,32 @@ const Table = ({
 
       // Here you would typically make an API call to save the data
       // await saveDataToAPI(rowId, columnKey, value)
-      console.log("Saving edit:", { rowId, columnKey, value })
     },
     []
   )
 
   const handleCancel = useCallback(() => {
-    console.log("Edit cancelled")
+    // Edit operation cancelled - no action needed
   }, [])
 
-  const handleValidate = useCallback((columnKey: string, value: string) => {
-    // Basic validation for email fields
-    if (columnKey === "email") {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!emailRegex.test(value)) {
-        return "Please enter a valid email address"
+  const handleValidate = useCallback(
+    (columnKey: string, value: string) => {
+      // Find the column definition for this key
+      const colDef = orderedColDefs.find((col) => col.key === columnKey)
+
+      // If column has validation function, use it
+      if (
+        colDef?.editable &&
+        typeof colDef.editable === "object" &&
+        colDef.editable.validation
+      ) {
+        return colDef.editable.validation(value)
       }
-    }
 
-    // Validation for required fields
-    if (
-      ["firstName", "lastName", "email"].includes(columnKey) &&
-      !value.trim()
-    ) {
-      return "This field is required"
-    }
-
-    return null // No validation error
-  }, [])
+      return null // No validation error
+    },
+    [orderedColDefs]
+  )
 
   const {
     editState,
@@ -296,6 +293,7 @@ const Table = ({
             onResizeEnd={handleResizeEnd}
             isEditing={isEditing}
             editValue={editState?.value}
+            editError={editState?.error}
             onStartEdit={startEdit}
             onCancelEdit={cancelEdit}
             onSaveEdit={saveEdit}

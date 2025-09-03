@@ -11,6 +11,7 @@ interface TableCellProps {
   isEditable?: boolean
   isEditing?: boolean
   editValue?: string
+  editError?: string
   onStartEdit?: () => void
   onCancelEdit?: () => void
   onSaveEdit?: () => void
@@ -26,6 +27,7 @@ const TableCell: React.FC<TableCellProps> = ({
   isEditable = false,
   isEditing = false,
   editValue = "",
+  editError,
   onStartEdit,
   onCancelEdit,
   onSaveEdit,
@@ -104,8 +106,15 @@ const TableCell: React.FC<TableCellProps> = ({
   const handleInputBlur = useCallback(() => {
     // Ensure the latest value is saved
     onEditValueChange?.(localValue)
-    onSaveEdit?.()
-  }, [localValue, onEditValueChange, onSaveEdit])
+
+    // If there's a validation error, cancel the edit (same as Escape)
+    if (editError) {
+      onCancelEdit?.()
+    } else {
+      // If no validation error, save the edit (same as Enter)
+      onSaveEdit?.()
+    }
+  }, [localValue, onEditValueChange, onSaveEdit, onCancelEdit, editError])
 
   useEffect(() => {
     return () => onHover?.("", null)
@@ -125,14 +134,20 @@ const TableCell: React.FC<TableCellProps> = ({
       onDoubleClick={handleDoubleClick}
     >
       {isEditing ? (
-        <input
-          ref={inputRef}
-          className="table-cell__input"
-          value={localValue}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          onBlur={handleInputBlur}
-        />
+        <div className="table-cell__edit-container">
+          <input
+            ref={inputRef}
+            className={clsx(
+              "table-cell__input",
+              editError && "table-cell__input--error"
+            )}
+            value={localValue}
+            onChange={handleInputChange}
+            onKeyDown={handleKeyDown}
+            onBlur={handleInputBlur}
+          />
+          {editError && <div className="table-cell__error">{editError}</div>}
+        </div>
       ) : (
         <div className="cell-value">{content}</div>
       )}
