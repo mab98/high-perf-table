@@ -26,6 +26,7 @@ function App() {
         colDefs={colDefs}
         apiData={data}
         loading={isLoading}
+        error={error}
         onApiParamsChange={onApiParamsChange}
         renderStrategy={renderStrategy}
         fetchingMode={fetchingMode}

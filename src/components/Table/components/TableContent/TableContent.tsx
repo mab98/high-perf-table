@@ -3,7 +3,11 @@ import SkeletonRow from "@/components/Table/components/SkeletonRow/SkeletonRow"
 import "@/components/Table/components/TableContent/TableContent.css"
 import TableHeader from "@/components/Table/components/TableHeader/TableHeader"
 import TableRow from "@/components/Table/components/TableRow/TableRow"
-import { ColumnsIcon, SearchIcon } from "@/components/Table/Icons/Icons"
+import {
+  ColumnsIcon,
+  ErrorIcon,
+  SearchIcon
+} from "@/components/Table/Icons/Icons"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
 import type { ApiData } from "@/types/api"
 import type { Column, RenderStrategy, Sort } from "@/types/table"
@@ -58,6 +62,7 @@ interface TableContentProps {
   data: ApiData[]
   colDefs: Column<ApiData>[]
   loading: boolean
+  error?: Error | null
   numberOfRows: number
   tableWidth?: number
   hasNoVisibleColumns?: boolean
@@ -76,6 +81,7 @@ const TableContent = ({
   data,
   colDefs,
   loading,
+  error,
   numberOfRows,
   tableWidth,
   hasNoVisibleColumns = false,
@@ -234,6 +240,28 @@ const TableContent = ({
     []
   )
 
+  const errorState = useMemo(
+    () => (
+      <div className="error-state-container">
+        {renderHeader()}
+        <BlankSlate
+          title="Failed to load data"
+          icon={<ErrorIcon size="48" />}
+          subtitle={
+            error?.message ||
+            "An unexpected error occurred while loading the data."
+          }
+          actionButton={{
+            text: "Try Again",
+            onClick: () => window.location.reload()
+          }}
+        />
+      </div>
+    ),
+    [error, renderHeader]
+  )
+
+  if (error) return errorState
   if (hasNoVisibleColumns) return noColumnsState
   if (loading && data.length === 0) return skeletonContent
   if (data.length === 0) return emptyState

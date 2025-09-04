@@ -33,6 +33,7 @@ interface TableProps {
   colDefs: Column<ApiData>[]
   apiData?: ApiResponse<ApiData>
   loading: boolean
+  error?: Error | null
   onApiParamsChange: (params: ApiParams) => void
   tableWidth?: number
   tableHeight?: number
@@ -46,6 +47,7 @@ const Table = ({
   colDefs,
   apiData,
   loading,
+  error,
   onApiParamsChange,
   tableWidth = DEFAULT_TABLE_WIDTH,
   tableHeight = DEFAULT_TABLE_HEIGHT,
@@ -363,6 +365,7 @@ const Table = ({
             data={dataWithEdits}
             colDefs={enhancedColDefs}
             loading={effectiveLoading}
+            error={error}
             numberOfRows={
               effectivePaginationMode === "manual"
                 ? paginationState.pageSize
