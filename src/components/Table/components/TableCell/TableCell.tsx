@@ -1,6 +1,7 @@
 import "@/components/Table/components/TableCell/TableCell.css"
+import { useTableCellEdit } from "@/hooks/useTableCellEdit"
 import clsx from "clsx"
-import React, { memo, useCallback, useEffect, useRef, useState } from "react"
+import React, { memo } from "react"
 
 interface TableCellProps {
   content: React.ReactNode
@@ -35,91 +36,27 @@ const TableCell: React.FC<TableCellProps> = ({
   onSaveEdit,
   onEditValueChange
 }) => {
-  const inputRef = useRef<HTMLInputElement>(null)
-  const [localValue, setLocalValue] = useState("")
-
-  // Initialize local value when editing starts (only run when isEditing changes)
-  useEffect(() => {
-    if (isEditing) {
-      // Clear any existing tooltip when entering edit mode
-      onHover?.("", null)
-
-      // Get the current editValue at the time editing starts
-      const currentEditValue = editValue
-      setLocalValue(currentEditValue)
-      // Use setTimeout to ensure the input is rendered before focusing
-      setTimeout(() => {
-        if (inputRef.current) {
-          inputRef.current.focus()
-          // Position cursor at the end instead of selecting all text
-          const length = inputRef.current.value.length
-          inputRef.current.setSelectionRange(length, length)
-        }
-      }, 0)
-    }
-  }, [isEditing, editValue, onHover])
-
-  const handleMouseEnter = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      // Don't show tooltip during edit mode
-      if (!isEditing && tooltipText.trim()) {
-        onHover?.(tooltipText, e.currentTarget)
-      }
-    },
-    [tooltipText, onHover, isEditing]
-  )
-
-  const handleMouseLeave = useCallback(() => {
-    onHover?.("", null)
-  }, [onHover])
-
-  const handleDoubleClick = useCallback(() => {
-    if (isEditable && !isEditing) {
-      onStartEdit?.()
-    }
-  }, [isEditable, isEditing, onStartEdit])
-
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Enter") {
-        e.preventDefault()
-        // Ensure the latest value is saved
-        onEditValueChange?.(localValue)
-        onSaveEdit?.()
-      } else if (e.key === "Escape") {
-        e.preventDefault()
-        onCancelEdit?.()
-      }
-    },
-    [localValue, onEditValueChange, onSaveEdit, onCancelEdit]
-  )
-
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value
-      setLocalValue(newValue)
-      // Update the edit state in real-time but with local state for stability
-      onEditValueChange?.(newValue)
-    },
-    [onEditValueChange]
-  )
-
-  const handleInputBlur = useCallback(() => {
-    // Ensure the latest value is saved
-    onEditValueChange?.(localValue)
-
-    // If there's a validation error, cancel the edit (same as Escape)
-    if (editError) {
-      onCancelEdit?.()
-    } else {
-      // If no validation error, save the edit (same as Enter)
-      onSaveEdit?.()
-    }
-  }, [localValue, onEditValueChange, onSaveEdit, onCancelEdit, editError])
-
-  useEffect(() => {
-    return () => onHover?.("", null)
-  }, [onHover])
+  const {
+    inputRef,
+    localValue,
+    onMouseEnter,
+    onMouseLeave,
+    onDoubleClick,
+    onKeyDown,
+    onInputChange,
+    onInputBlur
+  } = useTableCellEdit({
+    isEditable,
+    isEditing,
+    editValue,
+    editError,
+    tooltipText,
+    onHover,
+    onStartEdit,
+    onCancelEdit,
+    onSaveEdit,
+    onEditValueChange
+  })
 
   return (
     <div
@@ -131,9 +68,9 @@ const TableCell: React.FC<TableCellProps> = ({
       )}
       style={style}
       data-cell-key={columnKey}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onDoubleClick={handleDoubleClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onDoubleClick={onDoubleClick}
     >
       {isEditing ? (
         <div className="table-cell__edit-container">
@@ -144,9 +81,9 @@ const TableCell: React.FC<TableCellProps> = ({
               editError && "table-cell__input--error"
             )}
             value={localValue}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onBlur={handleInputBlur}
+            onChange={onInputChange}
+            onKeyDown={onKeyDown}
+            onBlur={onInputBlur}
           />
           {editError && <div className="table-cell__error">{editError}</div>}
         </div>

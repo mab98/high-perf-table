@@ -1,15 +1,8 @@
 import { DropdownArrow } from "@/components/Table/Icons/Icons"
 import "@/components/Table/components/DropdownButton/DropdownButton.css"
+import { useDropdown } from "@/hooks/useDropdown"
 import clsx from "clsx"
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode
-} from "react"
+import { memo, useMemo, type ReactNode } from "react"
 
 interface DropdownButtonProps {
   label: string
@@ -26,35 +19,7 @@ const DropdownButton = ({
   children,
   className = ""
 }: DropdownButtonProps) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const buttonRef = useRef<HTMLButtonElement>(null)
-  const menuRef = useRef<HTMLDivElement>(null)
-
-  const closeMenu = useCallback(() => setIsMenuOpen(false), [])
-  const toggleMenu = useCallback(() => setIsMenuOpen((prev) => !prev), [])
-
-  const handleClickOutside = useCallback(
-    (event: MouseEvent) => {
-      const target = event.target as Node
-      if (
-        menuRef.current?.contains(target) ||
-        buttonRef.current?.contains(target)
-      )
-        return
-      closeMenu()
-    },
-    [closeMenu]
-  )
-
-  const handleEscapeKey = useCallback(
-    (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        closeMenu()
-        buttonRef.current?.focus()
-      }
-    },
-    [closeMenu]
-  )
+  const { isMenuOpen, buttonRef, menuRef, toggleMenu } = useDropdown()
 
   const buttonClasses = useMemo(
     () =>
@@ -69,18 +34,6 @@ const DropdownButton = ({
     () => clsx("dropdown-menu", { open: isMenuOpen }),
     [isMenuOpen]
   )
-
-  useEffect(() => {
-    if (!isMenuOpen) return
-
-    document.addEventListener("mousedown", handleClickOutside)
-    document.addEventListener("keydown", handleEscapeKey)
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-      document.removeEventListener("keydown", handleEscapeKey)
-    }
-  }, [isMenuOpen, handleClickOutside, handleEscapeKey])
 
   return (
     <div className={clsx("dropdown-button-container", className)}>

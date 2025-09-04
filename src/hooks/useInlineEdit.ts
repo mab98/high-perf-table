@@ -9,14 +9,14 @@ export interface EditState {
 
 export interface UseInlineEditReturn {
   editState: EditState | null
-  startEdit: (
+  onStartEdit: (
     rowId: string | number,
     columnKey: string,
     currentValue: string
   ) => void
-  cancelEdit: () => void
-  saveEdit: () => void
-  updateEditValue: (value: string) => void
+  onCancelEdit: () => void
+  onSaveEdit: () => void
+  onEditValueChange: (value: string) => void
   isEditing: (rowId: string | number, columnKey: string) => boolean
 }
 
@@ -37,7 +37,7 @@ export const useInlineEdit = ({
 }: UseInlineEditOptions = {}): UseInlineEditReturn => {
   const [editState, setEditState] = useState<EditState | null>(null)
 
-  const startEdit = useCallback(
+  const onStartEdit = useCallback(
     (rowId: string | number, columnKey: string, currentValue: string) => {
       setEditState({
         rowId,
@@ -48,12 +48,12 @@ export const useInlineEdit = ({
     []
   )
 
-  const cancelEdit = useCallback(() => {
+  const onCancelEdit = useCallback(() => {
     setEditState(null)
     onCancel?.()
   }, [onCancel])
 
-  const saveEdit = useCallback(async () => {
+  const onSaveEdit = useCallback(async () => {
     if (!editState) return
 
     // Validate the value if validator is provided
@@ -77,7 +77,7 @@ export const useInlineEdit = ({
     }
   }, [editState, onSave, onValidate])
 
-  const updateEditValue = useCallback((value: string) => {
+  const onEditValueChange = useCallback((value: string) => {
     setEditState((prev) => (prev ? { ...prev, value, error: undefined } : null))
   }, [])
 
@@ -90,10 +90,10 @@ export const useInlineEdit = ({
 
   return {
     editState,
-    startEdit,
-    cancelEdit,
-    saveEdit,
-    updateEditValue,
+    onStartEdit,
+    onCancelEdit,
+    onSaveEdit,
+    onEditValueChange,
     isEditing
   }
 }

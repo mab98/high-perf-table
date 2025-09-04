@@ -2,8 +2,9 @@ import ClearButton from "@/components/Table/components/ClearButton/ClearButton"
 import DebouncedInput from "@/components/Table/components/DebouncedInput/DebouncedInput"
 import DropdownButton from "@/components/Table/components/DropdownButton/DropdownButton"
 import "@/components/Table/components/Filters/Filters.css"
+import { useFilters } from "@/hooks/useFilters"
 import type { Column } from "@/types/table"
-import { memo, useCallback, useMemo } from "react"
+import { memo } from "react"
 
 interface FiltersProps<T> {
   colDefs: Column<T>[]
@@ -18,26 +19,17 @@ const Filters = <T extends Record<string, unknown>>({
   onFilterChange,
   onClearAllFilters
 }: FiltersProps<T>) => {
-  const filterableColumns = useMemo(
-    () => colDefs.filter((col) => col.filterable),
-    [colDefs]
-  )
-
-  const activeFilterCount = useMemo(
-    () => Object.values(filters).filter((v) => v.trim() !== "").length,
-    [filters]
-  )
-  const hasFilters = activeFilterCount > 0
-
-  const filterLabel = useMemo(
-    () => (hasFilters ? `Filters (${activeFilterCount})` : "Filters"),
-    [hasFilters, activeFilterCount]
-  )
-
-  const handleInputChange = useCallback(
-    (key: string, value: string) => onFilterChange({ key, value }),
-    [onFilterChange]
-  )
+  const {
+    filterableColumns,
+    activeFilterCount,
+    hasFilters,
+    filterLabel,
+    onInputChange
+  } = useFilters({
+    colDefs,
+    filters,
+    onFilterChange
+  })
 
   return (
     <DropdownButton
@@ -77,9 +69,9 @@ const Filters = <T extends Record<string, unknown>>({
                 className="filter-input"
                 placeholder={`Filter by ${col.title.toLowerCase()}...`}
                 value={value}
-                onChange={(newValue) => handleInputChange(col.key, newValue)}
+                onChange={(newValue) => onInputChange(col.key, newValue)}
                 clearButton={true}
-                onClear={() => handleInputChange(col.key, "")}
+                onClear={() => onInputChange(col.key, "")}
               />
             </div>
           )

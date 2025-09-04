@@ -5,7 +5,7 @@ import { useCallback, useMemo, useState } from "react"
 interface UseColumnOrderReturn<T> {
   columnOrder: string[]
   orderedColDefs: Column<T>[]
-  handleColumnReorder: (activeId: string, overId: string) => void
+  onColumnReorder: (activeId: string, overId: string) => void
   setColumnOrder: (order: string[]) => void
 }
 
@@ -23,21 +23,18 @@ export const useColumnOrder = <T>(
       .filter((col): col is Column<T> => col !== undefined)
   }, [colDefs, columnOrder])
 
-  const handleColumnReorder = useCallback(
-    (activeId: string, overId: string) => {
-      setColumnOrder((items) => {
-        const oldIndex = items.indexOf(activeId)
-        const newIndex = items.indexOf(overId)
-        return arrayMove(items, oldIndex, newIndex)
-      })
-    },
-    []
-  )
+  const onColumnReorder = useCallback((activeId: string, overId: string) => {
+    setColumnOrder((items) => {
+      const oldIndex = items.indexOf(activeId)
+      const newIndex = items.indexOf(overId)
+      return arrayMove(items, oldIndex, newIndex)
+    })
+  }, [])
 
   return {
     columnOrder,
     orderedColDefs,
-    handleColumnReorder,
+    onColumnReorder,
     setColumnOrder
   }
 }

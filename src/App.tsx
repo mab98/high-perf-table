@@ -5,22 +5,13 @@ import { colDefs } from "@/config/colDefs"
 import { PAGE_SIZE } from "@/constants"
 import { useApiData } from "@/hooks/useApiData"
 import { useState } from "react"
-import type { Sort } from "./types/table"
+import type { ApiParams } from "./types/api"
 
 function App() {
-  // API-related states
-  const [search, setSearch] = useState("")
-  const [filters, setFilters] = useState<Record<string, string>>({})
-  const [sort, setSort] = useState<Sort | undefined>()
-  const [offset, setOffset] = useState(0)
-
-  const apiParams = {
+  const [apiParams, setApiParams] = useState<ApiParams>({
     limit: PAGE_SIZE,
-    offset: offset * PAGE_SIZE,
-    sort: sort && sort.column ? `${sort.column},${sort.direction}` : undefined,
-    search,
-    filters
-  }
+    offset: 0
+  })
 
   const { data, isLoading, error } = useApiData(apiParams)
 
@@ -35,14 +26,9 @@ function App() {
 
       <Table
         colDefs={colDefs}
-        data={data}
+        apiData={data}
         loading={isLoading}
-        onSearchChange={setSearch}
-        onFiltersChange={setFilters}
-        sort={sort}
-        setSort={setSort}
-        offset={offset}
-        setOffset={setOffset}
+        onApiParamsChange={setApiParams}
       />
     </div>
   )

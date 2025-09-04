@@ -5,26 +5,20 @@ import TableHeader from "@/components/Table/components/TableHeader/TableHeader"
 import TableRow from "@/components/Table/components/TableRow/TableRow"
 import { ColumnsIcon, SearchIcon } from "@/components/Table/Icons/Icons"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
+import type { ApiData } from "@/types/api"
 import type { Column, Sort } from "@/types/table"
 import { useCallback, useMemo } from "react"
 import { TableVirtuoso } from "react-virtuoso"
 
-interface TableContentProps<T> {
-  data: T[]
-  colDefs: Column<T>[]
-  loading: boolean
+interface SortingProps {
   sort?: Sort | null
   onSort?: (params: Sort) => void
   onClearSort: () => void
+}
+
+interface ColumnManagementProps {
   columnWidths: ColumnWidthInfo[]
-  onCellHover: (text: string, element: HTMLElement | null) => void
-  onEndReached: () => void
-  numberOfRows: number
-  hasSearchOrFilters: boolean
-  onClearAll?: () => void
   onColumnReorder?: (activeId: string, overId: string) => void
-  tableWidth?: number
-  hasNoVisibleColumns?: boolean
   isResizing?: boolean
   resizingColumn?: string | null
   onResizeStart?: (
@@ -34,7 +28,9 @@ interface TableContentProps<T> {
   ) => void
   onResizeMove?: (clientX: number) => void
   onResizeEnd?: () => void
-  // Inline editing props
+}
+
+interface EditingProps {
   isEditing?: (rowId: string | number, columnKey: string) => boolean
   editValue?: string
   editError?: string
@@ -46,40 +42,74 @@ interface TableContentProps<T> {
   onCancelEdit?: () => void
   onSaveEdit?: () => void
   onEditValueChange?: (value: string) => void
-  getRowId?: (row: T) => string | number
 }
 
-const TableContent = <T extends Record<string, unknown>>({
+interface InteractionProps {
+  onCellHover: (text: string, element: HTMLElement | null) => void
+  onEndReached: () => void
+  isSearchOrFilterActive: boolean
+  onClearAll?: () => void
+  getRowId?: (row: ApiData) => string | number
+}
+
+interface TableContentProps {
+  // Core data props
+  data: ApiData[]
+  colDefs: Column<ApiData>[]
+  loading: boolean
+  numberOfRows: number
+  tableWidth?: number
+  hasNoVisibleColumns?: boolean
+
+  // Grouped props
+  sorting: SortingProps
+  columnManagement: ColumnManagementProps
+  editing: EditingProps
+  interactions: InteractionProps
+}
+
+const TableContent = ({
   data,
   colDefs,
   loading,
-  sort,
-  onSort,
-  onClearSort,
-  columnWidths,
-  onCellHover,
-  onEndReached,
   numberOfRows,
-  hasSearchOrFilters,
-  onClearAll,
-  onColumnReorder,
   tableWidth,
   hasNoVisibleColumns = false,
-  isResizing,
-  resizingColumn,
-  onResizeStart,
-  onResizeMove,
-  onResizeEnd,
-  // Inline editing props
-  isEditing,
-  editValue,
-  editError,
-  onStartEdit,
-  onCancelEdit,
-  onSaveEdit,
-  onEditValueChange,
-  getRowId
-}: TableContentProps<T>) => {
+  sorting,
+  columnManagement,
+  editing,
+  interactions
+}: TableContentProps) => {
+  const { sort, onSort, onClearSort } = sorting
+
+  const {
+    columnWidths,
+    onColumnReorder,
+    isResizing,
+    resizingColumn,
+    onResizeStart,
+    onResizeMove,
+    onResizeEnd
+  } = columnManagement
+
+  const {
+    isEditing,
+    editValue,
+    editError,
+    onStartEdit,
+    onCancelEdit,
+    onSaveEdit,
+    onEditValueChange
+  } = editing
+
+  const {
+    onCellHover,
+    onEndReached,
+    isSearchOrFilterActive,
+    onClearAll,
+    getRowId
+  } = interactions
+
   const renderHeader = useCallback(
     () => (
       <TableHeader
@@ -114,7 +144,7 @@ const TableContent = <T extends Record<string, unknown>>({
   )
 
   const renderRow = useCallback(
-    (index: number, row: T) => (
+    (index: number, row: ApiData) => (
       <TableRow
         row={row}
         colDefs={colDefs}
@@ -168,12 +198,12 @@ const TableContent = <T extends Record<string, unknown>>({
           title="No records found."
           icon={<SearchIcon size="48" />}
           subtitle={
-            hasSearchOrFilters
+            isSearchOrFilterActive
               ? "Try adjusting your search or filter criteria"
               : undefined
           }
           actionButton={
-            hasSearchOrFilters && onClearAll
+            isSearchOrFilterActive && onClearAll
               ? {
                   text: "Clear All Filters",
                   onClick: onClearAll
@@ -183,7 +213,7 @@ const TableContent = <T extends Record<string, unknown>>({
         />
       </div>
     ),
-    [hasSearchOrFilters, onClearAll, renderHeader]
+    [isSearchOrFilterActive, onClearAll, renderHeader]
   )
 
   const noColumnsState = useMemo(

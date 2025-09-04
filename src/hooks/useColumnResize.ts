@@ -6,15 +6,14 @@ export interface UseColumnResizeReturn {
   isResizing: boolean
   resizingColumn: string | null
   currentResizeWidth: number | null
-  handleResizeStart: (
+  onResizeStart: (
     columnKey: string,
     startX: number,
     currentWidth: number,
     clickedElement?: HTMLElement
   ) => void
-  handleResizeMove: (clientX: number) => void
-  handleResizeEnd: () => void
-  handleDoubleClickResize: (columnKey: string) => void
+  onResizeMove: (clientX: number) => void
+  onResizeEnd: () => void
   resetColumnWidth: (columnKey: string) => void
   resetAllWidths: () => void
 }
@@ -110,7 +109,7 @@ export const useColumnResize = (): UseColumnResizeReturn => {
     []
   )
 
-  const handleResizeStart = useCallback(
+  const onResizeStart = useCallback(
     (
       columnKey: string,
       startX: number,
@@ -137,7 +136,7 @@ export const useColumnResize = (): UseColumnResizeReturn => {
     [cleanupHandles]
   )
 
-  const handleResizeMove = useCallback(
+  const onResizeMove = useCallback(
     (clientX: number) => {
       if (!resizeState) return
       const { startX, startWidth, columnKey } = resizeState
@@ -157,7 +156,7 @@ export const useColumnResize = (): UseColumnResizeReturn => {
     [resizeState, updateResizeHandlesPosition]
   )
 
-  const handleResizeEnd = useCallback(() => {
+  const onResizeEnd = useCallback(() => {
     // Keep resizing state active during cleanup to maintain disabled transitions
     cleanupHandles()
 
@@ -200,10 +199,9 @@ export const useColumnResize = (): UseColumnResizeReturn => {
     isResizing,
     resizingColumn,
     currentResizeWidth,
-    handleResizeStart,
-    handleResizeMove,
-    handleResizeEnd,
-    handleDoubleClickResize: resetColumnWidth, // same logic
+    onResizeStart,
+    onResizeMove,
+    onResizeEnd,
     resetColumnWidth,
     resetAllWidths: () => setCustomWidths({})
   }

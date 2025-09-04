@@ -18,3 +18,11 @@ export type ApiResponse<T> = {
   limit: number
   offset: number
 }
+
+export type ApiParams = {
+  limit: number
+  offset: number
+  sort?: string
+  search?: string
+  filters?: Record<string, string>
+}

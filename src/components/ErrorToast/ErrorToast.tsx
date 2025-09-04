@@ -1,17 +1,13 @@
 import "@/components/ErrorToast/ErrorToast.css"
 import { ClearIcon } from "@/components/Table/Icons/Icons"
-import { useState } from "react"
+import { useToast } from "@/hooks/useToast"
 
 interface ErrorToastProps {
   message: string
 }
 
 const ErrorToast: React.FC<ErrorToastProps> = ({ message }) => {
-  const [isVisible, setIsVisible] = useState(true)
-
-  const handleClose = () => {
-    setIsVisible(false)
-  }
+  const { isVisible, onClose } = useToast(true)
 
   if (!isVisible) return null
 
@@ -24,7 +20,7 @@ const ErrorToast: React.FC<ErrorToastProps> = ({ message }) => {
       </div>
       <button
         className="error-toast-close"
-        onClick={handleClose}
+        onClick={onClose}
         aria-label="Close error notification"
         type="button"
       >

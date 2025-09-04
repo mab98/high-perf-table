@@ -1,6 +1,5 @@
 import ClearButton from "@/components/Table/components/ClearButton/ClearButton"
-import useDebounce from "@/hooks/useDebounce"
-import { useCallback, useEffect, useState } from "react"
+import { useDebouncedInput } from "@/hooks/useDebouncedInput"
 import "./DebouncedInput.css"
 
 interface DebouncedInputProps {
@@ -30,37 +29,16 @@ const DebouncedInput = ({
   onClear,
   icon
 }: DebouncedInputProps) => {
-  const [localValue, setLocalValue] = useState(value)
-
-  // Update local value when external value changes
-  useEffect(() => {
-    setLocalValue(value)
-  }, [value])
-
-  const debouncedValue = useDebounce(localValue, delay)
-
-  // Call onChange when debounced value changes
-  useEffect(() => {
-    if (debouncedValue !== value) {
-      onChange(debouncedValue)
-    }
-  }, [debouncedValue, onChange, value])
-
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setLocalValue(e.target.value)
-    },
-    []
-  )
-
-  const handleClear = useCallback(() => {
-    setLocalValue("")
-    if (onClear) {
-      onClear()
-    } else {
-      onChange("")
-    }
-  }, [onChange, onClear])
+  const {
+    localValue,
+    onInputChange,
+    onClear: handleClear
+  } = useDebouncedInput({
+    value,
+    onChange,
+    delay,
+    onClear
+  })
 
   return (
     <div className="debounced-input-wrapper">
@@ -71,7 +49,7 @@ const DebouncedInput = ({
         className={`debounced-input ${className}`}
         placeholder={placeholder}
         value={localValue}
-        onChange={handleInputChange}
+        onChange={onInputChange}
         disabled={disabled}
       />
       {clearButton && localValue && !disabled && (

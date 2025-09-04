@@ -1,7 +1,8 @@
 import "@/components/Table/components/Columns/Columns.css"
 import DropdownButton from "@/components/Table/components/DropdownButton/DropdownButton"
+import { useColumns } from "@/hooks/useColumns"
 import type { Column, ColumnVisibility } from "@/types/table"
-import { memo, useCallback, useMemo } from "react"
+import { memo, useCallback } from "react"
 
 interface ColumnsProps<T> {
   colDefs: Column<T>[]
@@ -14,52 +15,19 @@ const Columns = <T extends Record<string, unknown>>({
   visibleColumns,
   onColumnVisibility
 }: ColumnsProps<T>) => {
-  // Filter out columns that should always stay visible
-  const toggleableColumns = useMemo(
-    () => colDefs.filter((col) => !col.alwaysVisible),
-    [colDefs]
-  )
-
-  const alwaysVisibleColumns = useMemo(
-    () => colDefs.filter((col) => col.alwaysVisible),
-    [colDefs]
-  )
-
-  const totalCount = toggleableColumns.length
-  const visibleToggleableColumns = useMemo(
-    () =>
-      visibleColumns.filter((key) =>
-        toggleableColumns.some((col) => col.key === key)
-      ),
-    [visibleColumns, toggleableColumns]
-  )
-  const visibleCount = visibleToggleableColumns.length
-
-  const isAllVisible = visibleCount === totalCount
-  const isNoneVisible = visibleCount === 0
-  const isIndeterminate = !isAllVisible && !isNoneVisible
-
-  const columnsLabel = useMemo(
-    () => `Columns (${visibleCount}/${totalCount})`,
-    [visibleCount, totalCount]
-  )
-
-  const handleToggleAll = useCallback(() => {
-    // When toggling all, only affect toggleable columns
-    onColumnVisibility({ visible: !isAllVisible, all: true })
-  }, [isAllVisible, onColumnVisibility])
-
-  const handleColumnChange = useCallback(
-    (key: string, visible: boolean) => onColumnVisibility({ key, visible }),
-    [onColumnVisibility]
-  )
-
-  const setCheckboxRef = useCallback(
-    (input: HTMLInputElement | null) => {
-      if (input) input.indeterminate = isIndeterminate
-    },
-    [isIndeterminate]
-  )
+  const {
+    onToggleAll,
+    onColumnChange,
+    setCheckboxRef,
+    isAllVisible,
+    toggleableColumns,
+    alwaysVisibleColumns,
+    columnsLabel
+  } = useColumns({
+    colDefs,
+    visibleColumns,
+    onColumnVisibility
+  })
 
   const renderToggleAllCheckbox = useCallback(
     () => (
@@ -68,13 +36,13 @@ const Columns = <T extends Record<string, unknown>>({
           type="checkbox"
           checked={isAllVisible}
           ref={setCheckboxRef}
-          onChange={handleToggleAll}
+          onChange={onToggleAll}
           className="column-checkbox"
         />
         <span className="column-label">Show/Hide All</span>
       </label>
     ),
-    [isAllVisible, setCheckboxRef, handleToggleAll]
+    [isAllVisible, setCheckboxRef, onToggleAll]
   )
 
   const renderColumnCheckbox = useCallback(
@@ -85,14 +53,14 @@ const Columns = <T extends Record<string, unknown>>({
           <input
             type="checkbox"
             checked={isVisible}
-            onChange={(e) => handleColumnChange(col.key, e.target.checked)}
+            onChange={(e) => onColumnChange(col.key, e.target.checked)}
             className="column-checkbox"
           />
           <span className="column-label">{col.title}</span>
         </label>
       )
     },
-    [visibleColumns, handleColumnChange]
+    [visibleColumns, onColumnChange]
   )
 
   return (
