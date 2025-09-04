@@ -30,6 +30,7 @@ function App() {
         loading={isLoading}
         onApiParamsChange={setApiParams}
         paginationMode="manual"
+        tableTitle="High Performance Table"
       />
     </div>
   )

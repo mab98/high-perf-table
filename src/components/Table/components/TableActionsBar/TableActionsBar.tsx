@@ -19,6 +19,7 @@ interface TableActionsBarProps<T> {
   onClearAllEdits?: () => void
   hasCustomSettings?: boolean
   onResetColumnSettings?: () => void
+  tableTitle?: string
 }
 
 const TableActionsBar = <T extends Record<string, unknown>>({
@@ -34,16 +35,18 @@ const TableActionsBar = <T extends Record<string, unknown>>({
   hasEdits = false,
   onClearAllEdits,
   hasCustomSettings = false,
-  onResetColumnSettings
+  onResetColumnSettings,
+  tableTitle
 }: TableActionsBarProps<T>) => {
   return (
     <div className="table-actions-bar">
       <div className="table-actions-left">
+        {tableTitle && <h2 className="table-title">{tableTitle}</h2>}
+      </div>
+      <div className="table-actions-right">
         {setSearch && (
           <TableSearch value={search} onChange={setSearch} disabled={loading} />
         )}
-      </div>
-      <div className="table-actions-right">
         {hasEdits && onClearAllEdits && (
           <ClearEditsButton
             onClearAllEdits={onClearAllEdits}

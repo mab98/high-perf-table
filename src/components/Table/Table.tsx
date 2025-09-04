@@ -31,6 +31,7 @@ interface TableProps {
   tableHeight?: number
   numberOfRows?: number
   paginationMode?: PaginationMode
+  tableTitle?: string
 }
 
 const Table = ({
@@ -41,7 +42,8 @@ const Table = ({
   tableWidth = DEFAULT_TABLE_WIDTH,
   tableHeight = DEFAULT_TABLE_HEIGHT,
   numberOfRows = PAGE_SIZE,
-  paginationMode = "virtualized"
+  paginationMode = "virtualized",
+  tableTitle
 }: TableProps) => {
   /** Local State */
   const [localSearch, setLocalSearch] = useState("")
@@ -296,6 +298,7 @@ const Table = ({
           onClearAllEdits={clearAllEdits}
           hasCustomSettings={hasCustomSettings}
           onResetColumnSettings={resetAllSettings}
+          tableTitle={tableTitle}
         />
 
         <div className="table-content-wrapper" style={{ height: tableHeight }}>

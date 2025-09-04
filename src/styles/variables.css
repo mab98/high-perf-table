@@ -146,8 +146,8 @@
   /* ===== COMPONENT SPECIFIC ===== */
   --cell-padding: 1rem 1.5rem;
   --menu-max-width: 25rem;
-  --search-width: 22.5rem;
-  --search-height: 3rem;
+  --search-width: 16rem;
+  --search-height: 2.5rem;
   --search-padding: 0 1.25rem 0 3.25rem;
   --search-icon-left: 1.125rem;
   --search-icon-color: var(--text-tertiary);
