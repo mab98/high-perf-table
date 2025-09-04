@@ -89,20 +89,6 @@
   flex: 1;
 }
 
-/* Edit indicator */
-.edit-indicator {
-  display: flex;
-  align-items: center;
-  color: var(--purple-400);
-  opacity: 0.7;
-  transition: all var(--transition-fast);
-  flex-shrink: 0;
-}
-.table-header:hover .edit-indicator {
-  opacity: 1;
-  color: var(--purple-500);
-}
-
 .header-title {
   overflow: hidden;
   text-overflow: ellipsis;

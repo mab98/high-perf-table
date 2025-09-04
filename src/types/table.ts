@@ -1,8 +1,7 @@
 import type { ReactNode } from "react"
 
 export type EditableConfig = {
-  validation?: (value: string) => string | null // Returns error message or null if valid
-  showEditIconInHeader?: boolean // Whether to show edit icon in column header
+  validation?: (value: string) => string | null
 }
 
 export type Column<T> = {

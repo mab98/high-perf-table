@@ -77,19 +77,3 @@ export const ColumnsIcon = ({ size = "64" }) => {
     </svg>
   )
 }
-
-export const EditIcon = () => (
-  <svg
-    width="12"
-    height="12"
-    viewBox="0 0 12 12"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    aria-hidden="true"
-  >
-    <path d="M8.5 1l2.5 2.5L4 10.5H1.5V8L8.5 1z" />
-  </svg>
-)
