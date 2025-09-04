@@ -17,20 +17,6 @@ const validateEmail = (value: string): string | null => {
   return null
 }
 
-const validateRequired = (value: string): string | null => {
-  if (!value.trim()) return "This field is required"
-  return null
-}
-
-const validateSalary = (value: string): string | null => {
-  if (!value.trim()) return "Salary is required"
-  const numValue = parseFloat(value)
-  if (isNaN(numValue)) return "Please enter a valid number"
-  if (numValue < 0) return "Salary cannot be negative"
-  if (numValue > 1000000) return "Salary seems too high"
-  return null
-}
-
 // Formatters
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   year: "numeric",
@@ -80,7 +66,6 @@ export const colDefs: Column<ApiData>[] = [
     key: "lastName",
     title: "Last Name",
     width: 120,
-    editable: { validation: validateName, showEditIconInHeader: true },
     sortable: true,
     filterable: true,
     resizable: true,
@@ -116,7 +101,6 @@ export const colDefs: Column<ApiData>[] = [
     key: "designation",
     title: "Designation",
     width: 150,
-    editable: { validation: validateRequired, showEditIconInHeader: true },
     sortable: true,
     filterable: true,
     resizable: true,
@@ -126,7 +110,6 @@ export const colDefs: Column<ApiData>[] = [
     key: "city",
     title: "City",
     width: 120,
-    editable: { validation: validateRequired },
     sortable: true,
     filterable: true,
     tooltip: true
@@ -152,7 +135,6 @@ export const colDefs: Column<ApiData>[] = [
     key: "salary",
     title: "Salary",
     width: 120,
-    editable: { validation: validateSalary, showEditIconInHeader: true },
     sortable: true,
     filterable: true,
     resizable: true,
