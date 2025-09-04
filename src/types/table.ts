@@ -39,7 +39,9 @@ export type Tooltip = {
   position: { x: number; y: number }
 }
 
-export type PaginationMode = "virtualized" | "manual"
+export type RenderStrategy = "virtualized" | "manual"
+
+export type FetchingMode = "serverSide" | "clientSide"
 
 export type PaginationState = {
   pageIndex: number
@@ -47,7 +49,7 @@ export type PaginationState = {
 }
 
 export type PaginationConfig = {
-  mode: PaginationMode
+  mode: RenderStrategy
   state?: PaginationState
   onStateChange?: (state: PaginationState) => void
   pageSizeOptions?: number[]

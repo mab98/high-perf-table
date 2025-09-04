@@ -2,18 +2,16 @@ import "@/App.css"
 import ErrorToast from "@/components/ErrorToast/ErrorToast"
 import Table from "@/components/Table/Table"
 import { colDefs } from "@/config/colDefs"
-import { PAGE_SIZE } from "@/constants"
 import { useApiData } from "@/hooks/useApiData"
-import { useState } from "react"
-import type { ApiParams } from "./types/api"
+import type { FetchingMode, RenderStrategy } from "./types/table"
 
 function App() {
-  const [apiParams, setApiParams] = useState<ApiParams>({
-    limit: PAGE_SIZE,
-    offset: 0
-  })
+  const fetchingMode: FetchingMode = "clientSide"
+  const renderStrategy: RenderStrategy = "virtualized"
 
-  const { data, isLoading, error } = useApiData(apiParams)
+  const { data, isLoading, error, onApiParamsChange } = useApiData({
+    fetchingMode
+  })
 
   const renderError = () => {
     if (!error) return null
@@ -28,9 +26,10 @@ function App() {
         colDefs={colDefs}
         apiData={data}
         loading={isLoading}
-        onApiParamsChange={setApiParams}
-        paginationMode="manual"
-        tableTitle="High Performance Table"
+        onApiParamsChange={onApiParamsChange}
+        renderStrategy={renderStrategy}
+        fetchingMode={fetchingMode}
+        tableTitle={`High Performance Table (${fetchingMode} + ${renderStrategy})`}
       />
     </div>
   )

@@ -7,6 +7,7 @@ import {
   DEFAULT_TABLE_WIDTH,
   PAGE_SIZE
 } from "@/constants"
+import { useClientSideData } from "@/hooks/useClientSideData"
 import { useColumnOrder } from "@/hooks/useColumnOrder"
 import { useColumnResize } from "@/hooks/useColumnResize"
 import { useColumnSettings } from "@/hooks/useColumnSettings"
@@ -17,7 +18,13 @@ import { useLocalStorageEdits } from "@/hooks/useLocalStorageEdits"
 import { usePagination } from "@/hooks/usePagination"
 import { useTableHandlers } from "@/hooks/useTableHandlers"
 import type { ApiData, ApiParams, ApiResponse } from "@/types/api"
-import type { Column, PaginationMode, Sort, Tooltip } from "@/types/table"
+import type {
+  Column,
+  FetchingMode,
+  RenderStrategy,
+  Sort,
+  Tooltip
+} from "@/types/table"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import TableTooltip from "./components/TableTooltip/TableTooltip"
 import "./Table.css"
@@ -30,7 +37,8 @@ interface TableProps {
   tableWidth?: number
   tableHeight?: number
   numberOfRows?: number
-  paginationMode?: PaginationMode
+  renderStrategy?: RenderStrategy
+  fetchingMode?: FetchingMode
   tableTitle?: string
 }
 
@@ -42,7 +50,8 @@ const Table = ({
   tableWidth = DEFAULT_TABLE_WIDTH,
   tableHeight = DEFAULT_TABLE_HEIGHT,
   numberOfRows = PAGE_SIZE,
-  paginationMode = "virtualized",
+  renderStrategy = "virtualized",
+  fetchingMode = "serverSide",
   tableTitle
 }: TableProps) => {
   /** Local State */
@@ -74,6 +83,22 @@ const Table = ({
   const { saveEdit, applyEditsToData, clearAllEdits, hasEdits, getStoredEdit } =
     useLocalStorageEdits()
 
+  /** Client-side data fetching */
+  const clientSideData = useClientSideData({
+    data: fetchingMode === "clientSide" ? apiData : undefined,
+    search,
+    filters,
+    sort,
+    pageIndex: 0,
+    pageSize: PAGE_SIZE,
+    isVirtualized: renderStrategy === "virtualized"
+  })
+
+  // Use client-side or server-side data based on fetchingMode
+  const effectiveApiData =
+    fetchingMode === "clientSide" ? clientSideData.data : apiData
+  const effectiveLoading = loading // Always use the loading from the API layer
+
   /** Pagination Logic */
   const {
     mode: paginationModeFromHook,
@@ -81,32 +106,54 @@ const Table = ({
     onStateChange: onPaginationStateChange,
     pageSizeOptions
   } = usePagination({
-    pagination: { mode: paginationMode },
-    totalRecords: apiData?.total || 0,
+    pagination: { mode: renderStrategy },
+    totalRecords: effectiveApiData?.total || 0,
     defaultPageSize: PAGE_SIZE
   })
 
   // Use the provided mode or fall back to the hook's mode
-  const effectivePaginationMode = paginationMode || paginationModeFromHook
+  const effectivePaginationMode = renderStrategy || paginationModeFromHook
+
+  /** Client-side data with pagination state (for manual pagination only) */
+  const clientSideDataWithPagination = useClientSideData({
+    data:
+      fetchingMode === "clientSide" && renderStrategy === "manual"
+        ? apiData
+        : undefined,
+    search,
+    filters,
+    sort,
+    pageIndex: paginationState.pageIndex,
+    pageSize: paginationState.pageSize,
+    isVirtualized: false
+  })
+
+  // Final data selection
+  const finalApiData =
+    fetchingMode === "clientSide" && renderStrategy === "manual"
+      ? clientSideDataWithPagination.data
+      : effectiveApiData
 
   /** Effects */
-  // Update API params when dependencies change
+  // Update API params when dependencies change (only for server-side mode)
   useEffect(() => {
-    const params: ApiParams = {
-      limit:
-        effectivePaginationMode === "manual"
-          ? paginationState.pageSize
-          : PAGE_SIZE,
-      offset:
-        effectivePaginationMode === "manual"
-          ? paginationState.pageIndex * paginationState.pageSize
-          : offset * PAGE_SIZE,
-      sort:
-        sort && sort.column ? `${sort.column},${sort.direction}` : undefined,
-      search: search || undefined,
-      filters: Object.keys(filters).length > 0 ? filters : undefined
+    if (fetchingMode === "serverSide") {
+      const params: ApiParams = {
+        limit:
+          effectivePaginationMode === "manual"
+            ? paginationState.pageSize
+            : PAGE_SIZE,
+        offset:
+          effectivePaginationMode === "manual"
+            ? paginationState.pageIndex * paginationState.pageSize
+            : offset * PAGE_SIZE,
+        sort:
+          sort && sort.column ? `${sort.column},${sort.direction}` : undefined,
+        search: search || undefined,
+        filters: Object.keys(filters).length > 0 ? filters : undefined
+      }
+      onApiParamsChange(params)
     }
-    onApiParamsChange(params)
   }, [
     search,
     filters,
@@ -114,32 +161,41 @@ const Table = ({
     offset,
     onApiParamsChange,
     effectivePaginationMode,
-    paginationState
+    paginationState,
+    fetchingMode
   ])
 
-  // Reset data when query params change
+  // Reset data when query params change (only for server-side mode)
   useEffect(() => {
-    if (effectivePaginationMode === "virtualized") {
+    if (
+      fetchingMode === "serverSide" &&
+      effectivePaginationMode === "virtualized"
+    ) {
       setFetchedRows([])
       setOffset(0)
     }
     // For manual pagination, the usePagination hook handles resets internally
-  }, [search, sort, filters, effectivePaginationMode])
+    // For client-side mode, data is always fresh from the hook
+  }, [search, sort, filters, effectivePaginationMode, fetchingMode])
 
   // Append API data (for virtualized) or replace (for manual)
   useEffect(() => {
-    if (!apiData) return
-    setTotalRecords(apiData.total)
+    if (!finalApiData) return
+    setTotalRecords(finalApiData.total)
 
-    if (effectivePaginationMode === "virtualized") {
+    if (fetchingMode === "clientSide") {
+      // For client-side mode, always replace the data completely
+      setFetchedRows(finalApiData.data)
+    } else if (effectivePaginationMode === "virtualized") {
+      // For server-side virtualized mode, append data
       setFetchedRows((prev) =>
-        offset === 0 ? apiData.data : [...prev, ...apiData.data]
+        offset === 0 ? finalApiData.data : [...prev, ...finalApiData.data]
       )
     } else {
-      // For manual pagination, replace the data completely
-      setFetchedRows(apiData.data)
+      // For server-side manual pagination, replace the data completely
+      setFetchedRows(finalApiData.data)
     }
-  }, [apiData, offset, effectivePaginationMode])
+  }, [finalApiData, offset, effectivePaginationMode, fetchingMode])
 
   /** Column Order & Resize */
   const { orderedColDefs, onColumnReorder } = useColumnOrder({
@@ -185,7 +241,7 @@ const Table = ({
     setTooltip,
     setSearch: setLocalSearch,
     orderedColDefs,
-    loading,
+    loading: effectiveLoading,
     fetchedRows,
     totalRecords,
     offset
@@ -293,7 +349,7 @@ const Table = ({
           onFilterChange={onFilterChange}
           onClearAllFilters={onClearAllFilters}
           onColumnVisibility={onColumnVisibility}
-          loading={loading}
+          loading={effectiveLoading}
           hasEdits={hasEdits}
           onClearAllEdits={clearAllEdits}
           hasCustomSettings={hasCustomSettings}
@@ -306,7 +362,7 @@ const Table = ({
             // Core data props
             data={dataWithEdits}
             colDefs={enhancedColDefs}
-            loading={loading}
+            loading={effectiveLoading}
             numberOfRows={
               effectivePaginationMode === "manual"
                 ? paginationState.pageSize
@@ -314,7 +370,7 @@ const Table = ({
             }
             tableWidth={tableWidth}
             hasNoVisibleColumns={visibleColDefs.length === 0}
-            paginationMode={effectivePaginationMode}
+            renderStrategy={effectivePaginationMode}
             // Sorting props
             sorting={{
               sort,
@@ -356,7 +412,7 @@ const Table = ({
 
           {effectivePaginationMode === "virtualized" && (
             <LoadingFooter
-              loading={loading}
+              loading={effectiveLoading}
               hasData={dataWithEdits.length > 0}
             />
           )}
@@ -365,15 +421,15 @@ const Table = ({
         <TableStatus
           loadedRecords={dataWithEdits.length}
           totalRecords={totalRecords}
-          loading={loading}
+          loading={effectiveLoading}
           paginationState={
-            paginationMode === "manual" ? paginationState : undefined
+            renderStrategy === "manual" ? paginationState : undefined
           }
           pageSizeOptions={
-            paginationMode === "manual" ? pageSizeOptions : undefined
+            renderStrategy === "manual" ? pageSizeOptions : undefined
           }
           onPaginationChange={
-            paginationMode === "manual" ? onPaginationStateChange : undefined
+            renderStrategy === "manual" ? onPaginationStateChange : undefined
           }
         />
       </div>

@@ -6,7 +6,7 @@ import TableRow from "@/components/Table/components/TableRow/TableRow"
 import { ColumnsIcon, SearchIcon } from "@/components/Table/Icons/Icons"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
 import type { ApiData } from "@/types/api"
-import type { Column, PaginationMode, Sort } from "@/types/table"
+import type { Column, RenderStrategy, Sort } from "@/types/table"
 import { useCallback, useMemo } from "react"
 import { TableVirtuoso } from "react-virtuoso"
 import ManualTableContent from "./ManualTableContent"
@@ -63,7 +63,7 @@ interface TableContentProps {
   hasNoVisibleColumns?: boolean
 
   // Pagination mode
-  paginationMode?: PaginationMode
+  renderStrategy?: RenderStrategy
 
   // Grouped props
   sorting: SortingProps
@@ -79,7 +79,7 @@ const TableContent = ({
   numberOfRows,
   tableWidth,
   hasNoVisibleColumns = false,
-  paginationMode = "virtualized",
+  renderStrategy = "virtualized",
   sorting,
   columnManagement,
   editing,
@@ -239,7 +239,7 @@ const TableContent = ({
   if (data.length === 0) return emptyState
 
   // Switch between pagination modes
-  if (paginationMode === "manual") {
+  if (renderStrategy === "manual") {
     return (
       <ManualTableContent
         data={data}
