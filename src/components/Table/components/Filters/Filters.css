@@ -39,11 +39,12 @@
 .filters-menu-content {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-3);
+  gap: var(--spacing-2);
   padding: var(--spacing-4);
   max-height: 18.75rem;
   overflow-y: auto;
   background: var(--white);
+  min-width: 20rem;
 }
 
 .filter-item {
@@ -51,7 +52,7 @@
   flex-direction: row;
   align-items: center;
   gap: var(--spacing-3);
-  padding: var(--spacing-2) var(--spacing-3);
+  padding: var(--spacing-2);
   border-radius: var(--border-radius-md);
   transition: all var(--transition-normal);
   background: var(--bg-surface);
@@ -63,6 +64,7 @@
 .filter-item:hover {
   background: var(--bg-hover);
   border-color: var(--border-default);
+  box-shadow: var(--shadow-sm);
 }
 
 .filter-label {
@@ -70,11 +72,12 @@
   font-weight: var(--font-weight-medium);
   color: var(--text-primary);
   letter-spacing: var(--letter-spacing-normal);
-  width: 5rem;
+  width: 6rem;
   flex-shrink: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  line-height: 1.2;
 }
 
 /* Input wrapper styles */
@@ -89,6 +92,7 @@
   overflow: hidden;
   flex: 1;
   min-width: 0;
+  height: 2.5rem;
 }
 
 .filter-input-wrapper:hover {
@@ -101,7 +105,12 @@
   box-shadow: var(--shadow-focus);
 }
 
-.debounced-input {
+.filter-item:focus-within {
+  background: var(--bg-hover);
+  border-color: var(--border-interactive);
+}
+
+.filter-input {
   width: 100%;
   border: none;
   outline: none;
@@ -112,13 +121,18 @@
   line-height: var(--line-height-normal);
   transition: all var(--transition-normal);
   padding: var(--spacing-3);
+  height: 100%;
 }
 
-.debounced-input::placeholder {
+.filter-input-wrapper:has(.input-clear) .filter-input {
+  padding-right: 2.5rem;
+}
+
+.filter-input::placeholder {
   color: var(--text-placeholder);
 }
 
-.debounced-input:disabled {
+.filter-input:disabled {
   background: var(--bg-subtle);
   color: var(--text-tertiary);
   cursor: not-allowed;
@@ -126,40 +140,53 @@
 
 /* Clear button positioning for filter inputs */
 .filter-input-wrapper .input-clear {
-  right: var(--spacing-2);
+  position: absolute;
+  right: var(--spacing-3);
   z-index: var(--z-filter-clear);
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .dropdown-menu {
-    width: 17.5rem;
+    width: 18rem;
     max-width: calc(100vw - 2rem);
   }
 
   .filters-menu-content {
     padding: var(--spacing-3);
+    min-width: auto;
   }
 
   .filter-item {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--spacing-2);
+    padding: var(--spacing-2);
   }
 
   .filter-label {
     width: auto;
     min-width: auto;
   }
+
+  .filter-input-wrapper {
+    width: 100%;
+  }
 }
 
 @media (max-width: 480px) {
   .dropdown-menu {
-    width: 16.25rem;
+    width: 17rem;
     max-width: calc(100vw - 1.5rem);
   }
 
   .filter-item {
     padding: var(--spacing-2);
+  }
+
+  .filters-menu-content {
+    min-width: auto;
   }
 }

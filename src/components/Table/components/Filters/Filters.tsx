@@ -78,7 +78,7 @@ const Filters = <T extends Record<string, unknown>>({
                 <input
                   id={`filter-${col.key}`}
                   type="text"
-                  className="debounced-input filter-input"
+                  className="filter-input"
                   placeholder={`Filter by ${col.title.toLowerCase()}...`}
                   value={value}
                   onChange={handleInputChange}

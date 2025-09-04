@@ -26,12 +26,12 @@ const TableSearch = ({
   return (
     <div className="search-wrapper">
       <div className="search-input-wrapper">
-        <div className="debounced-input-icon">
+        <div className="search-input-icon">
           <SearchIcon size="18" />
         </div>
         <input
           type="text"
-          className="debounced-input search-input"
+          className="search-input"
           placeholder={placeholder}
           value={value}
           onChange={handleInputChange}

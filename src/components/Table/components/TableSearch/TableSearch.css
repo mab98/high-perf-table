@@ -28,7 +28,7 @@
   box-shadow: var(--shadow-focus);
 }
 
-.debounced-input-icon {
+.search-input-icon {
   position: absolute;
   left: var(--search-icon-left);
   top: 50%;
@@ -41,7 +41,7 @@
   justify-content: center;
 }
 
-.debounced-input {
+.search-input {
   width: 100%;
   border: none;
   outline: none;
@@ -54,11 +54,11 @@
   padding: var(--search-padding);
 }
 
-.debounced-input::placeholder {
+.search-input::placeholder {
   color: var(--search-placeholder-color);
 }
 
-.debounced-input:disabled {
+.search-input:disabled {
   background: var(--search-bg-disabled);
   color: var(--search-text-disabled);
   cursor: not-allowed;
