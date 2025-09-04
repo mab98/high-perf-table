@@ -56,6 +56,7 @@ const TableActionsBar = <T extends Record<string, unknown>>({
         {onFilterChange && onClearAllFilters && (
           <Filters
             colDefs={colDefs}
+            visibleColumns={visibleColumns}
             filters={filters}
             onFilterChange={onFilterChange}
             onClearAllFilters={onClearAllFilters}

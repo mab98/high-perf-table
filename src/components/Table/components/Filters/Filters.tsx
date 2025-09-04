@@ -7,6 +7,7 @@ import { memo } from "react"
 
 interface FiltersProps<T> {
   colDefs: Column<T>[]
+  visibleColumns: string[]
   filters: Record<string, string>
   onFilterChange: (params: { key: string; value: string }) => void
   onClearAllFilters: () => void
@@ -14,6 +15,7 @@ interface FiltersProps<T> {
 
 const Filters = <T extends Record<string, unknown>>({
   colDefs,
+  visibleColumns,
   filters,
   onFilterChange,
   onClearAllFilters
@@ -26,6 +28,7 @@ const Filters = <T extends Record<string, unknown>>({
     onInputChange
   } = useFilters({
     colDefs,
+    visibleColumns,
     filters,
     onFilterChange
   })

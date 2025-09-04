@@ -11,18 +11,23 @@ export interface UseFiltersReturn<T> {
 
 export interface UseFiltersOptions<T> {
   colDefs: Column<T>[]
+  visibleColumns: string[]
   filters: Record<string, string>
   onFilterChange: (params: { key: string; value: string }) => void
 }
 
 export const useFilters = <T>({
   colDefs,
+  visibleColumns,
   filters,
   onFilterChange
 }: UseFiltersOptions<T>): UseFiltersReturn<T> => {
   const filterableColumns = useMemo(
-    () => colDefs.filter((col) => col.filterable),
-    [colDefs]
+    () =>
+      colDefs.filter(
+        (col) => col.filterable && visibleColumns.includes(col.key)
+      ),
+    [colDefs, visibleColumns]
   )
 
   const activeFilterCount = useMemo(() => {

@@ -106,6 +106,28 @@ export const useTableHandlers = <T>({
         } else {
           // Hide all toggleable columns but keep the alwaysVisible ones
           setVisibleColumns(keepVisibleKeys)
+
+          // Remove filters for all hidden columns
+          const hiddenColumns = orderedColDefs
+            .filter((col) => !col.alwaysVisible)
+            .map((col) => col.key)
+
+          setFilters((prevFilters) => {
+            const updatedFilters = { ...prevFilters }
+            const removedFilters: string[] = []
+            hiddenColumns.forEach((columnKey) => {
+              if (updatedFilters[columnKey]) {
+                removedFilters.push(columnKey)
+                delete updatedFilters[columnKey]
+              }
+            })
+            if (removedFilters.length > 0) {
+              console.log(
+                `Removing filters for hidden columns: ${removedFilters.join(", ")}`
+              )
+            }
+            return updatedFilters
+          })
         }
       } else if ("key" in params) {
         const { key } = params
@@ -118,12 +140,23 @@ export const useTableHandlers = <T>({
             if (col?.alwaysVisible) {
               return prev // Don't hide alwaysVisible columns
             }
+
+            // Remove filter for this specific column when hiding it
+            setFilters((prevFilters) => {
+              const updatedFilters = { ...prevFilters }
+              if (updatedFilters[key]) {
+                console.log(`Removing filter for hidden column: ${key}`)
+                delete updatedFilters[key]
+              }
+              return updatedFilters
+            })
+
             return prev.filter((id) => id !== key)
           }
         })
       }
     },
-    [orderedColDefs, setVisibleColumns]
+    [orderedColDefs, setVisibleColumns, setFilters]
   )
 
   const onCellHover = useCallback(
