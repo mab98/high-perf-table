@@ -37,46 +37,48 @@ const PaginationControls = ({
 
   const getVisiblePageNumbers = (): (number | string)[] => {
     if (totalPages <= 1) return [1]
-    if (totalPages <= 7) {
-      // Show all pages if 7 or fewer
+    if (totalPages <= 4) {
+      // Show all pages if 4 or fewer
       return Array.from({ length: totalPages }, (_, i) => i + 1)
     }
 
-    const delta = 2
-    const rangeWithDots: (number | string)[] = []
     const currentPage = pageIndex + 1
+    const result: (number | string)[] = []
 
-    // Always show first page
-    rangeWithDots.push(1)
-
-    // Calculate start and end of middle range
-    const start = Math.max(2, currentPage - delta)
-    const end = Math.min(totalPages - 1, currentPage + delta)
-
-    // Add dots if there's a gap after first page
-    if (start > 2) {
-      rangeWithDots.push("...")
+    if (currentPage <= 3) {
+      // Show first 3 pages + ... + last page
+      // e.g., "1 2 3 ... 1000"
+      result.push(1, 2, 3, "...", totalPages)
+    } else if (currentPage >= totalPages - 2) {
+      // Show first page + ... + last 3 pages
+      // e.g., "1 ... 998 999 1000"
+      result.push(1, "...", totalPages - 2, totalPages - 1, totalPages)
+    } else {
+      // Show first page + ... + current-1, current, current+1 + ... + last page
+      // e.g., "1 ... 49 50 51 ... 1000"
+      result.push(
+        1,
+        "...",
+        currentPage - 1,
+        currentPage,
+        currentPage + 1,
+        "...",
+        totalPages
+      )
     }
 
-    // Add middle range
-    for (let i = start; i <= end; i++) {
-      rangeWithDots.push(i)
-    }
-
-    // Add dots if there's a gap before last page
-    if (end < totalPages - 1) {
-      rangeWithDots.push("...")
-    }
-
-    // Always show last page (if it's not already included)
-    if (totalPages > 1) {
-      rangeWithDots.push(totalPages)
-    }
-
-    // Remove duplicates while preserving order
+    // Remove duplicates while preserving order and ellipsis
     const uniquePages: (number | string)[] = []
-    for (const page of rangeWithDots) {
-      if (page === "..." || !uniquePages.includes(page)) {
+    for (let i = 0; i < result.length; i++) {
+      const page = result[i]
+      if (page === "...") {
+        // Only add ellipsis if the previous and next items are numbers with a gap
+        const prev = result[i - 1] as number
+        const next = result[i + 1] as number
+        if (prev && next && next - prev > 1) {
+          uniquePages.push(page)
+        }
+      } else if (!uniquePages.includes(page)) {
         uniquePages.push(page)
       }
     }

@@ -26,13 +26,11 @@ export interface UseInlineEditOptions {
     columnKey: string,
     value: string
   ) => Promise<void> | void
-  onCancel?: () => void
   onValidate?: (columnKey: string, value: string) => string | null // Returns error message or null if valid
 }
 
 export const useInlineEdit = ({
   onSave,
-  onCancel,
   onValidate
 }: UseInlineEditOptions = {}): UseInlineEditReturn => {
   const [editState, setEditState] = useState<EditState | null>(null)
@@ -50,8 +48,7 @@ export const useInlineEdit = ({
 
   const onCancelEdit = useCallback(() => {
     setEditState(null)
-    onCancel?.()
-  }, [onCancel])
+  }, [])
 
   const onSaveEdit = useCallback(async () => {
     if (!editState) return

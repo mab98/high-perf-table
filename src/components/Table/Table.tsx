@@ -230,7 +230,6 @@ const Table = ({
     isEditing
   } = useInlineEdit({
     onSave,
-    onCancel: () => {},
     onValidate: (columnKey, value) => {
       const colDef = orderedColDefs.find((c) => c.key === columnKey)
       return colDef?.editable &&

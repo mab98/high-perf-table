@@ -19,6 +19,10 @@ const getStatusText = (
   isManualMode: boolean,
   paginationState?: PaginationState
 ): string => {
+  if (loading) {
+    return "Loading..."
+  }
+
   if (!loading && totalRecords === 0) {
     return "No records found"
   }
