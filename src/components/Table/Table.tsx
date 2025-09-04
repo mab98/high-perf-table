@@ -14,7 +14,7 @@ import { useInlineEdit } from "@/hooks/useInlineEdit"
 import { useTableHandlers } from "@/hooks/useTableHandlers"
 import type { ApiData, ApiParams, ApiResponse } from "@/types/api"
 import type { Column, Sort, Tooltip } from "@/types/table"
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import TableTooltip from "./components/TableTooltip/TableTooltip"
 import "./Table.css"
 
@@ -114,6 +114,11 @@ const Table = ({
     totalRecords,
     offset
   })
+
+  /** Row ID Handler - Use index-based identification */
+  const getRowId = useCallback((index: number): string | number => {
+    return index
+  }, [])
 
   /** Inline Edit */
   const {
@@ -220,7 +225,7 @@ const Table = ({
               onEndReached,
               isSearchOrFilterActive,
               onClearAll,
-              getRowId: (row) => row.id as string | number
+              getRowId
             }}
           />
 

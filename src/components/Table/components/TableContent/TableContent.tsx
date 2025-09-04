@@ -49,7 +49,7 @@ interface InteractionProps {
   onEndReached: () => void
   isSearchOrFilterActive: boolean
   onClearAll?: () => void
-  getRowId?: (row: ApiData) => string | number
+  getRowId: (index: number) => string | number // Simplified to only take index
 }
 
 interface TableContentProps {
@@ -159,7 +159,7 @@ const TableContent = ({
         onCancelEdit={onCancelEdit}
         onSaveEdit={onSaveEdit}
         onEditValueChange={onEditValueChange}
-        getRowId={getRowId}
+        getRowId={() => getRowId(index)}
       />
     ),
     [
