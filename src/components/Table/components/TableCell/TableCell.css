@@ -20,18 +20,15 @@
 
 .table-cell--editable {
   cursor: pointer;
-  transition: background-color var(--transition-fast);
 }
 
 .table-cell--editable .cell-value {
   padding: 2px 4px;
   border-radius: 4px;
-  transition: background-color var(--transition-fast);
 }
 
-.table-cell--editable:hover {
-  background: var(--purple-100);
-  border-bottom-color: var(--purple-200);
+.table-cell--editable .cell-value:hover {
+  background-color: var(--purple-200);
 }
 
 .table-cell--editing {
@@ -78,7 +75,7 @@
   font-size: 12px;
   padding: 6px 12px;
   border-radius: 6px;
-  z-index: 50;
+  z-index: 150;
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
   white-space: nowrap;
   min-width: max-content;
