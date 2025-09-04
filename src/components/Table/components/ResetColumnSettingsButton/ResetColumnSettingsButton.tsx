@@ -13,12 +13,7 @@ const ResetColumnSettingsButton = ({
 }: ResetColumnSettingsButtonProps) => {
   const handleResetClick = () => {
     if (onResetSettings) {
-      const confirmed = window.confirm(
-        "Are you sure you want to reset all column settings? This will clear custom column widths, visibility, and order. This action cannot be undone."
-      )
-      if (confirmed) {
-        onResetSettings()
-      }
+      onResetSettings()
     }
   }
 

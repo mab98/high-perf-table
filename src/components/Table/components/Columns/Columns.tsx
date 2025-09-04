@@ -69,12 +69,7 @@ const Columns = <T extends Record<string, unknown>>({
 
   const handleResetClick = useCallback(() => {
     if (onResetColumnSettings) {
-      const confirmed = window.confirm(
-        "Are you sure you want to reset all column settings? This will clear custom column widths, visibility, and order. This action cannot be undone."
-      )
-      if (confirmed) {
-        onResetColumnSettings()
-      }
+      onResetColumnSettings()
     }
   }, [onResetColumnSettings])
 
