@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 export interface ColumnConfig {
   key: string
   width?: number
+  visible?: boolean
 }
 
 export interface ColumnSettings {
@@ -14,6 +15,7 @@ export interface UseColumnSettingsReturn {
   visibleColumns: string[]
   columnOrder: string[]
   columnWidths: Record<string, number>
+  allColumns: ColumnConfig[]
   setVisibleColumns: (columns: string[]) => void
   setColumnOrder: (order: string[]) => void
   setColumnWidth: (columnKey: string, width: number) => void
@@ -29,7 +31,7 @@ const STORAGE_KEY = "table-column-settings"
 const loadInitialSettings = <T>(colDefs: Column<T>[]): ColumnSettings => {
   // Default settings - all columns visible in their original order
   const defaultSettings: ColumnSettings = {
-    columns: colDefs.map((col) => ({ key: col.key as string }))
+    columns: colDefs.map((col) => ({ key: col.key as string, visible: true }))
   }
 
   // Check if we're in a browser environment
@@ -44,22 +46,45 @@ const loadInitialSettings = <T>(colDefs: Column<T>[]): ColumnSettings => {
 
       // Check if this is old format and migrate
       if (parsed.visibleColumns && parsed.columnOrder && parsed.columnWidths) {
-        console.log("🔄 Migrating column settings to new format...")
-
         // Convert old format to new format
         const visibleColumns = parsed.visibleColumns as string[]
+        const columnOrder = parsed.columnOrder as string[]
         const columnWidths = parsed.columnWidths as Record<string, number>
 
         const newSettings: ColumnSettings = {
-          columns: visibleColumns.map((key: string) => ({
-            key,
-            ...(columnWidths[key] && { width: columnWidths[key] })
+          columns: colDefs.map((colDef) => ({
+            key: colDef.key as string,
+            visible: visibleColumns.includes(colDef.key as string),
+            ...(columnWidths[colDef.key as string] && {
+              width: columnWidths[colDef.key as string]
+            })
           }))
+        }
+
+        // Reorder columns according to the old columnOrder if it exists
+        if (columnOrder && Array.isArray(columnOrder)) {
+          const orderedColumns: ColumnConfig[] = []
+          const columnMap = new Map(
+            newSettings.columns.map((col) => [col.key, col])
+          )
+
+          // Add columns in the specified order
+          columnOrder.forEach((key) => {
+            const col = columnMap.get(key)
+            if (col) {
+              orderedColumns.push(col)
+              columnMap.delete(key)
+            }
+          })
+
+          // Add any remaining columns that weren't in the order
+          columnMap.forEach((col) => orderedColumns.push(col))
+
+          newSettings.columns = orderedColumns
         }
 
         // Save migrated settings
         localStorage.setItem(STORAGE_KEY, JSON.stringify(newSettings))
-        console.log("✅ Migration completed successfully")
 
         return newSettings
       }
@@ -75,7 +100,7 @@ const loadInitialSettings = <T>(colDefs: Column<T>[]): ColumnSettings => {
         const storedKeys = validColumns.map((col) => col.key)
         const newColumns = colDefs
           .filter((colDef) => !storedKeys.includes(colDef.key as string))
-          .map((colDef) => ({ key: colDef.key as string }))
+          .map((colDef) => ({ key: colDef.key as string, visible: true }))
 
         return {
           columns: [...validColumns, ...newColumns]
@@ -112,7 +137,7 @@ export const useColumnSettings = <T>(
       const existingKeys = validColumns.map((col) => col.key)
       const newColumns = currentColumnKeys
         .filter((key) => !existingKeys.includes(key))
-        .map((key) => ({ key }))
+        .map((key) => ({ key, visible: true }))
 
       return {
         columns: [...validColumns, ...newColumns]
@@ -135,7 +160,9 @@ export const useColumnSettings = <T>(
   }, [settings])
 
   // Derived values for backward compatibility
-  const visibleColumns = settings.columns.map((col) => col.key)
+  const visibleColumns = settings.columns
+    .filter((col) => col.visible !== false)
+    .map((col) => col.key)
   const columnOrder = settings.columns.map((col) => col.key)
   const columnWidths = Object.fromEntries(
     settings.columns
@@ -145,11 +172,10 @@ export const useColumnSettings = <T>(
 
   const setVisibleColumns = useCallback((columns: string[]) => {
     setSettings((prev) => ({
-      columns: columns.map((key) => {
-        // Preserve existing width if column had one
-        const existingCol = prev.columns.find((col) => col.key === key)
-        return existingCol || { key }
-      })
+      columns: prev.columns.map((col) => ({
+        ...col,
+        visible: columns.includes(col.key)
+      }))
     }))
   }, [])
 
@@ -157,7 +183,7 @@ export const useColumnSettings = <T>(
     setSettings((prev) => {
       const colMap = new Map(prev.columns.map((col) => [col.key, col]))
       return {
-        columns: order.map((key) => colMap.get(key) || { key })
+        columns: order.map((key) => colMap.get(key) || { key, visible: true })
       }
     })
   }, [])
@@ -173,20 +199,23 @@ export const useColumnSettings = <T>(
   const resetColumnWidth = useCallback((columnKey: string) => {
     setSettings((prev) => ({
       columns: prev.columns.map((col) =>
-        col.key === columnKey ? { key: col.key } : col
+        col.key === columnKey ? { key: col.key, visible: col.visible } : col
       )
     }))
   }, [])
 
   const resetAllColumnWidths = useCallback(() => {
     setSettings((prev) => ({
-      columns: prev.columns.map((col) => ({ key: col.key }))
+      columns: prev.columns.map((col) => ({
+        key: col.key,
+        visible: col.visible
+      }))
     }))
   }, [])
 
   const resetAllSettings = useCallback(() => {
     const defaultSettings: ColumnSettings = {
-      columns: colDefs.map((col) => ({ key: col.key as string }))
+      columns: colDefs.map((col) => ({ key: col.key as string, visible: true }))
     }
 
     setSettings(defaultSettings)
@@ -199,6 +228,7 @@ export const useColumnSettings = <T>(
 
   const hasCustomSettings =
     settings.columns.some((col) => col.width !== undefined) ||
+    settings.columns.some((col) => col.visible === false) ||
     settings.columns.length !== colDefs.length ||
     !settings.columns.every(
       (col, index) => col.key === (colDefs[index]?.key as string)
@@ -208,6 +238,7 @@ export const useColumnSettings = <T>(
     visibleColumns,
     columnOrder,
     columnWidths,
+    allColumns: settings.columns,
     setVisibleColumns,
     setColumnOrder,
     setColumnWidth,
