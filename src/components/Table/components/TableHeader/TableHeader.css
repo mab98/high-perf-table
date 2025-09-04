@@ -17,7 +17,7 @@
 /* Disable transitions during resize to prevent flicker */
 .table-header-row.resizing .separated-resize-handle,
 .table-header-row.resizing .separated-resize-handle::before {
-  transition: none !important;
+  transition: none;
 }
 
 /* Header cell container for each column */

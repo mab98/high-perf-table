@@ -11,7 +11,7 @@
 
 .table-row.resizing,
 .table-row.resizing * {
-  transition: none !important;
+  transition: none;
   transform: translateZ(0); /* Force GPU acceleration */
 }
 
