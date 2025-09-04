@@ -11,6 +11,7 @@ import { useColumnOrder } from "@/hooks/useColumnOrder"
 import { useColumnResize } from "@/hooks/useColumnResize"
 import { useColumnSettings } from "@/hooks/useColumnSettings"
 import { useColumnWidths } from "@/hooks/useColumnWidths"
+import useDebounce from "@/hooks/useDebounce"
 import { useInlineEdit } from "@/hooks/useInlineEdit"
 import { useLocalStorageEdits } from "@/hooks/useLocalStorageEdits"
 import { usePagination } from "@/hooks/usePagination"
@@ -43,13 +44,17 @@ const Table = ({
   paginationMode = "virtualized"
 }: TableProps) => {
   /** Local State */
-  const [search, setSearch] = useState("")
-  const [filters, setFilters] = useState<Record<string, string>>({})
+  const [localSearch, setLocalSearch] = useState("")
+  const [localFilters, setLocalFilters] = useState<Record<string, string>>({})
   const [sort, setSort] = useState<Sort | undefined>()
   const [offset, setOffset] = useState(0)
   const [fetchedRows, setFetchedRows] = useState<ApiData[]>([])
   const [totalRecords, setTotalRecords] = useState(0)
   const [tooltip, setTooltip] = useState<Tooltip | null>(null)
+
+  /** Debounced values */
+  const search = useDebounce(localSearch, 500)
+  const filters = useDebounce(localFilters, 500)
 
   /** Column Settings from localStorage */
   const {
@@ -166,7 +171,7 @@ const Table = ({
   } = useTableHandlers({
     setSort,
     setOffset,
-    setFilters,
+    setFilters: setLocalFilters,
     setFetchedRows,
     setVisibleColumns: (columns) => {
       if (typeof columns === "function") {
@@ -176,7 +181,7 @@ const Table = ({
       }
     },
     setTooltip,
-    setSearch,
+    setSearch: setLocalSearch,
     orderedColDefs,
     loading,
     fetchedRows,
@@ -243,9 +248,9 @@ const Table = ({
   /** Derived Values */
   const isSearchOrFilterActive = useMemo(
     () =>
-      search.trim() !== "" ||
-      Object.values(filters).some((v) => v.trim() !== ""),
-    [search, filters]
+      localSearch.trim() !== "" ||
+      Object.values(localFilters).some((v) => v.trim() !== ""),
+    [localSearch, localFilters]
   )
 
   const visibleColDefs = useMemo(
@@ -280,9 +285,9 @@ const Table = ({
         <TableActionsBar
           colDefs={orderedColDefs}
           visibleColumns={visibleColumns}
-          search={search}
-          setSearch={setSearch}
-          filters={filters}
+          search={localSearch}
+          setSearch={setLocalSearch}
+          filters={localFilters}
           onFilterChange={onFilterChange}
           onClearAllFilters={onClearAllFilters}
           onColumnVisibility={onColumnVisibility}

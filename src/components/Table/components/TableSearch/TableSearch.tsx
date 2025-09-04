@@ -1,5 +1,5 @@
 import { SearchIcon } from "@/components/Table/Icons/Icons"
-import DebouncedInput from "@/components/Table/components/DebouncedInput/DebouncedInput"
+import ClearButton from "@/components/Table/components/ClearButton/ClearButton"
 import "@/components/Table/components/TableSearch/TableSearch.css"
 
 interface TableSearchProps {
@@ -14,18 +14,40 @@ const TableSearch = ({
   onChange,
   disabled = false,
   placeholder = "Search..."
-}: TableSearchProps) => (
-  <div className="search-wrapper">
-    <DebouncedInput
-      value={value}
-      onChange={onChange}
-      disabled={disabled}
-      placeholder={placeholder}
-      className="search-input"
-      icon={<SearchIcon size="18" />}
-      clearButton={true}
-    />
-  </div>
-)
+}: TableSearchProps) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e.target.value)
+  }
+
+  const handleClear = () => {
+    onChange("")
+  }
+
+  return (
+    <div className="search-wrapper">
+      <div className="search-input-wrapper">
+        <div className="debounced-input-icon">
+          <SearchIcon size="18" />
+        </div>
+        <input
+          type="text"
+          className="debounced-input search-input"
+          placeholder={placeholder}
+          value={value}
+          onChange={handleInputChange}
+          disabled={disabled}
+        />
+        {value && !disabled && (
+          <ClearButton
+            onClick={handleClear}
+            className="input-clear"
+            ariaLabel="Clear input"
+            title="Clear input"
+          />
+        )}
+      </div>
+    </div>
+  )
+}
 
 export default TableSearch

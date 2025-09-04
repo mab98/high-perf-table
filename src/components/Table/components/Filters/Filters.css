@@ -77,6 +77,59 @@
   text-overflow: ellipsis;
 }
 
+/* Input wrapper styles */
+.filter-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius-md);
+  transition: all var(--transition-normal);
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
+}
+
+.filter-input-wrapper:hover {
+  border-color: var(--border-default);
+  box-shadow: var(--shadow-sm);
+}
+
+.filter-input-wrapper:focus-within {
+  border-color: var(--border-interactive);
+  box-shadow: var(--shadow-focus);
+}
+
+.debounced-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: var(--font-size-sm);
+  font-family: var(--font-family);
+  color: var(--text-primary);
+  line-height: var(--line-height-normal);
+  transition: all var(--transition-normal);
+  padding: var(--spacing-3);
+}
+
+.debounced-input::placeholder {
+  color: var(--text-placeholder);
+}
+
+.debounced-input:disabled {
+  background: var(--bg-subtle);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+}
+
+/* Clear button positioning for filter inputs */
+.filter-input-wrapper .input-clear {
+  right: var(--spacing-2);
+  z-index: var(--z-filter-clear);
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .dropdown-menu {

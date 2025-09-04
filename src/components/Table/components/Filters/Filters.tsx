@@ -1,5 +1,4 @@
 import ClearButton from "@/components/Table/components/ClearButton/ClearButton"
-import DebouncedInput from "@/components/Table/components/DebouncedInput/DebouncedInput"
 import DropdownButton from "@/components/Table/components/DropdownButton/DropdownButton"
 import "@/components/Table/components/Filters/Filters.css"
 import { useFilters } from "@/hooks/useFilters"
@@ -59,20 +58,40 @@ const Filters = <T extends Record<string, unknown>>({
       >
         {filterableColumns.map((col) => {
           const value = filters[col.key] || ""
+
+          const handleInputChange = (
+            e: React.ChangeEvent<HTMLInputElement>
+          ) => {
+            onInputChange(col.key, e.target.value)
+          }
+
+          const handleClear = () => {
+            onInputChange(col.key, "")
+          }
+
           return (
             <div key={col.key} className="filter-item" role="menuitem">
               <label htmlFor={`filter-${col.key}`} className="filter-label">
                 {col.title}
               </label>
-              <DebouncedInput
-                id={`filter-${col.key}`}
-                className="filter-input"
-                placeholder={`Filter by ${col.title.toLowerCase()}...`}
-                value={value}
-                onChange={(newValue) => onInputChange(col.key, newValue)}
-                clearButton={true}
-                onClear={() => onInputChange(col.key, "")}
-              />
+              <div className="filter-input-wrapper">
+                <input
+                  id={`filter-${col.key}`}
+                  type="text"
+                  className="debounced-input filter-input"
+                  placeholder={`Filter by ${col.title.toLowerCase()}...`}
+                  value={value}
+                  onChange={handleInputChange}
+                />
+                {value && (
+                  <ClearButton
+                    onClick={handleClear}
+                    className="input-clear"
+                    ariaLabel="Clear filter"
+                    title="Clear filter"
+                  />
+                )}
+              </div>
             </div>
           )
         })}
