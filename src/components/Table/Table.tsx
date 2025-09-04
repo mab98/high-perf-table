@@ -11,6 +11,7 @@ import { useColumnOrder } from "@/hooks/useColumnOrder"
 import { useColumnResize } from "@/hooks/useColumnResize"
 import { useColumnWidths } from "@/hooks/useColumnWidths"
 import { useInlineEdit } from "@/hooks/useInlineEdit"
+import { useLocalStorageEdits } from "@/hooks/useLocalStorageEdits"
 import { useTableHandlers } from "@/hooks/useTableHandlers"
 import type { ApiData, ApiParams, ApiResponse } from "@/types/api"
 import type { Column, Sort, Tooltip } from "@/types/table"
@@ -48,6 +49,10 @@ const Table = ({
     colDefs.map((col) => col.key)
   )
   const [tooltip, setTooltip] = useState<Tooltip | null>(null)
+
+  /** Local Storage Edits */
+  const { saveEdit, applyEditsToData, clearAllEdits, hasEdits, getStoredEdit } =
+    useLocalStorageEdits()
 
   /** Effects */
   // Update API params when dependencies change
@@ -94,7 +99,7 @@ const Table = ({
     onSort,
     onFilterChange,
     onClearAllFilters,
-    onSave,
+    onSave: originalOnSave,
     onColumnVisibility,
     onCellHover,
     onEndReached,
@@ -115,10 +120,41 @@ const Table = ({
     offset
   })
 
-  /** Row ID Handler - Use index-based identification */
-  const getRowId = useCallback((index: number): string | number => {
-    return index
-  }, [])
+  /** Enhanced save function with local storage */
+  const onSave = useCallback(
+    async (rowId: string | number, columnKey: string, value: string) => {
+      // Get the actual original value from stored edits if it exists, otherwise from current data
+      const existingEdit = getStoredEdit(rowId, columnKey)
+
+      let actualValue: string
+      if (existingEdit) {
+        // Use the original value from the existing edit
+        actualValue = existingEdit.actualValue
+      } else {
+        // Find the original value from the current data
+        const row = fetchedRows.find((r) => r.id === rowId)
+        actualValue = row
+          ? String(row[columnKey as keyof typeof row] || "")
+          : ""
+      }
+
+      // Save the edit locally first
+      saveEdit(rowId, columnKey, value, actualValue)
+
+      // Then call the original save function to update the table data
+      await originalOnSave(rowId, columnKey, value)
+    },
+    [saveEdit, originalOnSave, fetchedRows, getStoredEdit]
+  )
+
+  /** Row ID Handler - Use actual row ID for persistence */
+  const getRowId = useCallback(
+    (index: number): string | number => {
+      const row = fetchedRows[index]
+      return row?.id ?? index
+    },
+    [fetchedRows]
+  )
 
   /** Inline Edit */
   const {
@@ -169,6 +205,12 @@ const Table = ({
     [visibleColDefs, columnWidths]
   )
 
+  /** Apply stored edits to the fetched data */
+  const dataWithEdits = useMemo(() => {
+    const result = applyEditsToData(fetchedRows)
+    return result
+  }, [fetchedRows, applyEditsToData])
+
   return (
     <>
       <div className="table-container" style={{ width: tableWidth }}>
@@ -182,12 +224,14 @@ const Table = ({
           onClearAllFilters={onClearAllFilters}
           onColumnVisibility={onColumnVisibility}
           loading={loading}
+          hasEdits={hasEdits}
+          onClearAllEdits={clearAllEdits}
         />
 
         <div className="table-content-wrapper" style={{ height: tableHeight }}>
           <TableContent
             // Core data props
-            data={fetchedRows}
+            data={dataWithEdits}
             colDefs={enhancedColDefs}
             loading={loading}
             numberOfRows={numberOfRows}
@@ -229,11 +273,11 @@ const Table = ({
             }}
           />
 
-          <LoadingFooter loading={loading} hasData={fetchedRows.length > 0} />
+          <LoadingFooter loading={loading} hasData={dataWithEdits.length > 0} />
         </div>
 
         <TableStatus
-          loadedRecords={fetchedRows.length}
+          loadedRecords={dataWithEdits.length}
           totalRecords={totalRecords}
           loading={loading}
         />

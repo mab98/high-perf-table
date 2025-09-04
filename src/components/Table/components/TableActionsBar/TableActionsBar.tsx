@@ -1,3 +1,4 @@
+import ClearEditsButton from "@/components/Table/components/ClearEditsButton/ClearEditsButton"
 import Columns from "@/components/Table/components/Columns/Columns"
 import Filters from "@/components/Table/components/Filters/Filters"
 import "@/components/Table/components/TableActionsBar/TableActionsBar.css"
@@ -14,6 +15,8 @@ interface TableActionsBarProps<T> {
   onClearAllFilters?: () => void
   onColumnVisibility: (params: ColumnVisibility) => void
   loading?: boolean
+  hasEdits?: boolean
+  onClearAllEdits?: () => void
 }
 
 const TableActionsBar = <T extends Record<string, unknown>>({
@@ -25,7 +28,9 @@ const TableActionsBar = <T extends Record<string, unknown>>({
   onFilterChange,
   onClearAllFilters,
   onColumnVisibility,
-  loading = false
+  loading = false,
+  hasEdits = false,
+  onClearAllEdits
 }: TableActionsBarProps<T>) => {
   return (
     <div className="table-actions-bar">
@@ -35,6 +40,12 @@ const TableActionsBar = <T extends Record<string, unknown>>({
         )}
       </div>
       <div className="table-actions-right">
+        {hasEdits && onClearAllEdits && (
+          <ClearEditsButton
+            onClearAllEdits={onClearAllEdits}
+            disabled={loading}
+          />
+        )}
         {onFilterChange && onClearAllFilters && (
           <Filters
             colDefs={colDefs}

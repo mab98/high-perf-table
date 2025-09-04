@@ -1,0 +1,27 @@
+.clear-edits-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-4);
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-default);
+  border-radius: var(--border-radius-md);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-family);
+  min-height: 2.5rem;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  white-space: nowrap;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  letter-spacing: var(--letter-spacing-tight);
+  overflow: hidden;
+}
+
+.clear-edits-button:hover {
+  background: var(--bg-subtle);
+  border-color: var(--border-interactive);
+}

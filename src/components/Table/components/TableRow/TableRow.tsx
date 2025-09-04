@@ -26,7 +26,7 @@ interface TableRowProps<T> {
   onCancelEdit?: () => void
   onSaveEdit?: () => void
   onEditValueChange?: (value: string) => void
-  getRowId?: (row: T) => string | number
+  getRowId?: () => string | number
 }
 
 const TableRow = <T extends Record<string, unknown>>({
@@ -46,7 +46,7 @@ const TableRow = <T extends Record<string, unknown>>({
   getRowId
 }: TableRowProps<T>) => {
   const rowId = getRowId
-    ? getRowId(row)
+    ? getRowId()
     : (row.id as string | number) || `row-${index}`
 
   const cells = useMemo(
