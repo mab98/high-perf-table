@@ -37,13 +37,15 @@ export const useColumnWidths = <T>({
     // Calculate total width used by all columns
     const totalUsedWidth = initialWidths.reduce((sum, width) => sum + width, 0)
 
-    // If there's remaining space and we have columns, expand the last column to fill it
+    // If there's remaining space and we have columns, distribute it equally among all columns
     if (totalUsedWidth < tableWidth && initialWidths.length > 0) {
       const remainingSpace = tableWidth - totalUsedWidth
-      const lastColumnIndex = initialWidths.length - 1
+      const extraWidthPerColumn = remainingSpace / initialWidths.length
 
-      // Always fill remaining space with the last column
-      initialWidths[lastColumnIndex] += remainingSpace
+      // Distribute the remaining space equally among all columns
+      for (let i = 0; i < initialWidths.length; i++) {
+        initialWidths[i] += extraWidthPerColumn
+      }
     }
 
     // Return the column width info with the adjusted widths
