@@ -13,9 +13,10 @@ import { useColumnSettings } from "@/hooks/useColumnSettings"
 import { useColumnWidths } from "@/hooks/useColumnWidths"
 import { useInlineEdit } from "@/hooks/useInlineEdit"
 import { useLocalStorageEdits } from "@/hooks/useLocalStorageEdits"
+import { usePagination } from "@/hooks/usePagination"
 import { useTableHandlers } from "@/hooks/useTableHandlers"
 import type { ApiData, ApiParams, ApiResponse } from "@/types/api"
-import type { Column, Sort, Tooltip } from "@/types/table"
+import type { Column, PaginationMode, Sort, Tooltip } from "@/types/table"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import TableTooltip from "./components/TableTooltip/TableTooltip"
 import "./Table.css"
@@ -28,6 +29,7 @@ interface TableProps {
   tableWidth?: number
   tableHeight?: number
   numberOfRows?: number
+  paginationMode?: PaginationMode
 }
 
 const Table = ({
@@ -37,7 +39,8 @@ const Table = ({
   onApiParamsChange,
   tableWidth = DEFAULT_TABLE_WIDTH,
   tableHeight = DEFAULT_TABLE_HEIGHT,
-  numberOfRows = PAGE_SIZE
+  numberOfRows = PAGE_SIZE,
+  paginationMode = "virtualized"
 }: TableProps) => {
   /** Local State */
   const [search, setSearch] = useState("")
@@ -64,34 +67,72 @@ const Table = ({
   const { saveEdit, applyEditsToData, clearAllEdits, hasEdits, getStoredEdit } =
     useLocalStorageEdits()
 
+  /** Pagination Logic */
+  const {
+    mode: paginationModeFromHook,
+    state: paginationState,
+    onStateChange: onPaginationStateChange,
+    pageSizeOptions
+  } = usePagination({
+    pagination: { mode: paginationMode },
+    totalRecords: apiData?.total || 0,
+    defaultPageSize: PAGE_SIZE
+  })
+
+  // Use the provided mode or fall back to the hook's mode
+  const effectivePaginationMode = paginationMode || paginationModeFromHook
+
   /** Effects */
   // Update API params when dependencies change
   useEffect(() => {
     const params: ApiParams = {
-      limit: PAGE_SIZE,
-      offset: offset * PAGE_SIZE,
+      limit:
+        effectivePaginationMode === "manual"
+          ? paginationState.pageSize
+          : PAGE_SIZE,
+      offset:
+        effectivePaginationMode === "manual"
+          ? paginationState.pageIndex * paginationState.pageSize
+          : offset * PAGE_SIZE,
       sort:
         sort && sort.column ? `${sort.column},${sort.direction}` : undefined,
       search: search || undefined,
       filters: Object.keys(filters).length > 0 ? filters : undefined
     }
     onApiParamsChange(params)
-  }, [search, filters, sort, offset, onApiParamsChange])
+  }, [
+    search,
+    filters,
+    sort,
+    offset,
+    onApiParamsChange,
+    effectivePaginationMode,
+    paginationState
+  ])
 
   // Reset data when query params change
   useEffect(() => {
-    setFetchedRows([])
-    setOffset(0)
-  }, [search, sort, filters])
+    if (effectivePaginationMode === "virtualized") {
+      setFetchedRows([])
+      setOffset(0)
+    }
+    // For manual pagination, the usePagination hook handles resets internally
+  }, [search, sort, filters, effectivePaginationMode])
 
-  // Append API data
+  // Append API data (for virtualized) or replace (for manual)
   useEffect(() => {
     if (!apiData) return
     setTotalRecords(apiData.total)
-    setFetchedRows((prev) =>
-      offset === 0 ? apiData.data : [...prev, ...apiData.data]
-    )
-  }, [apiData, offset])
+
+    if (effectivePaginationMode === "virtualized") {
+      setFetchedRows((prev) =>
+        offset === 0 ? apiData.data : [...prev, ...apiData.data]
+      )
+    } else {
+      // For manual pagination, replace the data completely
+      setFetchedRows(apiData.data)
+    }
+  }, [apiData, offset, effectivePaginationMode])
 
   /** Column Order & Resize */
   const { orderedColDefs, onColumnReorder } = useColumnOrder({
@@ -119,7 +160,7 @@ const Table = ({
     onSave: originalOnSave,
     onColumnVisibility,
     onCellHover,
-    onEndReached,
+    onEndReached: virtualizedOnEndReached,
     onClearSort,
     onClearAll
   } = useTableHandlers({
@@ -259,9 +300,14 @@ const Table = ({
             data={dataWithEdits}
             colDefs={enhancedColDefs}
             loading={loading}
-            numberOfRows={numberOfRows}
+            numberOfRows={
+              effectivePaginationMode === "manual"
+                ? paginationState.pageSize
+                : numberOfRows
+            }
             tableWidth={tableWidth}
             hasNoVisibleColumns={visibleColDefs.length === 0}
+            paginationMode={effectivePaginationMode}
             // Sorting props
             sorting={{
               sort,
@@ -291,20 +337,37 @@ const Table = ({
             // Interaction props
             interactions={{
               onCellHover,
-              onEndReached,
+              onEndReached:
+                effectivePaginationMode === "virtualized"
+                  ? virtualizedOnEndReached
+                  : undefined,
               isSearchOrFilterActive,
               onClearAll,
               getRowId
             }}
           />
 
-          <LoadingFooter loading={loading} hasData={dataWithEdits.length > 0} />
+          {effectivePaginationMode === "virtualized" && (
+            <LoadingFooter
+              loading={loading}
+              hasData={dataWithEdits.length > 0}
+            />
+          )}
         </div>
 
         <TableStatus
           loadedRecords={dataWithEdits.length}
           totalRecords={totalRecords}
           loading={loading}
+          paginationState={
+            paginationMode === "manual" ? paginationState : undefined
+          }
+          pageSizeOptions={
+            paginationMode === "manual" ? pageSizeOptions : undefined
+          }
+          onPaginationChange={
+            paginationMode === "manual" ? onPaginationStateChange : undefined
+          }
         />
       </div>
 

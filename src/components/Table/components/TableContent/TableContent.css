@@ -8,3 +8,62 @@
   overflow-x: auto;
   background: var(--bg-canvas);
 }
+
+/* Manual pagination styles */
+.manual-table-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-canvas);
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  min-width: fit-content;
+}
+
+.manual-table-body {
+  flex: 1;
+  width: 100%;
+  min-height: 200px;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+/* Ensure both header and body have same min-width */
+.manual-table-container .table-header-row,
+.manual-table-container .table-row {
+  min-width: fit-content;
+  width: max-content;
+}
+
+/* Force consistent column alignment */
+.manual-table-container .header-cell-container,
+.manual-table-container .table-cell {
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+/* Synchronize scrolling between header and body if needed */
+.manual-table-container > .table-header-row {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--table-header-bg);
+}
+
+.manual-table-body .blank-slate {
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/* Ensure proper styling for manual table rows */
+.manual-table-body > * {
+  border-bottom: 1px solid var(--border-light);
+}
+
+.manual-table-body > *:last-child {
+  border-bottom: none;
+}

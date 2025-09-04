@@ -1,32 +1,75 @@
+import PaginationControls from "@/components/Table/components/PaginationControls/PaginationControls"
 import "@/components/Table/components/TableStatus/TableStatus.css"
+import type { PaginationState } from "@/types/table"
 
 interface TableStatusProps {
   loadedRecords: number
   totalRecords: number
   loading: boolean
+  // Optional pagination props - only provided in manual mode
+  paginationState?: PaginationState
+  pageSizeOptions?: number[]
+  onPaginationChange?: (state: PaginationState) => void
 }
 
 const getStatusText = (
   loadedRecords: number,
   totalRecords: number,
-  loading: boolean
+  loading: boolean,
+  isManualMode: boolean,
+  paginationState?: PaginationState
 ): string => {
   if (!loading && totalRecords === 0) {
     return "No records found"
   }
+
+  if (isManualMode && paginationState) {
+    const startRecord = paginationState.pageIndex * paginationState.pageSize + 1
+    const endRecord = Math.min(
+      (paginationState.pageIndex + 1) * paginationState.pageSize,
+      totalRecords
+    )
+    return `Showing ${startRecord.toLocaleString()} to ${endRecord.toLocaleString()} of ${totalRecords.toLocaleString()} records`
+  }
+
   return `Showing ${loadedRecords.toLocaleString()} of ${totalRecords.toLocaleString()} records`
 }
 
 const TableStatus = ({
   loadedRecords,
   totalRecords,
-  loading
+  loading,
+  paginationState,
+  pageSizeOptions,
+  onPaginationChange
 }: TableStatusProps) => {
+  const isManualMode = !!paginationState && !!onPaginationChange
+
   return (
     <div className="table-status">
       <span className="status-highlight">
-        {getStatusText(loadedRecords, totalRecords, loading)}
+        {getStatusText(
+          loadedRecords,
+          totalRecords,
+          loading,
+          isManualMode,
+          paginationState
+        )}
       </span>
+
+      {isManualMode &&
+        paginationState &&
+        onPaginationChange &&
+        pageSizeOptions && (
+          <PaginationControls
+            pageIndex={paginationState.pageIndex}
+            pageSize={paginationState.pageSize}
+            totalRecords={totalRecords}
+            pageSizeOptions={pageSizeOptions}
+            onPaginationStateChange={onPaginationChange}
+            loading={loading}
+          />
+        )}
     </div>
   )
 }

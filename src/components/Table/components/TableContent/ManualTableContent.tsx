@@ -1,15 +1,13 @@
 import BlankSlate from "@/components/Table/components/BlankSlate/BlankSlate"
 import SkeletonRow from "@/components/Table/components/SkeletonRow/SkeletonRow"
-import "@/components/Table/components/TableContent/TableContent.css"
 import TableHeader from "@/components/Table/components/TableHeader/TableHeader"
 import TableRow from "@/components/Table/components/TableRow/TableRow"
 import { ColumnsIcon, SearchIcon } from "@/components/Table/Icons/Icons"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
 import type { ApiData } from "@/types/api"
-import type { Column, PaginationMode, Sort } from "@/types/table"
+import type { Column, Sort } from "@/types/table"
 import { useCallback, useMemo } from "react"
-import { TableVirtuoso } from "react-virtuoso"
-import ManualTableContent from "./ManualTableContent"
+import "./TableContent.css"
 
 interface SortingProps {
   sort?: Sort | null
@@ -47,44 +45,36 @@ interface EditingProps {
 
 interface InteractionProps {
   onCellHover: (text: string, element: HTMLElement | null) => void
-  onEndReached?: () => void
   isSearchOrFilterActive: boolean
   onClearAll?: () => void
-  getRowId: (index: number) => string | number // Simplified to only take index
+  getRowId: (index: number) => string | number
 }
 
-interface TableContentProps {
-  // Core data props
+interface ManualTableContentProps {
   data: ApiData[]
   colDefs: Column<ApiData>[]
   loading: boolean
   numberOfRows: number
   tableWidth?: number
   hasNoVisibleColumns?: boolean
-
-  // Pagination mode
-  paginationMode?: PaginationMode
-
-  // Grouped props
   sorting: SortingProps
   columnManagement: ColumnManagementProps
   editing: EditingProps
   interactions: InteractionProps
 }
 
-const TableContent = ({
+const ManualTableContent = ({
   data,
   colDefs,
   loading,
   numberOfRows,
   tableWidth,
   hasNoVisibleColumns = false,
-  paginationMode = "virtualized",
   sorting,
   columnManagement,
   editing,
   interactions
-}: TableContentProps) => {
+}: ManualTableContentProps) => {
   const { sort, onSort, onClearSort } = sorting
 
   const {
@@ -107,13 +97,8 @@ const TableContent = ({
     onEditValueChange
   } = editing
 
-  const {
-    onCellHover,
-    onEndReached,
-    isSearchOrFilterActive,
-    onClearAll,
-    getRowId
-  } = interactions
+  const { onCellHover, isSearchOrFilterActive, onClearAll, getRowId } =
+    interactions
 
   const renderHeader = useCallback(
     () => (
@@ -151,6 +136,7 @@ const TableContent = ({
   const renderRow = useCallback(
     (index: number, row: ApiData) => (
       <TableRow
+        key={row.id || index}
         row={row}
         colDefs={colDefs}
         index={index}
@@ -183,39 +169,29 @@ const TableContent = ({
     ]
   )
 
-  const skeletonContent = useMemo(
-    () => (
-      <div className="skeleton-container">
-        {renderHeader()}
-        {Array.from({ length: numberOfRows }, (_, idx) => (
-          <SkeletonRow key={idx} colDefs={colDefs} />
-        ))}
-      </div>
-    ),
-    [numberOfRows, colDefs, renderHeader]
-  )
-
   const emptyState = useMemo(
     () => (
-      <div className="empty-state-container">
+      <div className="manual-table-container">
         {renderHeader()}
-        <BlankSlate
-          title="No records found."
-          icon={<SearchIcon size="48" />}
-          subtitle={
-            isSearchOrFilterActive
-              ? "Try adjusting your search or filter criteria"
-              : undefined
-          }
-          actionButton={
-            isSearchOrFilterActive && onClearAll
-              ? {
-                  text: "Clear All Filters",
-                  onClick: onClearAll
-                }
-              : undefined
-          }
-        />
+        <div className="manual-table-body">
+          <BlankSlate
+            title="No records found."
+            icon={<SearchIcon size="48" />}
+            subtitle={
+              isSearchOrFilterActive
+                ? "Try adjusting your search or filter criteria"
+                : undefined
+            }
+            actionButton={
+              isSearchOrFilterActive && onClearAll
+                ? {
+                    text: "Clear All Filters",
+                    onClick: onClearAll
+                  }
+                : undefined
+            }
+          />
+        </div>
       </div>
     ),
     [isSearchOrFilterActive, onClearAll, renderHeader]
@@ -223,7 +199,7 @@ const TableContent = ({
 
   const noColumnsState = useMemo(
     () => (
-      <div className="no-columns-container">
+      <div className="manual-table-container">
         <BlankSlate
           title="No columns visible."
           icon={<ColumnsIcon size="48" />}
@@ -235,36 +211,30 @@ const TableContent = ({
   )
 
   if (hasNoVisibleColumns) return noColumnsState
-  if (loading && data.length === 0) return skeletonContent
-  if (data.length === 0) return emptyState
+  if (data.length === 0 && !loading) return emptyState
 
-  // Switch between pagination modes
-  if (paginationMode === "manual") {
+  // Show skeleton during loading (initial load or pagination)
+  if (loading) {
     return (
-      <ManualTableContent
-        data={data}
-        colDefs={colDefs}
-        loading={loading}
-        numberOfRows={numberOfRows}
-        tableWidth={tableWidth}
-        hasNoVisibleColumns={hasNoVisibleColumns}
-        sorting={sorting}
-        columnManagement={columnManagement}
-        editing={editing}
-        interactions={interactions}
-      />
+      <div className="manual-table-container">
+        {renderHeader()}
+        <div className="manual-table-body">
+          {Array.from({ length: numberOfRows }, (_, idx) => (
+            <SkeletonRow key={idx} colDefs={colDefs} />
+          ))}
+        </div>
+      </div>
     )
   }
 
-  // Default virtualized mode
   return (
-    <TableVirtuoso
-      data={data}
-      fixedHeaderContent={renderHeader}
-      itemContent={renderRow}
-      endReached={onEndReached}
-    />
+    <div className="manual-table-container">
+      {renderHeader()}
+      <div className="manual-table-body">
+        {data.map((row, index) => renderRow(index, row))}
+      </div>
+    </div>
   )
 }
 
-export default TableContent
+export default ManualTableContent

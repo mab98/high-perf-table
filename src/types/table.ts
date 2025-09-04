@@ -39,3 +39,17 @@ export type Tooltip = {
   text: string
   position: { x: number; y: number }
 }
+
+export type PaginationMode = "virtualized" | "manual"
+
+export type PaginationState = {
+  pageIndex: number
+  pageSize: number
+}
+
+export type PaginationConfig = {
+  mode: PaginationMode
+  state?: PaginationState
+  onStateChange?: (state: PaginationState) => void
+  pageSizeOptions?: number[]
+}
