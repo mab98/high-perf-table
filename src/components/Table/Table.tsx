@@ -16,7 +16,7 @@ import { useColumnOrder } from "@/hooks/useColumnOrder"
 import { useColumnResize } from "@/hooks/useColumnResize"
 import { useColumnSettings } from "@/hooks/useColumnSettings"
 import { useColumnWidths } from "@/hooks/useColumnWidths"
-import useDebounce from "@/hooks/useDebounce"
+import { useDebounce } from "@/hooks/useDebounce"
 import { useInlineEdit } from "@/hooks/useInlineEdit"
 import { useLocalStorageEdits } from "@/hooks/useLocalStorageEdits"
 import { usePagination } from "@/hooks/usePagination"
@@ -100,10 +100,10 @@ const Table = ({
     isVirtualized: renderStrategy === VIRTUALIZATION_STRING
   })
 
-  // Use client-side or server-side data based on fetchingMode
   const effectiveApiData =
     fetchingMode === CLIENT_SIDE ? clientSideData.data : apiData
-  const effectiveLoading = loading // Always use the loading from the API layer
+
+  const effectiveLoading = loading
 
   /** Pagination Logic */
   const {
