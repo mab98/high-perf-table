@@ -78,7 +78,7 @@
   font-size: 12px;
   padding: 6px 12px;
   border-radius: 6px;
-  z-index: 1000;
+  z-index: 50;
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
   white-space: nowrap;
   min-width: max-content;
@@ -122,4 +122,25 @@
   background: var(--primary-50);
   text-decoration: underline;
   transform: translateY(-1px);
+}
+
+/* Pinned cell styles */
+.table-cell--pinned-left {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--white);
+  box-shadow:
+    2px 0 4px rgba(0, 0, 0, 0.08),
+    -2px 0 4px rgba(0, 0, 0, 0.08);
+}
+
+.table-cell--pinned-right {
+  position: sticky;
+  right: 0;
+  z-index: 1;
+  background: var(--white);
+  box-shadow:
+    2px 0 4px rgba(0, 0, 0, 0.08),
+    -2px 0 4px rgba(0, 0, 0, 0.08);
 }

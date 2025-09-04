@@ -14,6 +14,7 @@ export type Column<T> = {
   resizable?: boolean
   tooltip?: boolean
   alwaysVisible?: boolean // When true, column is always visible and excluded from columns menu
+  pinned?: "left" | "right" // When set, column is pinned to the specified side
   renderer?: (rowData: T) => ReactNode
 }
 

@@ -204,7 +204,7 @@ const Table = ({
   }, [finalApiData, offset, effectivePaginationMode, fetchingMode])
 
   /** Column Order & Resize */
-  const { orderedColDefs, onColumnReorder } = useColumnOrder({
+  const { orderedColDefs, onColumnReorder, canReorder } = useColumnOrder({
     colDefs,
     columnOrder,
     setColumnOrder
@@ -388,6 +388,7 @@ const Table = ({
             columnManagement={{
               columnWidths,
               onColumnReorder,
+              canReorder,
               isResizing,
               resizingColumn,
               onResizeStart,

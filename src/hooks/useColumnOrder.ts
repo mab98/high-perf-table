@@ -5,6 +5,7 @@ import { useCallback, useMemo } from "react"
 interface UseColumnOrderReturn<T> {
   orderedColDefs: Column<T>[]
   onColumnReorder: (activeId: string, overId: string) => void
+  canReorder: (activeId: string, overId: string) => boolean
 }
 
 interface UseColumnOrderOptions<T> {
@@ -18,25 +19,53 @@ export const useColumnOrder = <T>({
   columnOrder,
   setColumnOrder
 }: UseColumnOrderOptions<T>): UseColumnOrderReturn<T> => {
+  const colDefsMap = useMemo(
+    () => new Map(colDefs.map((col) => [col.key as string, col])),
+    [colDefs]
+  )
+
   const orderedColDefs = useMemo(() => {
-    const colDefsMap = new Map(colDefs.map((col) => [col.key as string, col]))
     return columnOrder
       .map((key) => colDefsMap.get(key))
       .filter((col): col is Column<T> => col !== undefined)
-  }, [colDefs, columnOrder])
+  }, [columnOrder, colDefsMap])
+
+  // Check if two columns can be reordered (must be in same pinning group)
+  const canReorder = useCallback(
+    (activeId: string, overId: string) => {
+      const activeCol = colDefsMap.get(activeId)
+      const overCol = colDefsMap.get(overId)
+
+      if (!activeCol || !overCol) return false
+
+      // Get pinning status (undefined means not pinned)
+      const activePinned = activeCol.pinned
+      const overPinned = overCol.pinned
+
+      // Both must be in the same pinning group
+      return activePinned === overPinned
+    },
+    [colDefsMap]
+  )
 
   const onColumnReorder = useCallback(
     (activeId: string, overId: string) => {
+      // Check if reordering is allowed
+      if (!canReorder(activeId, overId)) {
+        return
+      }
+
       const oldIndex = columnOrder.indexOf(activeId)
       const newIndex = columnOrder.indexOf(overId)
       const newOrder = arrayMove(columnOrder, oldIndex, newIndex)
       setColumnOrder(newOrder)
     },
-    [columnOrder, setColumnOrder]
+    [columnOrder, setColumnOrder, canReorder]
   )
 
   return {
     orderedColDefs,
-    onColumnReorder
+    onColumnReorder,
+    canReorder
   }
 }

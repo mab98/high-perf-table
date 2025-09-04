@@ -49,23 +49,24 @@ export const colDefs: Column<ApiData>[] = [
     width: 100,
     sortable: true,
     filterable: true,
-    alwaysVisible: true // This column will always stay visible and won't appear in columns menu
+    alwaysVisible: true
   },
   {
     key: "firstName",
     title: "First Name",
-    width: 120,
+    width: 175,
     editable: { validation: validateName },
     sortable: true,
     filterable: true,
     resizable: true,
     tooltip: true,
-    alwaysVisible: true // This column will always stay visible
+    alwaysVisible: true,
+    pinned: "left"
   },
   {
     key: "lastName",
     title: "Last Name",
-    width: 120,
+    width: 175,
     sortable: true,
     filterable: true,
     resizable: true,
@@ -85,14 +86,14 @@ export const colDefs: Column<ApiData>[] = [
   {
     key: "phone",
     title: "Phone",
-    width: 180,
+    width: 200,
     resizable: true,
     tooltip: true
   },
   {
     key: "dateOfBirth",
     title: "Date of Birth",
-    width: 120,
+    width: 150,
     sortable: true,
     resizable: true,
     renderer: (row) => renderDate(row.dateOfBirth)
@@ -100,7 +101,7 @@ export const colDefs: Column<ApiData>[] = [
   {
     key: "designation",
     title: "Designation",
-    width: 150,
+    width: 200,
     sortable: true,
     filterable: true,
     resizable: true,
@@ -109,7 +110,7 @@ export const colDefs: Column<ApiData>[] = [
   {
     key: "city",
     title: "City",
-    width: 120,
+    width: 150,
     sortable: true,
     filterable: true,
     tooltip: true
@@ -117,15 +118,16 @@ export const colDefs: Column<ApiData>[] = [
   {
     key: "country",
     title: "Country",
-    width: 120,
+    width: 150,
     sortable: true,
     filterable: true,
-    resizable: true
+    resizable: true,
+    pinned: "right"
   },
   {
     key: "joinDate",
     title: "Join Date",
-    width: 120,
+    width: 150,
     sortable: true,
     resizable: true,
     tooltip: true,
@@ -134,7 +136,7 @@ export const colDefs: Column<ApiData>[] = [
   {
     key: "salary",
     title: "Salary",
-    width: 120,
+    width: 150,
     sortable: true,
     filterable: true,
     resizable: true,

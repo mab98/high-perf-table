@@ -18,6 +18,7 @@ interface TableCellProps {
   onCancelEdit?: () => void
   onSaveEdit?: () => void
   onEditValueChange?: (value: string) => void
+  pinned?: "left" | "right" | null
 }
 
 const TableCell: React.FC<TableCellProps> = ({
@@ -34,7 +35,8 @@ const TableCell: React.FC<TableCellProps> = ({
   onStartEdit,
   onCancelEdit,
   onSaveEdit,
-  onEditValueChange
+  onEditValueChange,
+  pinned
 }) => {
   const {
     inputRef,
@@ -64,7 +66,9 @@ const TableCell: React.FC<TableCellProps> = ({
         "table-cell",
         className,
         isEditable && "table-cell--editable",
-        isEditing && "table-cell--editing"
+        isEditing && "table-cell--editing",
+        pinned === "left" && "table-cell--pinned-left",
+        pinned === "right" && "table-cell--pinned-right"
       )}
       style={style}
       data-cell-key={columnKey}

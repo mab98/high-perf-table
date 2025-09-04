@@ -25,6 +25,7 @@ interface SortingProps {
 interface ColumnManagementProps {
   columnWidths: ColumnWidthInfo[]
   onColumnReorder?: (activeId: string, overId: string) => void
+  canReorder?: (activeId: string, overId: string) => boolean
   isResizing?: boolean
   resizingColumn?: string | null
   onResizeStart?: (
@@ -97,6 +98,7 @@ const TableContent = ({
   const {
     columnWidths,
     onColumnReorder,
+    canReorder,
     isResizing,
     resizingColumn,
     onResizeStart,
@@ -131,6 +133,7 @@ const TableContent = ({
         onClearSort={onClearSort}
         columnWidths={columnWidths}
         onColumnReorder={onColumnReorder}
+        canReorder={canReorder}
         tableWidth={tableWidth}
         isResizing={isResizing}
         resizingColumn={resizingColumn}
@@ -146,6 +149,7 @@ const TableContent = ({
       onClearSort,
       columnWidths,
       onColumnReorder,
+      canReorder,
       tableWidth,
       isResizing,
       resizingColumn,

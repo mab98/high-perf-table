@@ -27,6 +27,7 @@ interface TableHeaderProps<T> {
   onClearSort?: () => void
   columnWidths: ColumnWidthInfo[]
   onColumnReorder?: (activeId: string, overId: string) => void
+  canReorder?: (activeId: string, overId: string) => boolean
   tableWidth?: number
   isResizing?: boolean
   resizingColumn?: string | null
@@ -47,6 +48,7 @@ const TableHeader = <T,>({
   onClearSort,
   columnWidths,
   onColumnReorder,
+  canReorder,
   tableWidth,
   isResizing,
   resizingColumn,
@@ -161,35 +163,68 @@ const TableHeader = <T,>({
       const { active, over } = event
 
       if (over && active.id !== over.id && onColumnReorder) {
-        onColumnReorder(active.id as string, over.id as string)
+        const activeId = active.id as string
+        const overId = over.id as string
+
+        // Check if reordering is allowed (for pinned columns)
+        if (!canReorder || canReorder(activeId, overId)) {
+          onColumnReorder(activeId, overId)
+        }
       }
 
       setActiveColumn(null)
     },
-    [onColumnReorder]
+    [onColumnReorder, canReorder]
   )
 
-  const columnsMeta = useMemo(
-    () =>
-      colDefs.map((col, index) => {
-        const widthInfo = columnWidths[index]
-        const isActive = sort?.column === col.key
-        const sortDirection = isActive ? sort.direction : null
+  const columnsMeta = useMemo(() => {
+    let leftPinnedOffset = 0
+    let rightPinnedOffset = 0
 
-        return {
-          key: col.key,
-          title: col.title,
-          col,
-          style: {
-            width: `${widthInfo?.width || CELL_MIN_WIDTH}px`,
-            minWidth: `${widthInfo?.minWidth || CELL_MIN_WIDTH}px`
-          },
-          isActive,
-          sortDirection
-        }
-      }),
-    [colDefs, columnWidths, sort]
-  )
+    // Calculate offsets for right-pinned columns (in reverse order)
+    const rightPinnedWidths: number[] = []
+    for (let i = colDefs.length - 1; i >= 0; i--) {
+      const col = colDefs[i]
+      if (col.pinned === "right") {
+        const widthInfo = columnWidths[i]
+        const colWidth = widthInfo?.width || CELL_MIN_WIDTH
+        rightPinnedWidths.unshift(rightPinnedOffset)
+        rightPinnedOffset += colWidth
+      }
+    }
+
+    let rightPinnedIndex = 0
+
+    return colDefs.map((col, index) => {
+      const widthInfo = columnWidths[index]
+      const isActive = sort?.column === col.key
+      const sortDirection = isActive ? sort.direction : null
+      const colWidth = widthInfo?.width || CELL_MIN_WIDTH
+
+      const style: React.CSSProperties = {
+        width: `${colWidth}px`,
+        minWidth: `${widthInfo?.minWidth || CELL_MIN_WIDTH}px`
+      }
+
+      // Apply positioning for pinned columns
+      if (col.pinned === "left") {
+        style.left = `${leftPinnedOffset}px`
+        leftPinnedOffset += colWidth
+      } else if (col.pinned === "right") {
+        style.right = `${rightPinnedWidths[rightPinnedIndex]}px`
+        rightPinnedIndex++
+      }
+
+      return {
+        key: col.key,
+        title: col.title,
+        col,
+        style,
+        isActive,
+        sortDirection
+      }
+    })
+  }, [colDefs, columnWidths, sort])
 
   return (
     <DndContext
@@ -212,7 +247,9 @@ const TableHeader = <T,>({
               key={key}
               data-column-key={col.key}
               className={clsx("header-cell-container", {
-                resizing: isResizing && resizingColumn === col.key
+                resizing: isResizing && resizingColumn === col.key,
+                "pinned-left": col.pinned === "left",
+                "pinned-right": col.pinned === "right"
               })}
               style={style}
             >
@@ -222,6 +259,7 @@ const TableHeader = <T,>({
                 isActive={isActive}
                 sortDirection={sortDirection}
                 onSort={handleSort}
+                pinned={col.pinned || null}
               />
             </div>
           ))}

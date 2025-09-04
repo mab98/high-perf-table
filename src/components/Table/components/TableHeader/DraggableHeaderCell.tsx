@@ -27,6 +27,7 @@ interface DraggableHeaderCellProps<T> {
   isActive: boolean
   sortDirection: "asc" | "desc" | null
   onSort: (col: Column<T>) => void
+  pinned?: "left" | "right" | null
 }
 
 const DraggableHeaderCell = <T,>({
@@ -34,7 +35,8 @@ const DraggableHeaderCell = <T,>({
   style,
   isActive,
   sortDirection,
-  onSort
+  onSort,
+  pinned
 }: DraggableHeaderCellProps<T>) => {
   const {
     attributes,
@@ -70,7 +72,9 @@ const DraggableHeaderCell = <T,>({
       className={clsx("table-header", "draggable-header", {
         sortable: col.sortable,
         active: isActive,
-        dragging: isDragging
+        dragging: isDragging,
+        "pinned-left": pinned === "left",
+        "pinned-right": pinned === "right"
       })}
       style={dndStyle}
       onClick={handleClick}
