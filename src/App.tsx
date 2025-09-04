@@ -3,11 +3,12 @@ import ErrorToast from "@/components/ErrorToast/ErrorToast"
 import Table from "@/components/Table/Table"
 import { colDefs } from "@/config/colDefs"
 import { useApiData } from "@/hooks/useApiData"
+import { CLIENT_SIDE, VIRTUALIZATION_STRING } from "./constants"
 import type { FetchingMode, RenderStrategy } from "./types/table"
 
 function App() {
-  const fetchingMode: FetchingMode = "clientSide"
-  const renderStrategy: RenderStrategy = "virtualized"
+  const fetchingMode: FetchingMode = CLIENT_SIDE
+  const renderStrategy: RenderStrategy = VIRTUALIZATION_STRING
 
   const { data, isLoading, error, onApiParamsChange } = useApiData({
     fetchingMode

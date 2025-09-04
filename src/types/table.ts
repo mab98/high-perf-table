@@ -39,7 +39,7 @@ export type Tooltip = {
   position: { x: number; y: number }
 }
 
-export type RenderStrategy = "virtualized" | "manual"
+export type RenderStrategy = "virtualization" | "pagination"
 
 export type FetchingMode = "serverSide" | "clientSide"
 

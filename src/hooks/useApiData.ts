@@ -1,3 +1,4 @@
+import { CLIENT_SIDE, SERVER_SIDE } from "@/constants"
 import type { ApiData, ApiParams, ApiResponse } from "@/types/api"
 import type { FetchingMode } from "@/types/table"
 import { buildQueryString, defaultFetcher } from "@/utils/apiUtils"
@@ -20,7 +21,7 @@ interface UseApiDataReturn {
 
 // Enhanced version for new usage
 export const useApiData = ({
-  fetchingMode = "serverSide"
+  fetchingMode = SERVER_SIDE
 }: UseApiDataParams): UseApiDataReturn => {
   // State for API params
   const [apiParams, setApiParams] = useState<ApiParams>({
@@ -31,7 +32,7 @@ export const useApiData = ({
   // For client-side mode, fetch all data; for server-side mode, use provided params
   const effectiveApiParams = useMemo(
     () =>
-      fetchingMode === "clientSide"
+      fetchingMode === CLIENT_SIDE
         ? { limit: 20000, offset: 0 } // Fetch all data for client-side processing
         : apiParams,
     [fetchingMode, apiParams]
@@ -52,7 +53,7 @@ export const useApiData = ({
   const onApiParamsChange = useCallback(
     (params: ApiParams) => {
       // Only update params for server-side mode
-      if (fetchingMode === "serverSide") {
+      if (fetchingMode === SERVER_SIDE) {
         setApiParams(params)
       }
     },

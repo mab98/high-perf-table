@@ -5,3 +5,5 @@ export const DEFAULT_TABLE_WIDTH = 1500
 export const DEFAULT_TABLE_HEIGHT = 700
 export const PAGINATION_STRING = "pagination"
 export const VIRTUALIZATION_STRING = "virtualization"
+export const CLIENT_SIDE = "clientSide"
+export const SERVER_SIDE = "serverSide"

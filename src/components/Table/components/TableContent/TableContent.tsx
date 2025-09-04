@@ -8,6 +8,7 @@ import {
   ErrorIcon,
   SearchIcon
 } from "@/components/Table/Icons/Icons"
+import { PAGINATION_STRING, VIRTUALIZATION_STRING } from "@/constants"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
 import type { ApiData } from "@/types/api"
 import type { Column, RenderStrategy, Sort } from "@/types/table"
@@ -85,7 +86,7 @@ const TableContent = ({
   numberOfRows,
   tableWidth,
   hasNoVisibleColumns = false,
-  renderStrategy = "virtualized",
+  renderStrategy = VIRTUALIZATION_STRING,
   sorting,
   columnManagement,
   editing,
@@ -267,7 +268,7 @@ const TableContent = ({
   if (data.length === 0) return emptyState
 
   // Switch between pagination modes
-  if (renderStrategy === "manual") {
+  if (renderStrategy === PAGINATION_STRING) {
     return (
       <ManualTableContent
         data={data}
