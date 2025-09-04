@@ -8,12 +8,16 @@ interface ColumnsProps<T> {
   colDefs: Column<T>[]
   visibleColumns: string[]
   onColumnVisibility: (params: ColumnVisibility) => void
+  hasCustomSettings?: boolean
+  onResetColumnSettings?: () => void
 }
 
 const Columns = <T extends Record<string, unknown>>({
   colDefs,
   visibleColumns,
-  onColumnVisibility
+  onColumnVisibility,
+  hasCustomSettings = false,
+  onResetColumnSettings
 }: ColumnsProps<T>) => {
   const {
     onToggleAll,
@@ -63,11 +67,33 @@ const Columns = <T extends Record<string, unknown>>({
     [visibleColumns, onColumnChange]
   )
 
+  const handleResetClick = useCallback(() => {
+    if (onResetColumnSettings) {
+      const confirmed = window.confirm(
+        "Are you sure you want to reset all column settings? This will clear custom column widths, visibility, and order. This action cannot be undone."
+      )
+      if (confirmed) {
+        onResetColumnSettings()
+      }
+    }
+  }, [onResetColumnSettings])
+
   return (
     <DropdownButton label={columnsLabel} className="columns-dropdown">
       <div className="columns-menu-header">
         <div className="columns-header-content">
           <h3 className="columns-title">Manage Columns</h3>
+          {hasCustomSettings && onResetColumnSettings && (
+            <button
+              type="button"
+              className="reset-columns-button"
+              onClick={handleResetClick}
+              title="Reset all column settings to defaults"
+              aria-label="Reset column settings"
+            >
+              Reset
+            </button>
+          )}
         </div>
         {alwaysVisibleColumns.length > 0 && (
           <div className="always-visible-note">

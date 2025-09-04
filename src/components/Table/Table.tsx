@@ -9,6 +9,7 @@ import {
 } from "@/constants"
 import { useColumnOrder } from "@/hooks/useColumnOrder"
 import { useColumnResize } from "@/hooks/useColumnResize"
+import { useColumnSettings } from "@/hooks/useColumnSettings"
 import { useColumnWidths } from "@/hooks/useColumnWidths"
 import { useInlineEdit } from "@/hooks/useInlineEdit"
 import { useLocalStorageEdits } from "@/hooks/useLocalStorageEdits"
@@ -45,10 +46,19 @@ const Table = ({
   const [offset, setOffset] = useState(0)
   const [fetchedRows, setFetchedRows] = useState<ApiData[]>([])
   const [totalRecords, setTotalRecords] = useState(0)
-  const [visibleColumns, setVisibleColumns] = useState<string[]>(() =>
-    colDefs.map((col) => col.key)
-  )
   const [tooltip, setTooltip] = useState<Tooltip | null>(null)
+
+  /** Column Settings from localStorage */
+  const {
+    visibleColumns,
+    columnOrder,
+    columnWidths: customColumnWidths,
+    setVisibleColumns,
+    setColumnOrder,
+    setColumnWidth,
+    resetAllSettings,
+    hasCustomSettings
+  } = useColumnSettings(colDefs)
 
   /** Local Storage Edits */
   const { saveEdit, applyEditsToData, clearAllEdits, hasEdits, getStoredEdit } =
@@ -84,15 +94,22 @@ const Table = ({
   }, [apiData, offset])
 
   /** Column Order & Resize */
-  const { orderedColDefs, onColumnReorder } = useColumnOrder(colDefs)
+  const { orderedColDefs, onColumnReorder } = useColumnOrder({
+    colDefs,
+    columnOrder,
+    setColumnOrder
+  })
+
   const {
-    customWidths,
     isResizing,
     resizingColumn,
     onResizeStart,
     onResizeMove,
     onResizeEnd
-  } = useColumnResize()
+  } = useColumnResize({
+    columnWidths: customColumnWidths,
+    setColumnWidth
+  })
 
   /** Handlers (sorting, filters, etc.) */
   const {
@@ -110,7 +127,13 @@ const Table = ({
     setOffset,
     setFilters,
     setFetchedRows,
-    setVisibleColumns,
+    setVisibleColumns: (columns) => {
+      if (typeof columns === "function") {
+        setVisibleColumns(columns(visibleColumns))
+      } else {
+        setVisibleColumns(columns)
+      }
+    },
     setTooltip,
     setSearch,
     orderedColDefs,
@@ -193,7 +216,7 @@ const Table = ({
   const columnWidths = useColumnWidths({
     colDefs: visibleColDefs,
     tableWidth,
-    customWidths
+    customWidths: customColumnWidths
   })
 
   const enhancedColDefs = useMemo(
@@ -226,6 +249,8 @@ const Table = ({
           loading={loading}
           hasEdits={hasEdits}
           onClearAllEdits={clearAllEdits}
+          hasCustomSettings={hasCustomSettings}
+          onResetColumnSettings={resetAllSettings}
         />
 
         <div className="table-content-wrapper" style={{ height: tableHeight }}>

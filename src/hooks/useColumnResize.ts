@@ -2,7 +2,6 @@ import { CELL_MAX_WIDTH, CELL_MIN_WIDTH } from "@/constants"
 import { useCallback, useState } from "react"
 
 export interface UseColumnResizeReturn {
-  customWidths: Record<string, number>
   isResizing: boolean
   resizingColumn: string | null
   currentResizeWidth: number | null
@@ -14,12 +13,16 @@ export interface UseColumnResizeReturn {
   ) => void
   onResizeMove: (clientX: number) => void
   onResizeEnd: () => void
-  resetColumnWidth: (columnKey: string) => void
-  resetAllWidths: () => void
 }
 
-export const useColumnResize = (): UseColumnResizeReturn => {
-  const [customWidths, setCustomWidths] = useState<Record<string, number>>({})
+interface UseColumnResizeOptions {
+  columnWidths: Record<string, number>
+  setColumnWidth: (columnKey: string, width: number) => void
+}
+
+export const useColumnResize = ({
+  setColumnWidth
+}: UseColumnResizeOptions): UseColumnResizeReturn => {
   const [isResizing, setIsResizing] = useState(false)
   const [resizingColumn, setResizingColumn] = useState<string | null>(null)
   const [currentResizeWidth, setCurrentResizeWidth] = useState<number | null>(
@@ -161,10 +164,7 @@ export const useColumnResize = (): UseColumnResizeReturn => {
     cleanupHandles()
 
     if (resizeState && currentResizeWidth !== null) {
-      setCustomWidths((prev) => ({
-        ...prev,
-        [resizeState.columnKey]: currentResizeWidth
-      }))
+      setColumnWidth(resizeState.columnKey, currentResizeWidth)
     }
 
     // Use requestAnimationFrame to ensure DOM updates are complete before re-enabling transitions
@@ -184,25 +184,14 @@ export const useColumnResize = (): UseColumnResizeReturn => {
 
     document.body.style.userSelect = ""
     document.body.style.cursor = ""
-  }, [resizeState, currentResizeWidth, cleanupHandles])
-
-  const resetColumnWidth = useCallback((columnKey: string) => {
-    setCustomWidths((prev) => {
-      const newWidths = { ...prev }
-      delete newWidths[columnKey]
-      return newWidths
-    })
-  }, [])
+  }, [resizeState, currentResizeWidth, cleanupHandles, setColumnWidth])
 
   return {
-    customWidths,
     isResizing,
     resizingColumn,
     currentResizeWidth,
     onResizeStart,
     onResizeMove,
-    onResizeEnd,
-    resetColumnWidth,
-    resetAllWidths: () => setCustomWidths({})
+    onResizeEnd
   }
 }

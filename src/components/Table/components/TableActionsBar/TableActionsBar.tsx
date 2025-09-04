@@ -17,6 +17,8 @@ interface TableActionsBarProps<T> {
   loading?: boolean
   hasEdits?: boolean
   onClearAllEdits?: () => void
+  hasCustomSettings?: boolean
+  onResetColumnSettings?: () => void
 }
 
 const TableActionsBar = <T extends Record<string, unknown>>({
@@ -30,7 +32,9 @@ const TableActionsBar = <T extends Record<string, unknown>>({
   onColumnVisibility,
   loading = false,
   hasEdits = false,
-  onClearAllEdits
+  onClearAllEdits,
+  hasCustomSettings = false,
+  onResetColumnSettings
 }: TableActionsBarProps<T>) => {
   return (
     <div className="table-actions-bar">
@@ -58,6 +62,8 @@ const TableActionsBar = <T extends Record<string, unknown>>({
           colDefs={colDefs}
           visibleColumns={visibleColumns}
           onColumnVisibility={onColumnVisibility}
+          hasCustomSettings={hasCustomSettings}
+          onResetColumnSettings={onResetColumnSettings}
         />
       </div>
     </div>
