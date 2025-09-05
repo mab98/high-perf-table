@@ -11,7 +11,7 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   font-family: var(--font-family);
-  min-height: 2.5rem;
+  min-height: var(--input-height);
   cursor: pointer;
   transition: all var(--transition-normal);
   white-space: nowrap;

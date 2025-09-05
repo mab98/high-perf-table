@@ -87,7 +87,7 @@
   border: 1px solid var(--purple-300);
 }
 
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-tablet)) {
   .table-status {
     flex-direction: column;
     gap: var(--spacing-3);

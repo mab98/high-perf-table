@@ -159,7 +159,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-tablet)) {
   .columns-menu-content {
     padding: var(--spacing-3);
   }
@@ -169,7 +169,7 @@
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: var(--breakpoint-mobile)) {
   .columns-menu-header {
     border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
     padding: var(--spacing-4);

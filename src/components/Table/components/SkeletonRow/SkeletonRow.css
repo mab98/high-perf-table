@@ -50,13 +50,13 @@
   animation: var(--animation-skeleton-highlight);
 }
 
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-tablet)) {
   .skeleton {
     margin: var(--spacing-2) 0;
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: var(--breakpoint-mobile)) {
   .skeleton {
     margin: var(--spacing-2) 0;
   }

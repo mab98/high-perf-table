@@ -70,7 +70,7 @@
   cursor: pointer;
   transition: all var(--transition-normal);
   text-decoration: none;
-  min-height: 2.5rem;
+  min-height: var(--input-height);
 }
 
 .blank-slate-action-button:hover {
@@ -85,8 +85,8 @@
   box-shadow: var(--shadow-sm);
 }
 
-/* Tablet (768px and down) */
-@media (max-width: 768px) {
+/* Tablet and down */
+@media (max-width: var(--breakpoint-tablet)) {
   .blank-slate {
     margin: var(--spacing-3);
     padding: var(--spacing-7) var(--spacing-6);
@@ -106,8 +106,8 @@
   }
 }
 
-/* Mobile (480px and down) */
-@media (max-width: 480px) {
+/* Mobile and down */
+@media (max-width: var(--breakpoint-mobile)) {
   .blank-slate {
     min-height: 12.5rem;
     margin: var(--spacing-2);

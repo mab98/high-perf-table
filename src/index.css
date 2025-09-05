@@ -25,12 +25,12 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  min-height: 100vh;
+  min-height: var(--viewport-full);
 }
 
 /* Selection styles */
 ::selection {
-  background: #e9d5ff;
+  background: var(--purple-200);
   color: var(--purple-800);
   text-shadow: none;
 }
@@ -60,12 +60,12 @@ textarea {
 
 *::-webkit-scrollbar-track {
   background: var(--scrollbar-track);
-  border-radius: 0.25rem;
+  border-radius: var(--border-radius-xs);
 }
 
 *::-webkit-scrollbar-thumb {
   background: var(--scrollbar-thumb);
-  border-radius: 0.25rem;
+  border-radius: var(--border-radius-xs);
   border: 1px solid var(--scrollbar-track);
 }
 

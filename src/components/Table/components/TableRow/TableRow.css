@@ -33,7 +33,7 @@
 }
 
 .table-row:hover::before {
-  width: 0.25rem;
+  width: var(--spacing-1);
 }
 
 .table-row:nth-child(even) {

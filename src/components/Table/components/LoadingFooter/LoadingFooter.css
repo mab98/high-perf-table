@@ -63,7 +63,7 @@
   flex-shrink: 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-tablet)) {
   .loading-indicator {
     font-size: var(--font-size-xs);
     padding: var(--spacing-4);

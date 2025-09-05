@@ -1,5 +1,5 @@
 .app {
-  min-height: 100vh;
+  min-height: var(--viewport-full);
   background: var(--slate-100);
   padding: var(--spacing-7);
   display: flex;
@@ -10,13 +10,13 @@
   flex-direction: column;
 }
 
-@media (max-width: 768px) {
+@media (max-width: var(--breakpoint-tablet)) {
   .app {
     padding: var(--spacing-4);
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: var(--breakpoint-mobile)) {
   .app {
     padding: var(--spacing-3);
   }

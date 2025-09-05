@@ -17,7 +17,7 @@
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-medium);
   font-family: var(--font-family);
-  min-height: 2.5rem;
+  min-height: var(--input-height);
   cursor: pointer;
   transition: all var(--transition-normal);
   white-space: nowrap;
@@ -67,19 +67,19 @@
 
 .dropdown-menu {
   position: absolute;
-  top: calc(100% + 0.5rem);
+  top: calc(100% + var(--dropdown-offset));
   right: 0;
   background: var(--bg-canvas);
   border: 1px solid var(--border-light);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-xl);
-  width: 20rem;
+  width: var(--dropdown-width);
   max-width: 90vw;
-  max-height: 25rem;
+  max-height: var(--dropdown-max-height);
   overflow: hidden;
   z-index: var(--z-dropdown);
   opacity: 0;
-  transform: translateY(-0.5rem);
+  transform: translateY(calc(-1 * var(--dropdown-offset)));
   transition: all var(--transition-normal);
   pointer-events: none;
 }
@@ -90,19 +90,19 @@
   pointer-events: auto;
 }
 
-/* Tablet (768px and down) */
-@media (max-width: 768px) {
+/* Tablet and down */
+@media (max-width: var(--breakpoint-tablet)) {
   .dropdown-menu {
     max-width: var(--menu-max-width);
   }
 }
 
-/* Mobile (480px and down) */
-@media (max-width: 480px) {
+/* Mobile and down */
+@media (max-width: var(--breakpoint-mobile)) {
   .dropdown-menu {
     right: auto;
     left: 0;
-    width: 16.25rem;
-    max-width: calc(100vw - 1rem);
+    width: var(--dropdown-mobile-width);
+    max-width: calc(100vw - var(--spacing-4));
   }
 }
