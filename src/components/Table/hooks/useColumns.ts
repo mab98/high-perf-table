@@ -32,15 +32,21 @@ export const useColumns = <T>({
     [colDefs]
   )
 
-  const totalCount = toggleableColumns.length
-  const visibleCount = useMemo(
-    () =>
-      toggleableColumns.filter((col) => visibleColumns.includes(col.key))
-        .length,
-    [toggleableColumns, visibleColumns]
-  )
+  const totalCount = colDefs.length // Include all columns (toggleable + always visible)
+  const visibleCount = useMemo(() => {
+    const toggleableVisibleCount = toggleableColumns.filter((col) =>
+      visibleColumns.includes(col.key)
+    ).length
+    // Always visible columns are always counted as visible
+    return toggleableVisibleCount + alwaysVisibleColumns.length
+  }, [toggleableColumns, visibleColumns, alwaysVisibleColumns])
 
-  const isAllVisible = visibleCount === totalCount
+  const isAllToggleableVisible =
+    toggleableColumns.filter((col) => visibleColumns.includes(col.key))
+      .length === toggleableColumns.length
+
+  // For backward compatibility, we keep isAllVisible referring to toggleable columns only
+  const isAllVisible = isAllToggleableVisible
 
   const columnsLabel = useMemo(
     () => `Columns (${visibleCount}/${totalCount})`,
