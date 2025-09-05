@@ -1,4 +1,4 @@
-import { PAGE_SIZE, VIRTUALIZATION_STRING } from "@/constants"
+import { PAGE_SIZE, VIRTUALIZATION } from "@/constants"
 import type { PaginationConfig, PaginationState } from "@/types/table"
 import { useCallback, useEffect, useState } from "react"
 
@@ -13,7 +13,7 @@ export const usePagination = ({
   totalRecords,
   defaultPageSize = PAGE_SIZE
 }: UsePaginationProps) => {
-  const mode = pagination?.mode || VIRTUALIZATION_STRING
+  const mode = pagination?.mode || VIRTUALIZATION
   const pageSizeOptions = pagination?.pageSizeOptions || [20, 50, 100]
 
   // Default pagination state

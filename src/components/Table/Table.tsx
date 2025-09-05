@@ -7,9 +7,9 @@ import {
   DEFAULT_TABLE_HEIGHT,
   DEFAULT_TABLE_WIDTH,
   PAGE_SIZE,
-  PAGINATION_STRING,
+  PAGINATION,
   SERVER_SIDE,
-  VIRTUALIZATION_STRING
+  VIRTUALIZATION
 } from "@/constants"
 import type { ApiData, ApiParams, ApiResponse } from "@/types/api"
 import type {
@@ -57,7 +57,7 @@ const Table = ({
   tableWidth = DEFAULT_TABLE_WIDTH,
   tableHeight = DEFAULT_TABLE_HEIGHT,
   numberOfRows = PAGE_SIZE,
-  renderStrategy = VIRTUALIZATION_STRING,
+  renderStrategy = VIRTUALIZATION,
   fetchingMode = SERVER_SIDE,
   tableTitle
 }: TableProps) => {
@@ -100,7 +100,7 @@ const Table = ({
     sort,
     pageIndex: 0,
     pageSize: PAGE_SIZE,
-    isVirtualized: renderStrategy === VIRTUALIZATION_STRING
+    isVirtualized: renderStrategy === VIRTUALIZATION
   })
 
   const effectiveApiData =
@@ -124,7 +124,7 @@ const Table = ({
 
   const clientSideDataWithPagination = useClientSideData({
     data:
-      fetchingMode === CLIENT_SIDE && renderStrategy === PAGINATION_STRING
+      fetchingMode === CLIENT_SIDE && renderStrategy === PAGINATION
         ? apiData
         : undefined,
     search,
@@ -137,7 +137,7 @@ const Table = ({
 
   // Final data selection
   const finalApiData =
-    fetchingMode === CLIENT_SIDE && renderStrategy === PAGINATION_STRING
+    fetchingMode === CLIENT_SIDE && renderStrategy === PAGINATION
       ? clientSideDataWithPagination.data
       : effectiveApiData
 
@@ -147,11 +147,11 @@ const Table = ({
     if (fetchingMode === SERVER_SIDE) {
       const params: ApiParams = {
         limit:
-          effectivePaginationMode === PAGINATION_STRING
+          effectivePaginationMode === PAGINATION
             ? paginationState.pageSize
             : PAGE_SIZE,
         offset:
-          effectivePaginationMode === PAGINATION_STRING
+          effectivePaginationMode === PAGINATION
             ? paginationState.pageIndex * paginationState.pageSize
             : offset * PAGE_SIZE,
         sort:
@@ -176,7 +176,7 @@ const Table = ({
   useEffect(() => {
     if (
       fetchingMode === SERVER_SIDE &&
-      effectivePaginationMode === VIRTUALIZATION_STRING
+      effectivePaginationMode === VIRTUALIZATION
     ) {
       setFetchedRows([])
       setOffset(0)
@@ -193,7 +193,7 @@ const Table = ({
     if (fetchingMode === CLIENT_SIDE) {
       // For client-side mode, always replace the data completely
       setFetchedRows(finalApiData.data)
-    } else if (effectivePaginationMode === VIRTUALIZATION_STRING) {
+    } else if (effectivePaginationMode === VIRTUALIZATION) {
       // For server-side virtualization mode, append data
       setFetchedRows((prev) =>
         offset === 0 ? finalApiData.data : [...prev, ...finalApiData.data]
@@ -380,7 +380,7 @@ const Table = ({
             loading={effectiveLoading}
             error={error}
             numberOfRows={
-              effectivePaginationMode === PAGINATION_STRING
+              effectivePaginationMode === PAGINATION
                 ? paginationState.pageSize
                 : numberOfRows
             }
@@ -415,7 +415,7 @@ const Table = ({
               onCellHover,
               onValidationError,
               onEndReached:
-                effectivePaginationMode === VIRTUALIZATION_STRING
+                effectivePaginationMode === VIRTUALIZATION
                   ? virtualizedOnEndReached
                   : undefined,
               isSearchOrFilterActive,
@@ -424,7 +424,7 @@ const Table = ({
             }}
           />
 
-          {effectivePaginationMode === VIRTUALIZATION_STRING && (
+          {effectivePaginationMode === VIRTUALIZATION && (
             <LoadingFooter
               loading={effectiveLoading}
               hasData={dataWithEdits.length > 0}
@@ -437,15 +437,13 @@ const Table = ({
           totalRecords={totalRecords}
           loading={effectiveLoading}
           paginationState={
-            renderStrategy === PAGINATION_STRING ? paginationState : undefined
+            renderStrategy === PAGINATION ? paginationState : undefined
           }
           pageSizeOptions={
-            renderStrategy === PAGINATION_STRING ? pageSizeOptions : undefined
+            renderStrategy === PAGINATION ? pageSizeOptions : undefined
           }
           onPaginationChange={
-            renderStrategy === PAGINATION_STRING
-              ? onPaginationStateChange
-              : undefined
+            renderStrategy === PAGINATION ? onPaginationStateChange : undefined
           }
         />
       </div>

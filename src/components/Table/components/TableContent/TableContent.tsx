@@ -8,7 +8,7 @@ import {
   ErrorIcon,
   SearchIcon
 } from "@/components/Table/Icons/Icons"
-import { PAGINATION_STRING, VIRTUALIZATION_STRING } from "@/constants"
+import { PAGINATION, VIRTUALIZATION } from "@/constants"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
 import type { ApiData } from "@/types/api"
 import type { Column, RenderStrategy, Sort } from "@/types/table"
@@ -80,7 +80,7 @@ const TableContent = ({
   numberOfRows,
   tableWidth,
   hasNoVisibleColumns = false,
-  renderStrategy = VIRTUALIZATION_STRING,
+  renderStrategy = VIRTUALIZATION,
   sorting,
   columnManagement,
   editing,
@@ -250,7 +250,7 @@ const TableContent = ({
   if (data.length === 0) return emptyState
 
   // Switch between pagination modes
-  if (renderStrategy === PAGINATION_STRING) {
+  if (renderStrategy === PAGINATION) {
     return (
       <PaginatedTable
         data={data}
