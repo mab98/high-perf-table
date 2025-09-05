@@ -67,6 +67,7 @@
 .header-cell-container {
   position: relative;
   overflow: visible;
+  background: var(--table-header-bg);
 }
 
 .header-cell-container .table-header {
