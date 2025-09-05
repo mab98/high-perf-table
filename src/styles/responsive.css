@@ -1,0 +1,293 @@
+/* ===== RESPONSIVE UTILITY CLASSES ===== */
+
+/* Hide/Show utilities */
+.hide-mobile {
+  display: initial;
+}
+
+.show-mobile {
+  display: none;
+}
+
+.hide-tablet {
+  display: initial;
+}
+
+.show-tablet {
+  display: none;
+}
+
+.hide-desktop {
+  display: none;
+}
+
+.show-desktop {
+  display: initial;
+}
+
+/* Container utilities */
+.container-responsive {
+  width: 100%;
+  max-width: 100%;
+  padding-left: var(--spacing-4);
+  padding-right: var(--spacing-4);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Text utilities */
+.text-responsive {
+  font-size: var(--font-size-md);
+}
+
+.text-truncate-responsive {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Spacing utilities */
+.gap-responsive {
+  gap: var(--spacing-4);
+}
+
+.padding-responsive {
+  padding: var(--spacing-4);
+}
+
+.margin-responsive {
+  margin: var(--spacing-4);
+}
+
+/* ===== BREAKPOINT-SPECIFIC UTILITIES ===== */
+
+/* Large screens and up (1280px+) */
+@media (min-width: var(--breakpoint-xl)) {
+  .container-responsive {
+    max-width: 1200px;
+  }
+}
+
+/* Desktop screens (1024px - 1279px) */
+@media (min-width: var(--breakpoint-lg)) and (max-width: calc(var(--breakpoint-xl) - 1px)) {
+  .container-responsive {
+    max-width: 960px;
+  }
+}
+
+/* Tablet and down (768px and below) */
+@media (max-width: var(--breakpoint-md)) {
+  .hide-tablet {
+    display: none !important;
+  }
+
+  .show-tablet {
+    display: initial !important;
+  }
+
+  .container-responsive {
+    padding-left: var(--spacing-3);
+    padding-right: var(--spacing-3);
+  }
+
+  .text-responsive {
+    font-size: var(--font-size-sm);
+  }
+
+  .gap-responsive {
+    gap: var(--spacing-3);
+  }
+
+  .padding-responsive {
+    padding: var(--spacing-3);
+  }
+
+  .margin-responsive {
+    margin: var(--spacing-3);
+  }
+
+  /* Stack elements vertically on tablet */
+  .stack-tablet {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .full-width-tablet {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
+
+/* Mobile and down (480px and below) */
+@media (max-width: var(--breakpoint-sm)) {
+  .hide-mobile {
+    display: none !important;
+  }
+
+  .show-mobile {
+    display: initial !important;
+  }
+
+  .container-responsive {
+    padding-left: var(--spacing-2);
+    padding-right: var(--spacing-2);
+  }
+
+  .text-responsive {
+    font-size: var(--font-size-xs);
+  }
+
+  .gap-responsive {
+    gap: var(--spacing-2);
+  }
+
+  .padding-responsive {
+    padding: var(--spacing-2);
+  }
+
+  .margin-responsive {
+    margin: var(--spacing-2);
+  }
+
+  /* Stack elements vertically on mobile */
+  .stack-mobile {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .full-width-mobile {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .center-mobile {
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+}
+
+/* Extra small screens (320px and below) */
+@media (max-width: var(--breakpoint-xs)) {
+  .container-responsive {
+    padding-left: var(--spacing-1);
+    padding-right: var(--spacing-1);
+  }
+
+  .gap-responsive {
+    gap: var(--spacing-1);
+  }
+
+  .padding-responsive {
+    padding: var(--spacing-1);
+  }
+
+  .margin-responsive {
+    margin: var(--spacing-1);
+  }
+
+  .hide-xs {
+    display: none !important;
+  }
+
+  .show-xs {
+    display: initial !important;
+  }
+}
+
+/* ===== TOUCH-FRIENDLY UTILITIES ===== */
+
+/* Apply touch-friendly styles only on touch devices */
+@media (max-width: var(--breakpoint-sm)) and (hover: none) {
+  .touch-target {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+
+  .touch-padding {
+    padding: var(--spacing-3) !important;
+  }
+
+  /* Remove hover effects on touch devices */
+  .no-hover-touch:hover {
+    background: initial !important;
+    border-color: initial !important;
+    box-shadow: initial !important;
+    transform: initial !important;
+  }
+}
+
+/* ===== SCROLL UTILITIES ===== */
+
+/* Horizontal scroll with fade indicators */
+.scroll-horizontal-responsive {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+.scroll-horizontal-responsive::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scroll-horizontal-responsive::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+.scroll-horizontal-responsive::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+.scroll-horizontal-responsive::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+@media (max-width: var(--breakpoint-sm)) {
+  .scroll-horizontal-responsive::-webkit-scrollbar {
+    height: 4px;
+  }
+}
+
+/* ===== ACCESSIBILITY UTILITIES ===== */
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip to content link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--bg-emphasis);
+  color: var(--white);
+  padding: 8px;
+  text-decoration: none;
+  z-index: 9999;
+  border-radius: 4px;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Focus visible improvements for keyboard navigation */
+@media (max-width: var(--breakpoint-sm)) {
+  *:focus-visible {
+    outline: 2px solid var(--border-interactive);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}

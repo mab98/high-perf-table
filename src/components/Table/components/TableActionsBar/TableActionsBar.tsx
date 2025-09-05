@@ -45,30 +45,40 @@ const TableActionsBar = <T extends Record<string, unknown>>({
       </div>
       <div className="table-actions-right">
         {setSearch && (
-          <TableSearch value={search} onChange={setSearch} disabled={loading} />
+          <div className="search-section">
+            <TableSearch
+              value={search}
+              onChange={setSearch}
+              disabled={loading}
+            />
+          </div>
         )}
-        {hasEdits && onClearAllEdits && (
-          <ClearEditsButton
-            onClearAllEdits={onClearAllEdits}
-            disabled={loading}
-          />
-        )}
-        {onFilterChange && onClearAllFilters && (
-          <Filters
-            colDefs={colDefs}
-            visibleColumns={visibleColumns}
-            filters={filters}
-            onFilterChange={onFilterChange}
-            onClearAllFilters={onClearAllFilters}
-          />
-        )}
-        <Columns
-          colDefs={colDefs}
-          visibleColumns={visibleColumns}
-          onColumnVisibility={onColumnVisibility}
-          hasCustomSettings={hasCustomSettings}
-          onResetColumnSettings={onResetColumnSettings}
-        />
+        <div className="controls-section">
+          {hasEdits && onClearAllEdits && (
+            <ClearEditsButton
+              onClearAllEdits={onClearAllEdits}
+              disabled={loading}
+            />
+          )}
+          <div className="buttons-row">
+            {onFilterChange && onClearAllFilters && (
+              <Filters
+                colDefs={colDefs}
+                visibleColumns={visibleColumns}
+                filters={filters}
+                onFilterChange={onFilterChange}
+                onClearAllFilters={onClearAllFilters}
+              />
+            )}
+            <Columns
+              colDefs={colDefs}
+              visibleColumns={visibleColumns}
+              onColumnVisibility={onColumnVisibility}
+              hasCustomSettings={hasCustomSettings}
+              onResetColumnSettings={onResetColumnSettings}
+            />
+          </div>
+        </div>
       </div>
     </div>
   )

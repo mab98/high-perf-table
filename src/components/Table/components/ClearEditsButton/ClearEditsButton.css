@@ -25,3 +25,29 @@
   background: var(--bg-subtle);
   border-color: var(--border-interactive);
 }
+
+/* Responsive Design */
+@media (max-width: var(--breakpoint-md)) {
+  .clear-edits-button {
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-xs);
+    min-height: var(--input-height-mobile);
+    gap: var(--spacing-1);
+  }
+}
+
+@media (max-width: var(--breakpoint-sm)) {
+  .clear-edits-button {
+    padding: var(--spacing-2);
+    font-size: var(--font-size-xs);
+    gap: var(--spacing-1);
+  }
+}
+
+/* Touch-friendly on mobile */
+@media (max-width: var(--breakpoint-sm)) and (hover: none) {
+  .clear-edits-button {
+    min-height: 44px;
+    padding: var(--spacing-3);
+  }
+}

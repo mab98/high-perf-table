@@ -211,3 +211,54 @@
 .column-divider {
   display: none;
 }
+
+/* Responsive Design */
+@media (max-width: var(--breakpoint-md)) {
+  .table-header {
+    height: var(--header-height-mobile);
+    padding: var(--cell-padding-mobile);
+    font-size: var(--font-size-xs);
+  }
+
+  .separated-resize-handle {
+    width: 12px;
+  }
+
+  .separated-resize-handle::before {
+    top: 6px;
+    bottom: 6px;
+    left: 5px;
+    width: 2px;
+  }
+}
+
+@media (max-width: var(--breakpoint-sm)) {
+  .table-header {
+    height: calc(var(--header-height-mobile) - 0.25rem);
+    padding: 0.5rem 0.75rem;
+    font-size: var(--font-size-xs);
+  }
+
+  .header-cell-container.pinned-left,
+  .header-cell-container.pinned-right {
+    box-shadow: 1px 0 2px rgba(0, 0, 0, 0.06);
+  }
+
+  .separated-resize-handle {
+    width: 10px;
+  }
+
+  .separated-resize-handle::before {
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: 2px;
+  }
+}
+
+/* Hide resize handles on very small screens for better UX */
+@media (max-width: var(--breakpoint-xs)) {
+  .separated-resize-handle {
+    display: none;
+  }
+}

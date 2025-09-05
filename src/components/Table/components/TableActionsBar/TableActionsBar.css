@@ -36,39 +36,131 @@
   gap: var(--spacing-3);
 }
 
-@media (max-width: var(--breakpoint-tablet)) {
-  .table-actions-bar {
-    padding: var(--spacing-4);
-    min-height: 3.75rem;
-    gap: var(--spacing-4);
-  }
-
-  .table-actions-left,
-  .table-actions-right {
-    gap: var(--spacing-2);
-  }
-
-  .table-title {
-    font-size: var(--font-size-base);
-  }
+.search-section,
+.controls-section {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
 }
 
-@media (max-width: var(--breakpoint-mobile)) {
+.buttons-row {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+/* Tablet breakpoint - 1024px */
+@media (max-width: 1024px) {
   .table-actions-bar {
     flex-direction: column;
     align-items: stretch;
-    gap: var(--spacing-4);
+    gap: var(--spacing-3);
     padding: var(--spacing-4);
     min-height: auto;
   }
 
-  .table-actions-left,
-  .table-actions-right {
+  .table-actions-left {
+    order: 1;
     justify-content: center;
+    flex: none;
+  }
+
+  .table-actions-right {
+    order: 2;
+    justify-content: center;
+    gap: var(--spacing-3);
+    flex-wrap: wrap;
   }
 
   .table-title {
     text-align: center;
     font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-2);
+  }
+
+  /* Reduce component widths at tablet */
+  .search-section .search-wrapper {
+    width: 12rem;
+  }
+
+  .buttons-row .dropdown-button {
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-sm);
+    min-height: 2.25rem;
+  }
+}
+
+/* Mobile breakpoint - 480px */
+@media (max-width: 480px) {
+  .table-actions-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--spacing-3);
+    padding: var(--spacing-3);
+    min-height: auto;
+  }
+
+  .table-actions-left {
+    order: 1;
+    justify-content: center;
+    margin-bottom: var(--spacing-2);
+  }
+
+  .table-actions-right {
+    order: 2;
+    flex-direction: column;
+    gap: var(--spacing-3);
+    align-items: stretch;
+  }
+
+  .table-title {
+    text-align: center;
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-2);
+  }
+
+  /* Line 2: Search section - full width */
+  .search-section {
+    order: 1;
+    justify-content: center;
+  }
+
+  .search-section .search-wrapper {
+    width: 100%;
+  }
+
+  /* Line 3: Controls section */
+  .controls-section {
+    order: 2;
+    flex-direction: column;
+    gap: var(--spacing-2);
+    align-items: stretch;
+  }
+
+  /* Buttons in a row */
+  .buttons-row {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-2);
+    justify-content: center;
+  }
+
+  .buttons-row > * {
+    flex: 1;
+  }
+
+  .buttons-row .dropdown-button {
+    width: 100%;
+    padding: var(--spacing-2) var(--spacing-3);
+    font-size: var(--font-size-sm);
+    min-height: 2.5rem;
+    justify-content: center;
+  }
+
+  /* Clear edits button full width */
+  .controls-section > .clear-edits-button {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: var(--spacing-2);
   }
 }

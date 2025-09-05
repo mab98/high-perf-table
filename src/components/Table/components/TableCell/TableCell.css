@@ -139,3 +139,64 @@
     2px 0 4px rgba(0, 0, 0, 0.08),
     -2px 0 4px rgba(0, 0, 0, 0.08);
 }
+
+/* Responsive Design */
+@media (max-width: var(--breakpoint-md)) {
+  .table-cell {
+    padding: var(--cell-padding-mobile);
+    height: var(--row-height-mobile);
+    font-size: var(--font-size-xs);
+  }
+
+  .table-cell__error {
+    font-size: 11px;
+    padding: 4px 8px;
+    max-width: min(250px, 70vw);
+  }
+
+  .table-cell--pinned-left,
+  .table-cell--pinned-right {
+    box-shadow: 1px 0 2px rgba(0, 0, 0, 0.06);
+  }
+}
+
+@media (max-width: var(--breakpoint-sm)) {
+  .table-cell {
+    padding: 0.5rem 0.75rem;
+    height: calc(var(--row-height-mobile) - 0.25rem);
+    font-size: var(--font-size-xs);
+  }
+
+  .table-cell__error {
+    font-size: 10px;
+    padding: 3px 6px;
+    max-width: min(200px, 60vw);
+    border-radius: 4px;
+  }
+
+  .table-cell__error::before {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-bottom: 6px solid var(--danger-600);
+  }
+
+  .cell-value a {
+    padding: var(--spacing-1);
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* Touch-friendly interaction on mobile */
+@media (max-width: var(--breakpoint-sm)) and (hover: none) {
+  .table-cell--editable {
+    min-height: 44px; /* iOS minimum touch target */
+  }
+
+  .table-cell--editable .cell-value:hover {
+    background-color: transparent;
+  }
+
+  .table-cell--editable .cell-value:active {
+    background-color: var(--purple-200);
+  }
+}

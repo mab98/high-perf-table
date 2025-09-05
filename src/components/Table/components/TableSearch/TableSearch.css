@@ -69,3 +69,34 @@
   right: var(--spacing-3);
   z-index: var(--z-table-search-clear);
 }
+
+/* Responsive design for search */
+@media (max-width: var(--breakpoint-md)) {
+  .search-wrapper {
+    width: var(--search-width-mobile);
+  }
+
+  .search-input-icon {
+    left: var(--search-icon-left-mobile);
+  }
+
+  .search-input {
+    padding: var(--search-padding-mobile);
+    font-size: var(--font-size-xs);
+  }
+
+  .search-input-wrapper .input-clear {
+    right: var(--spacing-2);
+  }
+}
+
+@media (max-width: var(--breakpoint-sm)) {
+  .search-wrapper {
+    width: 100%;
+    min-width: 12rem;
+  }
+
+  .search-input {
+    font-size: var(--font-size-xs);
+  }
+}

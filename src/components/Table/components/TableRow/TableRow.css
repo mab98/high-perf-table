@@ -36,3 +36,35 @@
 .table-row:hover::before {
   width: var(--spacing-1);
 }
+
+/* Responsive Design */
+@media (max-width: var(--breakpoint-md)) {
+  .table-row {
+    height: var(--row-height-mobile);
+  }
+
+  .table-row:hover {
+    box-shadow: var(--shadow-xs);
+  }
+}
+
+@media (max-width: var(--breakpoint-sm)) {
+  .table-row {
+    height: calc(var(--row-height-mobile) - 0.25rem);
+  }
+
+  .table-row::before {
+    width: 0;
+  }
+
+  .table-row:hover::before {
+    width: 2px;
+  }
+}
+
+/* Touch devices - enhance touch targets */
+@media (max-width: var(--breakpoint-sm)) and (hover: none) {
+  .table-row {
+    min-height: 44px; /* iOS minimum touch target */
+  }
+}

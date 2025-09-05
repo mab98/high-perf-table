@@ -71,8 +71,11 @@
 
   /* ===== DIMENSIONS ===== */
   --header-height: 3.625rem;
+  --header-height-mobile: 3rem;
   --row-height: 3.5rem;
+  --row-height-mobile: 3rem;
   --input-height: 2.5rem;
+  --input-height-mobile: 2.25rem;
   --viewport-full: 100vh;
   --border-radius-xs: 0.25rem;
   --border-radius-sm: 0.5rem;
@@ -82,12 +85,15 @@
   --border-radius-full: 9999px;
 
   /* ===== BREAKPOINTS ===== */
-  --breakpoint-mobile: 480px;
-  --breakpoint-tablet: 768px;
+  --breakpoint-xs: 320px;
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
 
-  /* Breakpoints */
-  --breakpoint-tablet: 768px;
+  /* Legacy breakpoints for compatibility */
   --breakpoint-mobile: 480px;
+  --breakpoint-tablet: 768px;
 
   /* ===== SHADOWS ===== */
   --shadow-sm: 0 1px 3px 0 var(--neutral-200), 0 1px 2px -1px #f3f4f6;
@@ -110,6 +116,15 @@
   --spacing-5: 1.25rem;
   --spacing-6: 1.5rem;
   --spacing-7: 2rem;
+
+  /* Mobile spacing overrides */
+  --spacing-mobile-1: 0.25rem;
+  --spacing-mobile-2: 0.375rem;
+  --spacing-mobile-3: 0.5rem;
+  --spacing-mobile-4: 0.75rem;
+  --spacing-mobile-5: 1rem;
+  --spacing-mobile-6: 1.25rem;
+  --spacing-mobile-7: 1.5rem;
 
   /* ===== TYPOGRAPHY ===== */
   --font-family: "Roboto", sans-serif;
@@ -155,11 +170,15 @@
 
   /* ===== COMPONENT SPECIFIC ===== */
   --cell-padding: 1rem 1.5rem;
+  --cell-padding-mobile: 0.75rem 1rem;
   --menu-max-width: 25rem;
   --search-width: 16rem;
+  --search-width-mobile: 14rem;
   --search-height: var(--input-height);
   --search-padding: 0 1.25rem 0 3.25rem;
+  --search-padding-mobile: 0 1rem 0 2.75rem;
   --search-icon-left: 1.125rem;
+  --search-icon-left-mobile: 0.875rem;
   --search-icon-color: var(--text-tertiary);
   --search-placeholder-color: var(--text-placeholder);
   --search-bg-disabled: var(--purple-100);
@@ -170,7 +189,9 @@
   /* Common component dimensions */
   --dropdown-width: 20rem;
   --dropdown-mobile-width: 16.25rem;
+  --dropdown-tablet-width: 18rem;
   --dropdown-max-height: 25rem;
+  --dropdown-max-height-mobile: 20rem;
   --dropdown-offset: 0.5rem;
   --input-padding-with-clear: 2.5rem;
 

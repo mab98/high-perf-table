@@ -171,45 +171,103 @@
 }
 
 /* Responsive adjustments */
-@media (max-width: var(--breakpoint-tablet)) {
+@media (max-width: 768px) {
   .pagination-controls {
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
+    gap: 10px;
+    padding: 10px 12px;
   }
 
   .pagination-actions {
-    justify-content: space-between;
-    gap: 16px;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .page-size-selector {
+    font-size: var(--font-size-xs);
+    gap: 6px;
+  }
+
+  .page-size-selector select {
+    padding: 3px 20px 3px 6px;
+    font-size: var(--font-size-xs);
+    min-width: 55px;
   }
 
   .page-numbers {
-    margin: 0 4px;
+    margin: 0 6px;
+    gap: 1px;
   }
 
   .page-navigation button {
-    min-width: 32px;
-    height: 32px;
+    min-width: 30px;
+    height: 30px;
     padding: 4px 6px;
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-xs);
   }
 
   .page-navigation button.nav-button {
-    font-size: 16px;
+    font-size: 14px;
+    min-width: 32px;
+    height: 32px;
+  }
+
+  .page-ellipsis {
+    padding: 4px 3px;
+    font-size: var(--font-size-xs);
   }
 }
 
-@media (max-width: var(--breakpoint-mobile)) {
+@media (max-width: 480px) {
+  .pagination-controls {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+
   .pagination-actions {
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
+    align-items: center;
   }
 
   .page-size-selector {
     justify-content: center;
+    font-size: var(--font-size-xs);
+    gap: 4px;
+  }
+
+  .page-size-selector select {
+    padding: 2px 18px 2px 4px;
+    font-size: var(--font-size-xs);
+    min-width: 50px;
   }
 
   .page-navigation {
     justify-content: center;
+  }
+
+  .page-numbers {
+    margin: 0 4px;
+    gap: 1px;
+  }
+
+  .page-navigation button {
+    min-width: 28px;
+    height: 28px;
+    padding: 3px 5px;
+    font-size: var(--font-size-xs);
+  }
+
+  .page-navigation button.nav-button {
+    font-size: 12px;
+    min-width: 30px;
+    height: 30px;
+  }
+
+  .page-ellipsis {
+    padding: 3px 2px;
+    font-size: 10px;
   }
 }

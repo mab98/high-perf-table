@@ -38,3 +38,38 @@
   border: 4px solid transparent;
   border-top-color: var(--tooltip-bg);
 }
+
+/* Responsive Design */
+@media (max-width: var(--breakpoint-md)) {
+  .tooltip {
+    font-size: var(--font-size-xs);
+    padding: 0.375rem 0.5rem;
+    max-width: calc(var(--tooltip-max-width) - 2rem);
+  }
+
+  .tooltip::before {
+    border: 3px solid transparent;
+    border-top-color: var(--tooltip-bg);
+  }
+}
+
+@media (max-width: var(--breakpoint-sm)) {
+  .tooltip {
+    font-size: var(--font-size-xs);
+    padding: 0.25rem 0.375rem;
+    max-width: calc(100vw - var(--spacing-4));
+    border-radius: var(--border-radius-sm);
+  }
+
+  .tooltip::before {
+    border: 2px solid transparent;
+    border-top-color: var(--tooltip-bg);
+  }
+}
+
+/* Hide tooltips on very small screens for better UX */
+@media (max-width: var(--breakpoint-xs)) {
+  .tooltip {
+    display: none;
+  }
+}
