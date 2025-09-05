@@ -6,7 +6,7 @@ interface TableStatusProps {
   loadedRecords: number
   totalRecords: number
   loading: boolean
-  // Optional pagination props - only provided in manual mode
+  // Optional pagination props - only provided in pagination mode
   paginationState?: PaginationState
   pageSizeOptions?: number[]
   onPaginationChange?: (state: PaginationState) => void
@@ -16,7 +16,7 @@ const getStatusText = (
   loadedRecords: number,
   totalRecords: number,
   loading: boolean,
-  isManualMode: boolean,
+  isPaginationMode: boolean,
   paginationState?: PaginationState
 ): string => {
   if (loading) {
@@ -27,7 +27,7 @@ const getStatusText = (
     return "No records found"
   }
 
-  if (isManualMode && paginationState) {
+  if (isPaginationMode && paginationState) {
     const startRecord = paginationState.pageIndex * paginationState.pageSize + 1
     const endRecord = Math.min(
       (paginationState.pageIndex + 1) * paginationState.pageSize,
@@ -47,7 +47,7 @@ const TableStatus = ({
   pageSizeOptions,
   onPaginationChange
 }: TableStatusProps) => {
-  const isManualMode = !!paginationState && !!onPaginationChange
+  const isPaginationMode = !!paginationState && !!onPaginationChange
 
   return (
     <div className="table-status">
@@ -56,12 +56,12 @@ const TableStatus = ({
           loadedRecords,
           totalRecords,
           loading,
-          isManualMode,
+          isPaginationMode,
           paginationState
         )}
       </span>
 
-      {isManualMode &&
+      {isPaginationMode &&
         paginationState &&
         onPaginationChange &&
         pageSizeOptions && (

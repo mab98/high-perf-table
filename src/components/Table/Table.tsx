@@ -120,10 +120,8 @@ const Table = ({
     defaultPageSize: PAGE_SIZE
   })
 
-  // Use the provided mode or fall back to the hook's mode
   const effectivePaginationMode = renderStrategy || paginationModeFromHook
 
-  /** Client-side data with pagination state (for manual pagination only) */
   const clientSideDataWithPagination = useClientSideData({
     data:
       fetchingMode === CLIENT_SIDE && renderStrategy === PAGINATION_STRING
@@ -183,11 +181,11 @@ const Table = ({
       setFetchedRows([])
       setOffset(0)
     }
-    // For manual pagination, the usePagination hook handles resets internally
+    // For pagination, the usePagination hook handles resets internally
     // For client-side mode, data is always fresh from the hook
   }, [search, sort, filters, effectivePaginationMode, fetchingMode])
 
-  // Append API data (for virtualized) or replace (for manual)
+  // Append API data (for virtualization) or replace (for pagination)
   useEffect(() => {
     if (!finalApiData) return
     setTotalRecords(finalApiData.total)
@@ -196,12 +194,12 @@ const Table = ({
       // For client-side mode, always replace the data completely
       setFetchedRows(finalApiData.data)
     } else if (effectivePaginationMode === VIRTUALIZATION_STRING) {
-      // For server-side virtualized mode, append data
+      // For server-side virtualization mode, append data
       setFetchedRows((prev) =>
         offset === 0 ? finalApiData.data : [...prev, ...finalApiData.data]
       )
     } else {
-      // For server-side manual pagination, replace the data completely
+      // For server-side pagination, replace the data completely
       setFetchedRows(finalApiData.data)
     }
   }, [finalApiData, offset, effectivePaginationMode, fetchingMode])

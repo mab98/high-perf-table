@@ -80,18 +80,18 @@ export const useClientSideData = (
       })
     }
 
-    // Apply pagination - but for virtualized mode, return all filtered data
+    // Apply pagination - but for virtualization mode, return all filtered data
     let paginatedData: ApiData[]
     let responseTotal: number
     let responseOffset: number
 
     if (isVirtualized) {
-      // For virtualized mode, return all filtered data
+      // For virtualization mode, return all filtered data
       paginatedData = filteredData
       responseTotal = filteredData.length
       responseOffset = 0
     } else {
-      // For manual pagination, apply pagination
+      // For pagination mode, slice the data
       const startIndex = pageIndex * pageSize
       const endIndex = startIndex + pageSize
       paginatedData = filteredData.slice(startIndex, endIndex)

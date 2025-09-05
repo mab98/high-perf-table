@@ -14,7 +14,7 @@ import type { ApiData } from "@/types/api"
 import type { Column, RenderStrategy, Sort } from "@/types/table"
 import { useCallback, useMemo } from "react"
 import { TableVirtuoso } from "react-virtuoso"
-import ManualTableContent from "./ManualTableContent"
+import PaginatedTable from "./PaginatedTable"
 
 interface SortingProps {
   sort?: Sort | null
@@ -252,7 +252,7 @@ const TableContent = ({
   // Switch between pagination modes
   if (renderStrategy === PAGINATION_STRING) {
     return (
-      <ManualTableContent
+      <PaginatedTable
         data={data}
         colDefs={colDefs}
         loading={loading}
@@ -267,7 +267,7 @@ const TableContent = ({
     )
   }
 
-  // Default virtualized mode
+  // Default virtualization mode
   return (
     <TableVirtuoso
       data={data}

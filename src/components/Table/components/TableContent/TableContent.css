@@ -10,8 +10,8 @@
   background: var(--bg-canvas);
 }
 
-/* Manual pagination styles */
-.manual-table-container {
+/* Paginated table styles */
+.paginated-table-container {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -22,7 +22,7 @@
   min-width: fit-content;
 }
 
-.manual-table-body {
+.paginated-table-body {
   flex: 1;
   width: 100%;
   min-height: 200px;
@@ -31,40 +31,39 @@
 }
 
 /* Ensure both header and body have same min-width */
-.manual-table-container .table-header-row,
-.manual-table-container .table-row {
+.paginated-table-container .table-header-row,
+.paginated-table-container .table-row {
   min-width: fit-content;
   width: max-content;
 }
 
 /* Force consistent column alignment */
-.manual-table-container .header-cell-container,
-.manual-table-container .table-cell {
+.paginated-table-container .header-cell-container,
+.paginated-table-container .table-cell {
   flex-shrink: 0;
   box-sizing: border-box;
 }
 
 /* Synchronize scrolling between header and body if needed */
-.manual-table-container > .table-header-row {
+.paginated-table-container > .table-header-row {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--table-header-bg);
+  background: var(--bg-canvas);
 }
 
-.manual-table-body .blank-slate {
-  height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
+.paginated-table-body .blank-slate {
+  position: relative;
+  top: 25%;
+  transform: translateY(-50%);
+  padding: var(--spacing-8) var(--spacing-4);
+  margin: 0 auto;
 }
 
-/* Ensure proper styling for manual table rows */
-.manual-table-body > * {
-  border-bottom: 1px solid var(--border-light);
+.paginated-table-body > * {
+  border-bottom: 1px solid var(--primary-200);
 }
 
-.manual-table-body > *:last-child {
+.paginated-table-body > *:last-child {
   border-bottom: none;
 }

@@ -43,7 +43,7 @@ interface InteractionProps {
   getRowId: (index: number) => string | number
 }
 
-interface ManualTableContentProps {
+interface PaginatedTableProps {
   data: ApiData[]
   colDefs: Column<ApiData>[]
   loading: boolean
@@ -56,7 +56,7 @@ interface ManualTableContentProps {
   interactions: InteractionProps
 }
 
-const ManualTableContent = ({
+const PaginatedTable = ({
   data,
   colDefs,
   loading,
@@ -67,7 +67,7 @@ const ManualTableContent = ({
   columnManagement,
   editing,
   interactions
-}: ManualTableContentProps) => {
+}: PaginatedTableProps) => {
   const { sort, onSort, onClearSort } = sorting
 
   const { columnWidths, onColumnReorder, setColumnWidth } = columnManagement
@@ -153,9 +153,9 @@ const ManualTableContent = ({
 
   const emptyState = useMemo(
     () => (
-      <div className="manual-table-container">
+      <div className="paginated-table-container">
         {renderHeader()}
-        <div className="manual-table-body">
+        <div className="paginated-table-body">
           <BlankSlate
             title="No records found."
             icon={<SearchIcon size="48" />}
@@ -179,44 +179,47 @@ const ManualTableContent = ({
     [isSearchOrFilterActive, onClearAll, renderHeader]
   )
 
-  const noColumnsState = useMemo(
+  const skeletonContent = useMemo(
     () => (
-      <div className="manual-table-container">
-        <BlankSlate
-          title="No columns visible."
-          icon={<ColumnsIcon size="48" />}
-          subtitle="Try enabling them using the 'Columns' button."
-        />
-      </div>
-    ),
-    []
-  )
-
-  if (hasNoVisibleColumns) return noColumnsState
-  if (data.length === 0 && !loading) return emptyState
-
-  // Show skeleton during loading (initial load or pagination)
-  if (loading) {
-    return (
-      <div className="manual-table-container">
+      <div className="paginated-table-container">
         {renderHeader()}
-        <div className="manual-table-body">
+        <div className="paginated-table-body">
           {Array.from({ length: numberOfRows }, (_, idx) => (
             <SkeletonRow key={idx} colDefs={colDefs} />
           ))}
         </div>
       </div>
+    ),
+    [renderHeader, numberOfRows, colDefs]
+  )
+
+  if (hasNoVisibleColumns) {
+    return (
+      <div className="paginated-table-container">
+        {renderHeader()}
+        <div className="paginated-table-body">
+          <BlankSlate
+            title="No columns visible."
+            icon={<ColumnsIcon size="48" />}
+            subtitle="Try enabling them using the 'Columns' button."
+          />
+        </div>
+      </div>
     )
   }
 
+  if (data.length === 0 && !loading) return emptyState
+
+  if (loading) return skeletonContent
+
   return (
-    <div className="manual-table-container">
+    <div className="paginated-table-container">
       {renderHeader()}
-      <div className="manual-table-body">
+      <div className="paginated-table-body">
         {data.map((row, index) => renderRow(index, row))}
       </div>
     </div>
   )
 }
 
-export default ManualTableContent
+export default PaginatedTable
