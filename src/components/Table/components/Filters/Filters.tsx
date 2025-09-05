@@ -44,12 +44,15 @@ const Filters = <T extends Record<string, unknown>>({
         <div className="filters-header-content">
           <h3 className="filters-title">Column Filters</h3>
           {hasFilters && (
-            <ClearButton
+            <button
+              type="button"
+              className="clear-filters-button"
               onClick={onClearAllFilters}
-              className="header-clear"
-              ariaLabel="Clear all filters"
               title="Clear all filters"
-            />
+              aria-label="Clear all filters"
+            >
+              Clear
+            </button>
           )}
         </div>
       </header>

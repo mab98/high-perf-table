@@ -36,6 +36,40 @@
   gap: var(--spacing-2);
 }
 
+.clear-filters-button {
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-default);
+  border-radius: var(--border-radius-sm);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  height: 1.75rem;
+  line-height: 1;
+  min-width: fit-content;
+  padding: 0 var(--spacing-3);
+  transition: all var(--transition-normal);
+  white-space: nowrap;
+  box-shadow: var(--shadow-xs);
+  letter-spacing: var(--letter-spacing-tight);
+}
+
+.clear-filters-button:active {
+  background: var(--bg-active);
+  border-color: var(--border-interactive);
+  transform: translateY(0);
+  box-shadow: var(--shadow-xs);
+}
+
+.clear-filters-button:focus-visible {
+  outline: 2px solid var(--border-interactive);
+  outline-offset: 2px;
+}
+
 .filters-menu-content {
   display: flex;
   flex-direction: column;
