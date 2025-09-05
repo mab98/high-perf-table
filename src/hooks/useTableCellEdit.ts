@@ -19,6 +19,7 @@ export interface UseTableCellEditOptions {
   editError?: string
   tooltipText: string
   onHover?: (text: string, element: HTMLElement | null) => void
+  onValidationError?: (text: string, element: HTMLElement | null) => void
   onStartEdit?: () => void
   onCancelEdit?: () => void
   onSaveEdit?: () => void
@@ -32,6 +33,7 @@ export const useTableCellEdit = ({
   editError,
   tooltipText,
   onHover,
+  onValidationError,
   onStartEdit,
   onCancelEdit,
   onSaveEdit,
@@ -61,6 +63,17 @@ export const useTableCellEdit = ({
       }, 0)
     }
   }, [isEditing, editValue, onHover])
+
+  // Handle validation error tooltip
+  useEffect(() => {
+    if (isEditing && editError && inputRef.current && onValidationError) {
+      // Show validation error tooltip positioned relative to the input
+      onValidationError(editError, inputRef.current)
+    } else if (onValidationError) {
+      // Hide validation error tooltip
+      onValidationError("", null)
+    }
+  }, [isEditing, editError, onValidationError])
 
   const onMouseEnter = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {

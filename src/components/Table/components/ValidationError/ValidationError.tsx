@@ -1,0 +1,25 @@
+import { createPortal } from "react-dom"
+import "./ValidationError.css"
+
+interface ValidationErrorProps {
+  text: string
+  position: { x: number; y: number }
+}
+
+const ValidationError = ({ text, position }: ValidationErrorProps) => {
+  if (!text.trim() || !position) return null
+
+  return createPortal(
+    <div
+      role="tooltip"
+      aria-live="polite"
+      className="validation-error"
+      style={{ left: position.x, top: position.y }}
+    >
+      {text}
+    </div>,
+    document.body
+  )
+}
+
+export default ValidationError

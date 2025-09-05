@@ -10,6 +10,7 @@ interface TableCellProps {
   className?: string
   columnKey?: string
   onHover?: (text: string, element: HTMLElement | null) => void
+  onValidationError?: (text: string, element: HTMLElement | null) => void
   isEditable?: boolean
   isEditing?: boolean
   editValue?: string
@@ -28,6 +29,7 @@ const TableCell: React.FC<TableCellProps> = ({
   className = "",
   columnKey,
   onHover,
+  onValidationError,
   isEditable = false,
   isEditing = false,
   editValue = "",
@@ -54,6 +56,7 @@ const TableCell: React.FC<TableCellProps> = ({
     editError,
     tooltipText,
     onHover,
+    onValidationError,
     onStartEdit,
     onCancelEdit,
     onSaveEdit,
@@ -89,7 +92,6 @@ const TableCell: React.FC<TableCellProps> = ({
             onKeyDown={onKeyDown}
             onBlur={onInputBlur}
           />
-          {editError && <div className="table-cell__error">{editError}</div>}
         </div>
       ) : (
         <div className="cell-value">{content}</div>

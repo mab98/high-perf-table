@@ -45,6 +45,7 @@ interface EditingProps {
 
 interface InteractionProps {
   onCellHover: (text: string, element: HTMLElement | null) => void
+  onValidationError: (text: string, element: HTMLElement | null) => void
   onEndReached?: () => void
   isSearchOrFilterActive: boolean
   onClearAll?: () => void
@@ -102,6 +103,7 @@ const TableContent = ({
 
   const {
     onCellHover,
+    onValidationError,
     onEndReached,
     isSearchOrFilterActive,
     onClearAll,
@@ -143,6 +145,7 @@ const TableContent = ({
         index={index}
         columnWidths={columnWidths}
         onCellHover={onCellHover}
+        onValidationError={onValidationError}
         isEditing={isEditing}
         editValue={editValue}
         editError={editError}
@@ -157,6 +160,7 @@ const TableContent = ({
       colDefs,
       columnWidths,
       onCellHover,
+      onValidationError,
       isEditing,
       editValue,
       editError,

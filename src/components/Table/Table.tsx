@@ -26,10 +26,12 @@ import type {
   FetchingMode,
   RenderStrategy,
   Sort,
-  Tooltip
+  Tooltip,
+  ValidationError
 } from "@/types/table"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import TableTooltip from "./components/TableTooltip/TableTooltip"
+import ValidationErrorTooltip from "./components/ValidationError/ValidationError"
 import "./Table.css"
 
 interface TableProps {
@@ -67,6 +69,8 @@ const Table = ({
   const [fetchedRows, setFetchedRows] = useState<ApiData[]>([])
   const [totalRecords, setTotalRecords] = useState(0)
   const [tooltip, setTooltip] = useState<Tooltip | null>(null)
+  const [validationError, setValidationError] =
+    useState<ValidationError | null>(null)
 
   /** Debounced values */
   const search = useDebounce(localSearch, 500)
@@ -217,6 +221,7 @@ const Table = ({
     onSave: originalOnSave,
     onColumnVisibility,
     onCellHover,
+    onValidationError,
     onEndReached: virtualizedOnEndReached,
     onClearSort,
     onClearAll
@@ -233,6 +238,24 @@ const Table = ({
       }
     },
     setTooltip,
+    setValidationError: useCallback(
+      (text: string, element: HTMLElement | null) => {
+        if (!text.trim() || !element) {
+          setValidationError(null)
+          return
+        }
+
+        const rect = element.getBoundingClientRect()
+        setValidationError({
+          text,
+          position: {
+            x: rect.left + rect.width / 2,
+            y: rect.bottom + 8 // Position below the input with a small gap
+          }
+        })
+      },
+      []
+    ),
     setSearch: setLocalSearch,
     orderedColDefs,
     loading: effectiveLoading,
@@ -392,6 +415,7 @@ const Table = ({
             // Interaction props
             interactions={{
               onCellHover,
+              onValidationError,
               onEndReached:
                 effectivePaginationMode === VIRTUALIZATION_STRING
                   ? virtualizedOnEndReached
@@ -429,6 +453,7 @@ const Table = ({
       </div>
 
       {tooltip && <TableTooltip {...tooltip} />}
+      {validationError && <ValidationErrorTooltip {...validationError} />}
     </>
   )
 }

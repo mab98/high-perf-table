@@ -9,6 +9,7 @@ export interface UseTableHandlersProps<T> {
   setFetchedRows: React.Dispatch<React.SetStateAction<ApiData[]>>
   setVisibleColumns: React.Dispatch<React.SetStateAction<string[]>>
   setTooltip: (tooltip: Tooltip | null) => void
+  setValidationError: (text: string, element: HTMLElement | null) => void
   setSearch: React.Dispatch<React.SetStateAction<string>>
   orderedColDefs: Column<T>[]
   loading: boolean
@@ -28,6 +29,7 @@ export interface UseTableHandlersReturn {
   ) => Promise<void>
   onColumnVisibility: (params: ColumnVisibility) => void
   onCellHover: (text: string, element: HTMLElement | null) => void
+  onValidationError: (text: string, element: HTMLElement | null) => void
   onEndReached: () => void
   onClearSort: () => void
   onClearAll: () => void
@@ -40,6 +42,7 @@ export const useTableHandlers = <T>({
   setFetchedRows,
   setVisibleColumns,
   setTooltip,
+  setValidationError,
   setSearch,
   orderedColDefs,
   loading,
@@ -196,6 +199,7 @@ export const useTableHandlers = <T>({
     onSave,
     onColumnVisibility,
     onCellHover,
+    onValidationError: setValidationError,
     onEndReached,
     onClearSort,
     onClearAll

@@ -37,6 +37,7 @@ interface EditingProps {
 
 interface InteractionProps {
   onCellHover: (text: string, element: HTMLElement | null) => void
+  onValidationError: (text: string, element: HTMLElement | null) => void
   isSearchOrFilterActive: boolean
   onClearAll?: () => void
   getRowId: (index: number) => string | number
@@ -81,8 +82,13 @@ const ManualTableContent = ({
     onEditValueChange
   } = editing
 
-  const { onCellHover, isSearchOrFilterActive, onClearAll, getRowId } =
-    interactions
+  const {
+    onCellHover,
+    onValidationError,
+    isSearchOrFilterActive,
+    onClearAll,
+    getRowId
+  } = interactions
 
   const renderHeader = useCallback(
     () => (
@@ -118,6 +124,7 @@ const ManualTableContent = ({
         index={index}
         columnWidths={columnWidths}
         onCellHover={onCellHover}
+        onValidationError={onValidationError}
         isEditing={isEditing}
         editValue={editValue}
         editError={editError}
@@ -132,6 +139,7 @@ const ManualTableContent = ({
       colDefs,
       columnWidths,
       onCellHover,
+      onValidationError,
       isEditing,
       editValue,
       editError,

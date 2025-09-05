@@ -12,6 +12,7 @@ interface TableRowProps<T> {
   index: number // Not used here, but required by TableVirtuoso API
   columnWidths: ColumnWidthInfo[]
   onCellHover: (text: string, element: HTMLElement | null) => void
+  onValidationError: (text: string, element: HTMLElement | null) => void
   // Inline editing props
   isEditing?: (rowId: string | number, columnKey: string) => boolean
   editValue?: string
@@ -33,6 +34,7 @@ const TableRow = <T,>({
   index,
   columnWidths,
   onCellHover,
+  onValidationError,
   // Inline editing props
   isEditing,
   editValue,
@@ -99,6 +101,7 @@ const TableRow = <T,>({
           style={cellStyle}
           columnKey={col.key}
           onHover={onCellHover}
+          onValidationError={onValidationError}
           isEditable={!!col.editable}
           isEditing={isCurrentlyEditing}
           editValue={
@@ -120,6 +123,7 @@ const TableRow = <T,>({
     columnWidths,
     row,
     onCellHover,
+    onValidationError,
     rowId,
     isEditing,
     editValue,

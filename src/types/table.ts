@@ -40,6 +40,11 @@ export type Tooltip = {
   position: { x: number; y: number }
 }
 
+export type ValidationError = {
+  text: string
+  position: { x: number; y: number }
+}
+
 export type RenderStrategy = "virtualization" | "pagination"
 
 export type FetchingMode = "serverSide" | "clientSide"

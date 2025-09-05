@@ -1,0 +1,45 @@
+.validation-error {
+  /* Layout */
+  position: fixed;
+  z-index: 160; /* Higher than regular tooltips to show above them */
+  pointer-events: none;
+  transform: translate(-50%, 0); /* Position below the input */
+
+  /* Appearance */
+  background: #dc2626;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+
+  /* Typography */
+  font-size: 12px;
+  font-weight: var(--font-weight-normal);
+  line-height: var(--line-height-tight);
+
+  /* Content handling */
+  white-space: nowrap;
+  min-width: max-content;
+  max-width: min(300px, 80vw);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  /* Animation */
+  opacity: 1;
+  transition: var(--transition-opacity);
+}
+
+/* Tooltip arrow pointing upward */
+.validation-error::before {
+  content: "";
+  position: absolute;
+  top: -8px; /* Position above the tooltip */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 8px solid #dc2626; /* Arrow pointing up */
+}
