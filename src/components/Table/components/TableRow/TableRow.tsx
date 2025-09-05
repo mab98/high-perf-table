@@ -3,7 +3,6 @@ import "@/components/Table/components/TableRow/TableRow.css"
 import { CELL_MIN_WIDTH } from "@/constants"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
 import type { Column } from "@/types/table"
-import clsx from "clsx"
 import type { ReactNode } from "react"
 import { memo, useMemo } from "react"
 
@@ -13,7 +12,6 @@ interface TableRowProps<T> {
   index: number // Not used here, but required by TableVirtuoso API
   columnWidths: ColumnWidthInfo[]
   onCellHover: (text: string, element: HTMLElement | null) => void
-  isResizing?: boolean
   // Inline editing props
   isEditing?: (rowId: string | number, columnKey: string) => boolean
   editValue?: string
@@ -29,13 +27,13 @@ interface TableRowProps<T> {
   getRowId?: () => string | number
 }
 
-const TableRow = <T extends Record<string, unknown>>({
+const TableRow = <T,>({
   row,
   colDefs,
   index,
   columnWidths,
   onCellHover,
-  isResizing = false,
+  // Inline editing props
   isEditing,
   editValue,
   editError,
@@ -47,7 +45,8 @@ const TableRow = <T extends Record<string, unknown>>({
 }: TableRowProps<T>) => {
   const rowId = getRowId
     ? getRowId()
-    : (row.id as string | number) || `row-${index}`
+    : ((row as Record<string, unknown>)?.id as string | number) ||
+      `row-${index}`
 
   const cells = useMemo(() => {
     let leftPinnedOffset = 0
@@ -131,9 +130,7 @@ const TableRow = <T extends Record<string, unknown>>({
     onEditValueChange
   ])
 
-  return (
-    <div className={clsx("table-row", { resizing: isResizing })}>{cells}</div>
-  )
+  return <div className="table-row">{cells}</div>
 }
 
 export default memo(TableRow) as typeof TableRow

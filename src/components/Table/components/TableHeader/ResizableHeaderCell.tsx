@@ -1,9 +1,10 @@
-import "@/components/Table/components/TableHeader/TableHeader.css"
+import { CELL_MIN_WIDTH } from "@/constants"
 import type { Column } from "@/types/table"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import clsx from "clsx"
 import { memo, useMemo } from "react"
+import "./ResizableHeader.css"
 
 const renderSortIcon = <T,>(col: Column<T>, sortDirection: string | null) => {
   if (!col.sortable) return null
@@ -21,23 +22,23 @@ const renderSortIcon = <T,>(col: Column<T>, sortDirection: string | null) => {
   )
 }
 
-interface DraggableHeaderCellProps<T> {
+interface ResizableHeaderCellProps<T> {
   col: Column<T>
-  style: React.CSSProperties
+  width: number
   isActive: boolean
   sortDirection: "asc" | "desc" | null
   onSort: (col: Column<T>) => void
   pinned?: "left" | "right" | null
 }
 
-const DraggableHeaderCell = <T,>({
+const ResizableHeaderCell = <T,>({
   col,
-  style,
+  width,
   isActive,
   sortDirection,
   onSort,
   pinned
-}: DraggableHeaderCellProps<T>) => {
+}: ResizableHeaderCellProps<T>) => {
   const {
     attributes,
     listeners,
@@ -54,9 +55,10 @@ const DraggableHeaderCell = <T,>({
     () => ({
       transform: CSS.Transform.toString(transform),
       transition,
-      ...style
+      width: `${width}px`,
+      minWidth: `${CELL_MIN_WIDTH}px`
     }),
-    [transform, transition, style]
+    [transform, transition, width]
   )
 
   const handleClick = (event: React.MouseEvent) => {
@@ -69,27 +71,34 @@ const DraggableHeaderCell = <T,>({
   return (
     <div
       ref={setNodeRef}
-      className={clsx("table-header", "draggable-header", {
-        sortable: col.sortable,
-        active: isActive,
-        dragging: isDragging,
+      className={clsx("header-cell-container", {
         "pinned-left": pinned === "left",
         "pinned-right": pinned === "right"
       })}
       style={dndStyle}
-      onClick={handleClick}
-      title={`Drag to reorder • Click to sort by ${col.title}`}
-      {...attributes}
-      {...listeners}
     >
-      <div className="header-content">
-        <div className="header-left">
-          <span className="header-title">{col.title}</span>
-          {renderSortIcon(col, sortDirection)}
+      <div
+        className={clsx("table-header", "draggable-header", {
+          sortable: col.sortable,
+          active: isActive,
+          dragging: isDragging,
+          "pinned-left": pinned === "left",
+          "pinned-right": pinned === "right"
+        })}
+        onClick={handleClick}
+        title={`Drag to reorder • Click to sort by ${col.title}`}
+        {...attributes}
+        {...listeners}
+      >
+        <div className="header-content">
+          <div className="header-left">
+            <span className="header-title">{col.title}</span>
+            {renderSortIcon(col, sortDirection)}
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
-export default memo(DraggableHeaderCell) as typeof DraggableHeaderCell
+export default memo(ResizableHeaderCell) as typeof ResizableHeaderCell

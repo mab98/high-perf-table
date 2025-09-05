@@ -1,7 +1,7 @@
 import BlankSlate from "@/components/Table/components/BlankSlate/BlankSlate"
 import SkeletonRow from "@/components/Table/components/SkeletonRow/SkeletonRow"
 import "@/components/Table/components/TableContent/TableContent.css"
-import TableHeader from "@/components/Table/components/TableHeader/TableHeader"
+import ResizableTableHeader from "@/components/Table/components/TableHeader/ResizableTableHeader"
 import TableRow from "@/components/Table/components/TableRow/TableRow"
 import {
   ColumnsIcon,
@@ -26,15 +26,7 @@ interface ColumnManagementProps {
   columnWidths: ColumnWidthInfo[]
   onColumnReorder?: (activeId: string, overId: string) => void
   canReorder?: (activeId: string, overId: string) => boolean
-  isResizing?: boolean
-  resizingColumn?: string | null
-  onResizeStart?: (
-    columnKey: string,
-    startX: number,
-    currentWidth: number
-  ) => void
-  onResizeMove?: (clientX: number) => void
-  onResizeEnd?: () => void
+  setColumnWidth?: (columnKey: string, width: number) => void
 }
 
 interface EditingProps {
@@ -95,16 +87,8 @@ const TableContent = ({
 }: TableContentProps) => {
   const { sort, onSort, onClearSort } = sorting
 
-  const {
-    columnWidths,
-    onColumnReorder,
-    canReorder,
-    isResizing,
-    resizingColumn,
-    onResizeStart,
-    onResizeMove,
-    onResizeEnd
-  } = columnManagement
+  const { columnWidths, onColumnReorder, canReorder, setColumnWidth } =
+    columnManagement
 
   const {
     isEditing,
@@ -126,7 +110,7 @@ const TableContent = ({
 
   const renderHeader = useCallback(
     () => (
-      <TableHeader
+      <ResizableTableHeader
         colDefs={colDefs}
         sort={sort}
         onSort={onSort}
@@ -135,11 +119,7 @@ const TableContent = ({
         onColumnReorder={onColumnReorder}
         canReorder={canReorder}
         tableWidth={tableWidth}
-        isResizing={isResizing}
-        resizingColumn={resizingColumn}
-        onResizeStart={onResizeStart}
-        onResizeMove={onResizeMove}
-        onResizeEnd={onResizeEnd}
+        setColumnWidth={setColumnWidth}
       />
     ),
     [
@@ -151,11 +131,7 @@ const TableContent = ({
       onColumnReorder,
       canReorder,
       tableWidth,
-      isResizing,
-      resizingColumn,
-      onResizeStart,
-      onResizeMove,
-      onResizeEnd
+      setColumnWidth
     ]
   )
 
@@ -167,7 +143,6 @@ const TableContent = ({
         index={index}
         columnWidths={columnWidths}
         onCellHover={onCellHover}
-        isResizing={isResizing}
         isEditing={isEditing}
         editValue={editValue}
         editError={editError}
@@ -182,7 +157,6 @@ const TableContent = ({
       colDefs,
       columnWidths,
       onCellHover,
-      isResizing,
       isEditing,
       editValue,
       editError,

@@ -1,5 +1,6 @@
 import ColumnDragOverlay from "@/components/Table/components/TableHeader/ColumnDragOverlay"
-import DraggableHeaderCell from "@/components/Table/components/TableHeader/DraggableHeaderCell"
+import ResizableHeaderCell from "@/components/Table/components/TableHeader/ResizableHeaderCell"
+import SeparateResizeHandle from "@/components/Table/components/TableHeader/SeparateResizeHandle"
 import "@/components/Table/components/TableHeader/TableHeader.css"
 import { CELL_MIN_WIDTH } from "@/constants"
 import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
@@ -18,9 +19,9 @@ import {
   horizontalListSortingStrategy
 } from "@dnd-kit/sortable"
 import clsx from "clsx"
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { memo, useCallback, useMemo, useRef, useState } from "react"
 
-interface TableHeaderProps<T> {
+interface ResizableTableHeaderProps<T> {
   colDefs: Column<T>[]
   sort?: Sort | null
   onSort?: (params: Sort) => void
@@ -29,19 +30,10 @@ interface TableHeaderProps<T> {
   onColumnReorder?: (activeId: string, overId: string) => void
   canReorder?: (activeId: string, overId: string) => boolean
   tableWidth?: number
-  isResizing?: boolean
-  resizingColumn?: string | null
-  onResizeStart?: (
-    columnKey: string,
-    startX: number,
-    currentWidth: number,
-    clickedElement?: HTMLElement
-  ) => void
-  onResizeMove?: (clientX: number) => void
-  onResizeEnd?: () => void
+  setColumnWidth?: (columnKey: string, width: number) => void
 }
 
-const TableHeader = <T,>({
+const ResizableTableHeader = <T,>({
   colDefs,
   sort,
   onSort,
@@ -50,55 +42,10 @@ const TableHeader = <T,>({
   onColumnReorder,
   canReorder,
   tableWidth,
-  isResizing,
-  resizingColumn,
-  onResizeStart,
-  onResizeMove,
-  onResizeEnd
-}: TableHeaderProps<T>) => {
+  setColumnWidth
+}: ResizableTableHeaderProps<T>) => {
   const [activeColumn, setActiveColumn] = useState<string | null>(null)
   const tableHeaderRef = useRef<HTMLDivElement>(null)
-
-  // Handle global mouse events for resizing
-  useEffect(() => {
-    if (!isResizing || !onResizeMove || !onResizeEnd) return
-
-    const handleMouseMove = (e: MouseEvent) => {
-      e.preventDefault()
-      onResizeMove(e.clientX)
-    }
-
-    const handleMouseUp = () => {
-      onResizeEnd()
-    }
-
-    // Use passive: false for preventDefault to work, but optimize where possible
-    document.addEventListener("mousemove", handleMouseMove, { passive: false })
-    document.addEventListener("mouseup", handleMouseUp, { passive: true })
-
-    return () => {
-      document.removeEventListener("mousemove", handleMouseMove)
-      document.removeEventListener("mouseup", handleMouseUp)
-    }
-  }, [isResizing, onResizeMove, onResizeEnd])
-
-  const handleResizeMouseDown = useCallback(
-    (e: React.MouseEvent, columnKey: string, currentWidth: number) => {
-      e.preventDefault()
-      e.stopPropagation()
-
-      if (!onResizeStart) return
-
-      // Prevent text selection during resize
-      document.body.style.userSelect = "none"
-      document.body.style.cursor = "col-resize"
-
-      // Pass the clicked element to the resize start handler
-      const clickedElement = e.currentTarget as HTMLElement
-      onResizeStart(columnKey, e.clientX, currentWidth, clickedElement)
-    },
-    [onResizeStart]
-  )
 
   /* Constrain drag horizontally within table bounds */
   const constrainedHorizontalModifier: Modifier = ({
@@ -177,6 +124,15 @@ const TableHeader = <T,>({
     [onColumnReorder, canReorder]
   )
 
+  const handleResize = useCallback(
+    (columnKey: string, width: number) => {
+      if (setColumnWidth) {
+        setColumnWidth(columnKey, width)
+      }
+    },
+    [setColumnWidth]
+  )
+
   const columnsMeta = useMemo(() => {
     let leftPinnedOffset = 0
     let rightPinnedOffset = 0
@@ -202,7 +158,6 @@ const TableHeader = <T,>({
       const colWidth = widthInfo?.width || CELL_MIN_WIDTH
 
       const style: React.CSSProperties = {
-        width: `${colWidth}px`,
         minWidth: `${widthInfo?.minWidth || CELL_MIN_WIDTH}px`
       }
 
@@ -221,7 +176,8 @@ const TableHeader = <T,>({
         col,
         style,
         isActive,
-        sortDirection
+        sortDirection,
+        width: colWidth
       }
     })
   }, [colDefs, columnWidths, sort])
@@ -234,34 +190,21 @@ const TableHeader = <T,>({
       autoScroll={false}
       modifiers={[constrainedHorizontalModifier]}
     >
-      <div
-        className={clsx("table-header-row", { resizing: isResizing })}
-        ref={tableHeaderRef}
-      >
+      <div className={clsx("table-header-row")} ref={tableHeaderRef}>
         <SortableContext
           items={columnsMeta.map((c) => c.key)}
           strategy={horizontalListSortingStrategy}
         >
-          {columnsMeta.map(({ key, col, style, isActive, sortDirection }) => (
-            <div
+          {columnsMeta.map(({ key, col, isActive, sortDirection, width }) => (
+            <ResizableHeaderCell
               key={key}
-              data-column-key={col.key}
-              className={clsx("header-cell-container", {
-                resizing: isResizing && resizingColumn === col.key,
-                "pinned-left": col.pinned === "left",
-                "pinned-right": col.pinned === "right"
-              })}
-              style={style}
-            >
-              <DraggableHeaderCell
-                col={col}
-                style={{ width: "100%", minWidth: "inherit" }}
-                isActive={isActive}
-                sortDirection={sortDirection}
-                onSort={handleSort}
-                pinned={col.pinned || null}
-              />
-            </div>
+              col={col}
+              width={width}
+              isActive={isActive}
+              sortDirection={sortDirection}
+              onSort={handleSort}
+              pinned={col.pinned || null}
+            />
           ))}
         </SortableContext>
 
@@ -280,25 +223,15 @@ const TableHeader = <T,>({
 
             const cumulativeWidth = columnsMeta
               .slice(0, index + 1)
-              .reduce(
-                (sum, { style }) =>
-                  sum + (parseInt(style.width as string, 10) || 100),
-                0
-              )
+              .reduce((sum, { width }) => sum + width, 0)
 
             return (
-              <div
+              <SeparateResizeHandle
                 key={`resize-${index}`}
-                className="separated-resize-handle"
-                style={{ left: `${cumulativeWidth}px` }}
-                onMouseDown={(e) =>
-                  handleResizeMouseDown(
-                    e,
-                    columnMeta.key,
-                    parseInt(columnMeta.style.width as string, 10) || 100
-                  )
-                }
-                title="Resize column"
+                columnKey={columnMeta.key}
+                currentWidth={columnMeta.width}
+                onResize={(newWidth) => handleResize(columnMeta.key, newWidth)}
+                position={cumulativeWidth}
               />
             )
           })}
@@ -306,27 +239,21 @@ const TableHeader = <T,>({
           {/* Special resize handle for the last column */}
           {columnsMeta.length > 0 &&
             columnsMeta[columnsMeta.length - 1].col.resizable && (
-              <div
+              <SeparateResizeHandle
                 key="resize-last"
-                className="separated-resize-handle last-column-resize"
-                style={{
-                  left: `${columnsMeta.reduce(
-                    (sum, { style }) =>
-                      sum + (parseInt(style.width as string, 10) || 100),
-                    0
-                  )}px`
-                }}
-                onMouseDown={(e) =>
-                  handleResizeMouseDown(
-                    e,
+                columnKey={columnsMeta[columnsMeta.length - 1].key}
+                currentWidth={columnsMeta[columnsMeta.length - 1].width}
+                onResize={(newWidth) =>
+                  handleResize(
                     columnsMeta[columnsMeta.length - 1].key,
-                    parseInt(
-                      columnsMeta[columnsMeta.length - 1].style.width as string,
-                      10
-                    ) || 100
+                    newWidth
                   )
                 }
-                title="Resize last column"
+                position={columnsMeta.reduce(
+                  (sum, { width }) => sum + width,
+                  0
+                )}
+                isLast={true}
               />
             )}
         </div>
@@ -336,4 +263,4 @@ const TableHeader = <T,>({
   )
 }
 
-export default memo(TableHeader) as typeof TableHeader
+export default memo(ResizableTableHeader) as typeof ResizableTableHeader

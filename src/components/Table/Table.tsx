@@ -13,7 +13,6 @@ import {
 } from "@/constants"
 import { useClientSideData } from "@/hooks/useClientSideData"
 import { useColumnOrder } from "@/hooks/useColumnOrder"
-import { useColumnResize } from "@/hooks/useColumnResize"
 import { useColumnSettings } from "@/hooks/useColumnSettings"
 import { useColumnWidths } from "@/hooks/useColumnWidths"
 import { useDebounce } from "@/hooks/useDebounce"
@@ -210,17 +209,6 @@ const Table = ({
     setColumnOrder
   })
 
-  const {
-    isResizing,
-    resizingColumn,
-    onResizeStart,
-    onResizeMove,
-    onResizeEnd
-  } = useColumnResize({
-    columnWidths: customColumnWidths,
-    setColumnWidth
-  })
-
   /** Handlers (sorting, filters, etc.) */
   const {
     onSort,
@@ -389,11 +377,7 @@ const Table = ({
               columnWidths,
               onColumnReorder,
               canReorder,
-              isResizing,
-              resizingColumn,
-              onResizeStart,
-              onResizeMove,
-              onResizeEnd
+              setColumnWidth
             }}
             // Editing props
             editing={{
