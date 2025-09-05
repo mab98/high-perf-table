@@ -95,6 +95,7 @@
   flex-shrink: 0;
   position: relative;
   letter-spacing: -0.01em;
+  width: 100%;
 }
 
 .table-header.sortable,
