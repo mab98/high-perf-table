@@ -1,5 +1,4 @@
 import "@/App.css"
-import ErrorToast from "@/components/ErrorToast/ErrorToast"
 import Table from "@/components/Table/Table"
 import { colDefs } from "@/config/colDefs"
 import { useApiData } from "@/hooks/useApiData"
@@ -14,15 +13,8 @@ function App() {
     fetchingMode
   })
 
-  const renderError = () => {
-    if (!error) return null
-    return <ErrorToast message={error.message} />
-  }
-
   return (
     <div className="app">
-      {renderError()}
-
       <Table
         colDefs={colDefs}
         apiData={data}
