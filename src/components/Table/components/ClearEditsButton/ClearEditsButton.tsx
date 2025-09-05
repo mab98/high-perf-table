@@ -1,4 +1,4 @@
-import "./ClearEditsButton.css"
+import "@/components/Table/components/ClearEditsButton/ClearEditsButton.css"
 
 interface ClearEditsButtonProps {
   onClearAllEdits: () => void

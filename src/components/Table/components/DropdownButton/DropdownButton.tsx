@@ -1,8 +1,8 @@
 import { DropdownArrow } from "@/components/Table/Icons/Icons"
 import "@/components/Table/components/DropdownButton/DropdownButton.css"
+import { useDropdown } from "@/components/Table/hooks/useDropdown"
 import clsx from "clsx"
 import { memo, useMemo, type ReactNode } from "react"
-import { useDropdown } from "../../hooks/useDropdown"
 
 interface DropdownButtonProps {
   label: string

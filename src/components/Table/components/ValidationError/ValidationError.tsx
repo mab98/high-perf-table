@@ -1,5 +1,5 @@
+import "@/components/Table/components/ValidationError/ValidationError.css"
 import { createPortal } from "react-dom"
-import "./ValidationError.css"
 
 interface ValidationErrorProps {
   text: string

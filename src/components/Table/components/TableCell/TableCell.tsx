@@ -1,7 +1,7 @@
 import "@/components/Table/components/TableCell/TableCell.css"
+import { useTableCellEdit } from "@/components/Table/hooks/useTableCellEdit"
 import clsx from "clsx"
 import React, { memo } from "react"
-import { useTableCellEdit } from "../../hooks/useTableCellEdit"
 
 interface TableCellProps {
   content: React.ReactNode

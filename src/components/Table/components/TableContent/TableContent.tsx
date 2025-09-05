@@ -1,20 +1,20 @@
 import BlankSlate from "@/components/Table/components/BlankSlate/BlankSlate"
 import SkeletonRow from "@/components/Table/components/SkeletonRow/SkeletonRow"
+import PaginatedTable from "@/components/Table/components/TableContent/PaginatedTable"
 import "@/components/Table/components/TableContent/TableContent.css"
 import ResizableTableHeader from "@/components/Table/components/TableHeader/ResizableTableHeader"
 import TableRow from "@/components/Table/components/TableRow/TableRow"
+import type { ColumnWidthInfo } from "@/components/Table/hooks/useColumnWidths"
 import {
   ColumnsIcon,
   ErrorIcon,
   SearchIcon
 } from "@/components/Table/Icons/Icons"
 import { PAGINATION, VIRTUALIZATION } from "@/constants"
-import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
 import type { ApiData } from "@/types/api"
 import type { Column, RenderStrategy, Sort } from "@/types/table"
 import { useCallback, useMemo } from "react"
 import { TableVirtuoso } from "react-virtuoso"
-import PaginatedTable from "./PaginatedTable"
 
 interface SortingProps {
   sort?: Sort | null

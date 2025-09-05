@@ -1,5 +1,5 @@
 import { ClearIcon } from "@/components/Table/Icons/Icons"
-import "./ClearButton.css"
+import "@/components/Table/components/ClearButton/ClearButton.css"
 
 interface ClearButtonProps {
   onClick: () => void

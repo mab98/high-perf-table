@@ -2,6 +2,18 @@ import LoadingFooter from "@/components/Table/components/LoadingFooter/LoadingFo
 import TableActionsBar from "@/components/Table/components/TableActionsBar/TableActionsBar"
 import TableContent from "@/components/Table/components/TableContent/TableContent"
 import TableStatus from "@/components/Table/components/TableStatus/TableStatus"
+import TableTooltip from "@/components/Table/components/TableTooltip/TableTooltip"
+import ValidationErrorTooltip from "@/components/Table/components/ValidationError/ValidationError"
+import { useClientSideData } from "@/components/Table/hooks/useClientSideData"
+import { useColumnOrder } from "@/components/Table/hooks/useColumnOrder"
+import { useColumnSettings } from "@/components/Table/hooks/useColumnSettings"
+import { useColumnWidths } from "@/components/Table/hooks/useColumnWidths"
+import { useDebounce } from "@/components/Table/hooks/useDebounce"
+import { useInlineEdit } from "@/components/Table/hooks/useInlineEdit"
+import { useLocalStorageEdits } from "@/components/Table/hooks/useLocalStorageEdits"
+import { usePagination } from "@/components/Table/hooks/usePagination"
+import { useTableHandlers } from "@/components/Table/hooks/useTableHandlers"
+import "@/components/Table/Table.css"
 import {
   CLIENT_SIDE,
   DEFAULT_TABLE_HEIGHT,
@@ -21,18 +33,6 @@ import type {
   ValidationError
 } from "@/types/table"
 import { useCallback, useEffect, useMemo, useState } from "react"
-import TableTooltip from "./components/TableTooltip/TableTooltip"
-import ValidationErrorTooltip from "./components/ValidationError/ValidationError"
-import { useClientSideData } from "./hooks/useClientSideData"
-import { useColumnOrder } from "./hooks/useColumnOrder"
-import { useColumnSettings } from "./hooks/useColumnSettings"
-import { useColumnWidths } from "./hooks/useColumnWidths"
-import { useDebounce } from "./hooks/useDebounce"
-import { useInlineEdit } from "./hooks/useInlineEdit"
-import { useLocalStorageEdits } from "./hooks/useLocalStorageEdits"
-import { usePagination } from "./hooks/usePagination"
-import { useTableHandlers } from "./hooks/useTableHandlers"
-import "./Table.css"
 
 interface TableProps {
   colDefs: Column<ApiData>[]
