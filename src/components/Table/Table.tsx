@@ -4,6 +4,15 @@ import TableContent from "@/components/Table/components/TableContent/TableConten
 import TableStatus from "@/components/Table/components/TableStatus/TableStatus"
 import TableTooltip from "@/components/Table/components/TableTooltip/TableTooltip"
 import ValidationErrorTooltip from "@/components/Table/components/ValidationError/ValidationError"
+import {
+  CLIENT_SIDE,
+  DEFAULT_TABLE_HEIGHT,
+  DEFAULT_TABLE_WIDTH,
+  PAGE_SIZE,
+  PAGINATION,
+  SERVER_SIDE,
+  VIRTUALIZATION
+} from "@/components/Table/constants"
 import { useClientSideData } from "@/components/Table/hooks/useClientSideData"
 import { useColumnOrder } from "@/components/Table/hooks/useColumnOrder"
 import { useColumnSettings } from "@/components/Table/hooks/useColumnSettings"
@@ -18,23 +27,14 @@ import { useTableHandlers } from "@/components/Table/hooks/useTableHandlers"
 import { useTableSaveLogic } from "@/components/Table/hooks/useTableSaveLogic"
 import { useTableState } from "@/components/Table/hooks/useTableState"
 import "@/components/Table/Table.css"
-import { useMemo } from "react"
-import {
-  CLIENT_SIDE,
-  DEFAULT_TABLE_HEIGHT,
-  DEFAULT_TABLE_WIDTH,
-  PAGE_SIZE,
-  PAGINATION,
-  SERVER_SIDE,
-  VIRTUALIZATION
-} from "./constants"
 import type {
   ApiParams,
   ApiResponse,
   Column,
   FetchingMode,
   RenderStrategy
-} from "./types"
+} from "@/components/Table/types"
+import { useMemo } from "react"
 
 interface TableProps<T> {
   colDefs: Column<T>[]

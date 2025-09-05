@@ -1,17 +1,17 @@
-import { useEffect } from "react"
 import {
   CLIENT_SIDE,
   PAGE_SIZE,
   PAGINATION,
   SERVER_SIDE,
   VIRTUALIZATION
-} from "../constants"
+} from "@/components/Table/constants"
 import type {
   ApiParams,
   ApiResponse,
   FetchingMode,
   RenderStrategy
-} from "../types"
+} from "@/components/Table/types"
+import { useEffect } from "react"
 
 export interface UseTableEffectsProps<T> {
   // Core data

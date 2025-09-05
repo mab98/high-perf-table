@@ -1,5 +1,5 @@
+import type { Sort, Tooltip, ValidationError } from "@/components/Table/types"
 import { useState, type Dispatch, type SetStateAction } from "react"
-import type { Sort, Tooltip, ValidationError } from "../types"
 
 export interface UseTableStateReturn<T> {
   // Search and filters

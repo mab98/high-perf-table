@@ -1,6 +1,6 @@
+import { CELL_MIN_WIDTH } from "@/components/Table/constants"
+import type { Column } from "@/components/Table/types/table"
 import { useMemo } from "react"
-import { CELL_MIN_WIDTH } from "../constants"
-import type { Column } from "../types/table"
 
 export interface ColumnWidthInfo {
   width: number

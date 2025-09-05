@@ -1,6 +1,6 @@
 import PaginationControls from "@/components/Table/components/PaginationControls/PaginationControls"
 import "@/components/Table/components/TableStatus/TableStatus.css"
-import type { PaginationState } from "../../types/table"
+import type { PaginationState } from "@/components/Table/types/table"
 
 interface TableStatusProps {
   loadedRecords: number

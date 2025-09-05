@@ -1,5 +1,5 @@
+import { CELL_MAX_WIDTH, CELL_MIN_WIDTH } from "@/components/Table/constants"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { CELL_MAX_WIDTH, CELL_MIN_WIDTH } from "../constants"
 
 export interface UseColumnResizeProps {
   currentWidth: number

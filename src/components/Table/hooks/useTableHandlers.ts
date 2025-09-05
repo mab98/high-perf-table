@@ -1,5 +1,10 @@
+import type {
+  Column,
+  ColumnVisibility,
+  Sort,
+  Tooltip
+} from "@/components/Table/types"
 import { useCallback } from "react"
-import type { Column, ColumnVisibility, Sort, Tooltip } from "../types"
 
 export interface UseTableHandlersProps<T> {
   setSort: (sort?: Sort) => void

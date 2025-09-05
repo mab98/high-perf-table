@@ -4,16 +4,20 @@ import PaginatedTable from "@/components/Table/components/TableContent/Paginated
 import "@/components/Table/components/TableContent/TableContent.css"
 import ResizableTableHeader from "@/components/Table/components/TableHeader/ResizableTableHeader"
 import TableRow from "@/components/Table/components/TableRow/TableRow"
+import { PAGINATION, VIRTUALIZATION } from "@/components/Table/constants"
 import type { ColumnWidthInfo } from "@/components/Table/hooks/useColumnWidths"
 import {
   ColumnsIcon,
   ErrorIcon,
   SearchIcon
 } from "@/components/Table/Icons/Icons"
+import type {
+  Column,
+  RenderStrategy,
+  Sort
+} from "@/components/Table/types/table"
 import { useCallback, useMemo } from "react"
 import { TableVirtuoso } from "react-virtuoso"
-import { PAGINATION, VIRTUALIZATION } from "../../constants"
-import type { Column, RenderStrategy, Sort } from "../../types/table"
 
 interface SortingProps {
   sort?: Sort | null

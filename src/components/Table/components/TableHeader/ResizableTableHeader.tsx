@@ -2,8 +2,10 @@ import ColumnDragOverlay from "@/components/Table/components/TableHeader/ColumnD
 import ResizableHeaderCell from "@/components/Table/components/TableHeader/ResizableHeaderCell"
 import SeparateResizeHandle from "@/components/Table/components/TableHeader/SeparateResizeHandle"
 import "@/components/Table/components/TableHeader/TableHeader.css"
+import { CELL_MIN_WIDTH } from "@/components/Table/constants"
 import type { ColumnWidthInfo } from "@/components/Table/hooks/useColumnWidths"
 import { useTableHeaderDrag } from "@/components/Table/hooks/useTableHeaderDrag"
+import type { Column, Sort } from "@/components/Table/types/table"
 import { DndContext } from "@dnd-kit/core"
 import {
   SortableContext,
@@ -11,8 +13,6 @@ import {
 } from "@dnd-kit/sortable"
 import clsx from "clsx"
 import { memo, useCallback, useMemo } from "react"
-import { CELL_MIN_WIDTH } from "../../constants"
-import type { Column, Sort } from "../../types/table"
 
 interface ResizableTableHeaderProps<T> {
   colDefs: Column<T>[]

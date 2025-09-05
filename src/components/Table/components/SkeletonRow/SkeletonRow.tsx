@@ -1,6 +1,6 @@
 import "@/components/Table/components/SkeletonRow/SkeletonRow.css"
-import { CELL_MIN_WIDTH } from "../../constants"
-import type { Column } from "../../types/table"
+import { CELL_MIN_WIDTH } from "@/components/Table/constants"
+import type { Column } from "@/components/Table/types/table"
 
 interface SkeletonRowProps<T> {
   colDefs: Column<T>[]

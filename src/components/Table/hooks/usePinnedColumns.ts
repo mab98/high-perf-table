@@ -1,5 +1,5 @@
+import type { Column } from "@/components/Table/types/table"
 import { useMemo } from "react"
-import type { Column } from "../types/table"
 
 interface UsePinnedColumnsReturn<T> {
   leftPinnedColumns: Column<T>[]

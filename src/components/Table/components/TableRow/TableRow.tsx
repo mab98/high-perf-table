@@ -1,15 +1,15 @@
 import TableCell from "@/components/Table/components/TableCell/TableCell"
 import "@/components/Table/components/TableRow/TableRow.css"
+import { CELL_MIN_WIDTH } from "@/components/Table/constants"
 import type { ColumnWidthInfo } from "@/components/Table/hooks/useColumnWidths"
+import type { Column } from "@/components/Table/types/table"
 import type { ReactNode } from "react"
 import { memo, useMemo } from "react"
-import { CELL_MIN_WIDTH } from "../../constants"
-import type { Column } from "../../types/table"
 
 interface TableRowProps<T> {
   row: T
   colDefs: Column<T>[]
-  index: number // Not used here, but required by TableVirtuoso API
+  index: number
   columnWidths: ColumnWidthInfo[]
   onCellHover: (text: string, element: HTMLElement | null) => void
   onValidationError: (text: string, element: HTMLElement | null) => void

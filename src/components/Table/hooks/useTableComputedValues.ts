@@ -1,5 +1,5 @@
+import type { Column, ValidationError } from "@/components/Table/types"
 import { useCallback, useMemo } from "react"
-import type { Column, ValidationError } from "../types"
 
 export interface UseTableComputedValuesProps<T> {
   localSearch: string

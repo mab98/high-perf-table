@@ -9,6 +9,6 @@ export type {
   TableQueryParams,
   Tooltip,
   ValidationError
-} from "./table"
+} from "@/components/Table/types/table"
 
-export type { ApiParams, ApiResponse } from "./api"
+export type { ApiParams, ApiResponse } from "@/components/Table/types/api"

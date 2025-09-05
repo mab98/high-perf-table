@@ -1,6 +1,6 @@
+import type { Column } from "@/components/Table/types/table"
 import { arrayMove } from "@dnd-kit/sortable"
 import { useCallback, useMemo } from "react"
-import type { Column } from "../types/table"
 
 interface UseColumnOrderReturn<T> {
   orderedColDefs: Column<T>[]

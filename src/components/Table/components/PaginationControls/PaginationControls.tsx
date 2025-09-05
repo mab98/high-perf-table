@@ -1,5 +1,5 @@
 import "@/components/Table/components/PaginationControls/PaginationControls.css"
-import type { PaginationState } from "../../types/table"
+import type { PaginationState } from "@/components/Table/types/table"
 
 interface PaginationControlsProps {
   pageIndex: number

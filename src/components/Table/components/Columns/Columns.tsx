@@ -1,8 +1,8 @@
 import "@/components/Table/components/Columns/Columns.css"
 import DropdownButton from "@/components/Table/components/DropdownButton/DropdownButton"
 import { useColumnVisibility } from "@/components/Table/hooks/useColumnVisibility"
+import type { Column, ColumnVisibility } from "@/components/Table/types/table"
 import { memo, useCallback } from "react"
-import type { Column, ColumnVisibility } from "../../types/table"
 
 interface ColumnsProps<T> {
   colDefs: Column<T>[]
