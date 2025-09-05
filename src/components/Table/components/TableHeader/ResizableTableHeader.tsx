@@ -2,8 +2,8 @@ import ColumnDragOverlay from "@/components/Table/components/TableHeader/ColumnD
 import ResizableHeaderCell from "@/components/Table/components/TableHeader/ResizableHeaderCell"
 import SeparateResizeHandle from "@/components/Table/components/TableHeader/SeparateResizeHandle"
 import "@/components/Table/components/TableHeader/TableHeader.css"
+import type { ColumnWidthInfo } from "@/components/Table/hooks/useColumnWidths"
 import { CELL_MIN_WIDTH } from "@/constants"
-import type { ColumnWidthInfo } from "@/hooks/useColumnWidths"
 import type { Column, Sort } from "@/types/table"
 import {
   DndContext,
