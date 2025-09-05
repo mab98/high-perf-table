@@ -25,7 +25,6 @@ import {
   VIRTUALIZATION
 } from "./constants"
 import type {
-  ApiData,
   ApiParams,
   ApiResponse,
   Column,
@@ -36,9 +35,9 @@ import type {
   ValidationError
 } from "./types"
 
-interface TableProps {
-  colDefs: Column<ApiData>[]
-  apiData?: ApiResponse<ApiData>
+interface TableProps<T> {
+  colDefs: Column<T>[]
+  apiData?: ApiResponse<T>
   loading: boolean
   error?: Error | null
   onApiParamsChange: (params: ApiParams) => void
@@ -50,7 +49,7 @@ interface TableProps {
   tableTitle?: string
 }
 
-const Table = ({
+const Table = <T extends Record<string, unknown> & { id: string | number }>({
   colDefs,
   apiData,
   loading,
@@ -62,13 +61,13 @@ const Table = ({
   renderStrategy = VIRTUALIZATION,
   fetchingMode = SERVER_SIDE,
   tableTitle
-}: TableProps) => {
+}: TableProps<T>) => {
   /** Local State */
   const [localSearch, setLocalSearch] = useState("")
   const [localFilters, setLocalFilters] = useState<Record<string, string>>({})
   const [sort, setSort] = useState<Sort | undefined>()
   const [offset, setOffset] = useState(0)
-  const [fetchedRows, setFetchedRows] = useState<ApiData[]>([])
+  const [fetchedRows, setFetchedRows] = useState<T[]>([])
   const [totalRecords, setTotalRecords] = useState(0)
   const [tooltip, setTooltip] = useState<Tooltip | null>(null)
   const [validationError, setValidationError] =
@@ -375,9 +374,9 @@ const Table = ({
         />
 
         <div className="table-content-wrapper" style={{ height: tableHeight }}>
-          <TableContent
+          <TableContent<T>
             // Core data props
-            data={dataWithEdits}
+            data={dataWithEdits as T[]}
             colDefs={enhancedColDefs}
             loading={effectiveLoading}
             error={error}

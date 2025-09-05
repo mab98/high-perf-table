@@ -11,4 +11,4 @@ export type {
   ValidationError
 } from "./table"
 
-export type { ApiData, ApiParams, ApiResponse } from "./api"
+export type { ApiParams, ApiResponse } from "./api"

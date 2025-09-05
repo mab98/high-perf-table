@@ -1,6 +1,5 @@
 import { CLIENT_SIDE, SERVER_SIDE } from "@/components/Table/constants"
 import type {
-  ApiData,
   ApiParams,
   ApiResponse,
   FetchingMode
@@ -15,8 +14,8 @@ interface UseApiDataParams {
   fetchingMode?: FetchingMode
 }
 
-interface UseApiDataReturn {
-  data: ApiResponse<ApiData> | undefined
+interface UseApiDataReturn<T> {
+  data: ApiResponse<T> | undefined
   isLoading: boolean
   error: Error | undefined
   onApiParamsChange: (params: ApiParams) => void
@@ -24,9 +23,9 @@ interface UseApiDataReturn {
 }
 
 // Enhanced version for new usage
-export const useApiData = ({
+export const useApiData = <T>({
   fetchingMode = SERVER_SIDE
-}: UseApiDataParams): UseApiDataReturn => {
+}: UseApiDataParams): UseApiDataReturn<T> => {
   // State for API params
   const [apiParams, setApiParams] = useState<ApiParams>({
     limit: 20,
@@ -45,7 +44,7 @@ export const useApiData = ({
   const queryString = buildQueryString(effectiveApiParams)
   const url = queryString ? `${API_URL}?${queryString}` : API_URL
 
-  const { data, error, isLoading } = useSWR<ApiResponse<ApiData>>(
+  const { data, error, isLoading } = useSWR<ApiResponse<T>>(
     url,
     defaultFetcher,
     {

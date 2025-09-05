@@ -1,18 +1,18 @@
 import { useCallback } from "react"
-import type { ApiData, Column, ColumnVisibility, Sort, Tooltip } from "../types"
+import type { Column, ColumnVisibility, Sort, Tooltip } from "../types"
 
 export interface UseTableHandlersProps<T> {
   setSort: (sort?: Sort) => void
   setOffset: (offset: number) => void
   setFilters: React.Dispatch<React.SetStateAction<Record<string, string>>>
-  setFetchedRows: React.Dispatch<React.SetStateAction<ApiData[]>>
+  setFetchedRows: React.Dispatch<React.SetStateAction<T[]>>
   setVisibleColumns: React.Dispatch<React.SetStateAction<string[]>>
   setTooltip: (tooltip: Tooltip | null) => void
   setValidationError: (text: string, element: HTMLElement | null) => void
   setSearch: React.Dispatch<React.SetStateAction<string>>
   orderedColDefs: Column<T>[]
   loading: boolean
-  fetchedRows: ApiData[]
+  fetchedRows: T[]
   totalRecords: number
   offset: number
 }
@@ -34,7 +34,9 @@ export interface UseTableHandlersReturn {
   onClearAll: () => void
 }
 
-export const useTableHandlers = <T>({
+export const useTableHandlers = <
+  T extends Record<string, unknown> & { id: string | number }
+>({
   setSort,
   setOffset,
   setFilters,

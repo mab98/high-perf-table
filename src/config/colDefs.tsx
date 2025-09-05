@@ -1,4 +1,5 @@
-import type { ApiData, Column } from "@/components/Table/types"
+import type { Column } from "@/components/Table/types"
+import type { ApiData } from "@/types/apiData"
 
 // Validation functions
 const validateName = (value: string): string | null => {

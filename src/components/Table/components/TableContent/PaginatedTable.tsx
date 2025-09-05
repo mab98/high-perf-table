@@ -6,7 +6,6 @@ import TableRow from "@/components/Table/components/TableRow/TableRow"
 import type { ColumnWidthInfo } from "@/components/Table/hooks/useColumnWidths"
 import { ColumnsIcon, SearchIcon } from "@/components/Table/Icons/Icons"
 import { useCallback, useMemo } from "react"
-import type { ApiData } from "../../types"
 import type { Column, Sort } from "../../types/table"
 
 interface SortingProps {
@@ -43,9 +42,9 @@ interface InteractionProps {
   getRowId: (index: number) => string | number
 }
 
-interface PaginatedTableProps {
-  data: ApiData[]
-  colDefs: Column<ApiData>[]
+interface PaginatedTableProps<T> {
+  data: T[]
+  colDefs: Column<T>[]
   loading: boolean
   numberOfRows: number
   tableWidth?: number
@@ -56,7 +55,9 @@ interface PaginatedTableProps {
   interactions: InteractionProps
 }
 
-const PaginatedTable = ({
+const PaginatedTable = <
+  T extends Record<string, unknown> & { id: string | number }
+>({
   data,
   colDefs,
   loading,
@@ -67,7 +68,7 @@ const PaginatedTable = ({
   columnManagement,
   editing,
   interactions
-}: PaginatedTableProps) => {
+}: PaginatedTableProps<T>) => {
   const { sort, onSort, onClearSort } = sorting
 
   const { columnWidths, onColumnReorder, setColumnWidth } = columnManagement
@@ -116,7 +117,7 @@ const PaginatedTable = ({
   )
 
   const renderRow = useCallback(
-    (index: number, row: ApiData) => (
+    (index: number, row: T) => (
       <TableRow
         key={row.id || index}
         row={row}

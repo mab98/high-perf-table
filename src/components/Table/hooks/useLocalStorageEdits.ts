@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react"
-import type { ApiData } from "../types"
 
 export interface StoredEdit {
   rowId: string | number
@@ -8,7 +7,7 @@ export interface StoredEdit {
   actualValue: string
 }
 
-export interface UseLocalStorageEditsReturn {
+export interface UseLocalStorageEditsReturn<T> {
   storedEdits: Record<string, StoredEdit>
   saveEdit: (
     rowId: string | number,
@@ -18,7 +17,7 @@ export interface UseLocalStorageEditsReturn {
   ) => void
   clearEdit: (rowId: string | number, columnKey: string) => void
   clearAllEdits: () => void
-  applyEditsToData: (data: ApiData[]) => ApiData[]
+  applyEditsToData: (data: T[]) => T[]
   getStoredEdit: (
     rowId: string | number,
     columnKey: string
@@ -68,7 +67,9 @@ const loadInitialEdits = (): Record<string, StoredEdit> => {
   return {}
 }
 
-export const useLocalStorageEdits = (): UseLocalStorageEditsReturn => {
+export const useLocalStorageEdits = <
+  T extends Record<string, unknown> & { id: string | number }
+>(): UseLocalStorageEditsReturn<T> => {
   const [storedEdits, setStoredEdits] =
     useState<Record<string, StoredEdit>>(loadInitialEdits)
 
@@ -138,7 +139,7 @@ export const useLocalStorageEdits = (): UseLocalStorageEditsReturn => {
   }, [])
 
   const applyEditsToData = useCallback(
-    (data: ApiData[]): ApiData[] => {
+    (data: T[]): T[] => {
       if (Object.keys(storedEdits).length === 0) {
         return data
       }

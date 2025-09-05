@@ -13,7 +13,6 @@ import {
 import { useCallback, useMemo } from "react"
 import { TableVirtuoso } from "react-virtuoso"
 import { PAGINATION, VIRTUALIZATION } from "../../constants"
-import type { ApiData } from "../../types"
 import type { Column, RenderStrategy, Sort } from "../../types/table"
 
 interface SortingProps {
@@ -52,10 +51,10 @@ interface InteractionProps {
   getRowId: (index: number) => string | number // Simplified to only take index
 }
 
-interface TableContentProps {
+interface TableContentProps<T> {
   // Core data props
-  data: ApiData[]
-  colDefs: Column<ApiData>[]
+  data: T[]
+  colDefs: Column<T>[]
   loading: boolean
   error?: Error | null
   numberOfRows: number
@@ -72,7 +71,9 @@ interface TableContentProps {
   interactions: InteractionProps
 }
 
-const TableContent = ({
+const TableContent = <
+  T extends Record<string, unknown> & { id: string | number }
+>({
   data,
   colDefs,
   loading,
@@ -85,7 +86,7 @@ const TableContent = ({
   columnManagement,
   editing,
   interactions
-}: TableContentProps) => {
+}: TableContentProps<T>) => {
   const { sort, onSort, onClearSort } = sorting
 
   const { columnWidths, onColumnReorder, canReorder, setColumnWidth } =
@@ -138,7 +139,7 @@ const TableContent = ({
   )
 
   const renderRow = useCallback(
-    (index: number, row: ApiData) => (
+    (index: number, row: T) => (
       <TableRow
         row={row}
         colDefs={colDefs}
@@ -252,7 +253,7 @@ const TableContent = ({
   // Switch between pagination modes
   if (renderStrategy === PAGINATION) {
     return (
-      <PaginatedTable
+      <PaginatedTable<T>
         data={data}
         colDefs={colDefs}
         loading={loading}

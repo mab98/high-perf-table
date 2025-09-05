@@ -1,9 +1,9 @@
 import { useMemo } from "react"
-import type { ApiData, ApiResponse } from "../types"
+import type { ApiResponse } from "../types"
 import type { Sort } from "../types/table"
 
-interface UseClientSideDataParams {
-  data: ApiResponse<ApiData> | undefined
+interface UseClientSideDataParams<T> {
+  data: ApiResponse<T> | undefined
   search?: string
   filters?: Record<string, string>
   sort?: Sort
@@ -12,15 +12,15 @@ interface UseClientSideDataParams {
   isVirtualized?: boolean
 }
 
-interface UseClientSideDataReturn {
-  data: ApiResponse<ApiData> | undefined
-  allData: ApiData[] | undefined
+interface UseClientSideDataReturn<T> {
+  data: ApiResponse<T> | undefined
+  allData: T[] | undefined
   processedCount: number
 }
 
-export const useClientSideData = (
-  params: UseClientSideDataParams
-): UseClientSideDataReturn => {
+export const useClientSideData = <T extends Record<string, unknown>>(
+  params: UseClientSideDataParams<T>
+): UseClientSideDataReturn<T> => {
   const {
     data: rawData,
     search = "",
@@ -81,7 +81,7 @@ export const useClientSideData = (
     }
 
     // Apply pagination - but for virtualization mode, return all filtered data
-    let paginatedData: ApiData[]
+    let paginatedData: T[]
     let responseTotal: number
     let responseOffset: number
 
@@ -108,7 +108,7 @@ export const useClientSideData = (
     }
   }, [rawData, search, filters, sort, pageIndex, pageSize, isVirtualized])
 
-  const result: UseClientSideDataReturn = {
+  const result: UseClientSideDataReturn<T> = {
     data: processedData
       ? {
           data: processedData.data,

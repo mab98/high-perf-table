@@ -4,18 +4,19 @@ import { CLIENT_SIDE, VIRTUALIZATION } from "@/components/Table/constants"
 import type { FetchingMode, RenderStrategy } from "@/components/Table/types"
 import { colDefs } from "@/config/colDefs"
 import { useApiData } from "@/hooks/useApiData"
+import type { ApiData } from "./types/apiData"
 
 function App() {
   const fetchingMode: FetchingMode = CLIENT_SIDE
   const renderStrategy: RenderStrategy = VIRTUALIZATION
 
-  const { data, isLoading, error, onApiParamsChange } = useApiData({
+  const { data, isLoading, error, onApiParamsChange } = useApiData<ApiData>({
     fetchingMode
   })
 
   return (
     <div className="app">
-      <Table
+      <Table<ApiData>
         colDefs={colDefs}
         apiData={data}
         loading={isLoading}
