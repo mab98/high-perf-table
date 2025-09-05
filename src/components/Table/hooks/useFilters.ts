@@ -1,5 +1,5 @@
-import type { Column } from "@/types/table"
 import { useCallback, useMemo } from "react"
+import type { Column } from "../types/table"
 
 export interface UseFiltersReturn<T> {
   filterableColumns: Column<T>[]

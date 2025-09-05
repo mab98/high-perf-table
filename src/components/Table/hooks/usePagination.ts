@@ -1,6 +1,6 @@
-import { PAGE_SIZE, VIRTUALIZATION } from "@/constants"
-import type { PaginationConfig, PaginationState } from "@/types/table"
 import { useCallback, useEffect, useState } from "react"
+import { PAGE_SIZE, VIRTUALIZATION } from "../constants"
+import type { PaginationConfig, PaginationState } from "../types/table"
 
 interface UsePaginationProps {
   pagination?: PaginationConfig

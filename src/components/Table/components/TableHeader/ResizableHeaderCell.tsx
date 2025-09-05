@@ -1,10 +1,10 @@
 import "@/components/Table/components/TableHeader/ResizableHeader.css"
-import { CELL_MIN_WIDTH } from "@/constants"
-import type { Column } from "@/types/table"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import clsx from "clsx"
 import { memo, useMemo } from "react"
+import { CELL_MIN_WIDTH } from "../../constants"
+import type { Column } from "../../types/table"
 
 const renderSortIcon = <T,>(col: Column<T>, sortDirection: string | null) => {
   if (!col.sortable) return null

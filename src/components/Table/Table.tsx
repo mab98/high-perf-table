@@ -14,6 +14,7 @@ import { useLocalStorageEdits } from "@/components/Table/hooks/useLocalStorageEd
 import { usePagination } from "@/components/Table/hooks/usePagination"
 import { useTableHandlers } from "@/components/Table/hooks/useTableHandlers"
 import "@/components/Table/Table.css"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import {
   CLIENT_SIDE,
   DEFAULT_TABLE_HEIGHT,
@@ -22,17 +23,18 @@ import {
   PAGINATION,
   SERVER_SIDE,
   VIRTUALIZATION
-} from "@/constants"
-import type { ApiData, ApiParams, ApiResponse } from "@/types/api"
+} from "./constants"
 import type {
+  ApiData,
+  ApiParams,
+  ApiResponse,
   Column,
   FetchingMode,
   RenderStrategy,
   Sort,
   Tooltip,
   ValidationError
-} from "@/types/table"
-import { useCallback, useEffect, useMemo, useState } from "react"
+} from "./types"
 
 interface TableProps {
   colDefs: Column<ApiData>[]

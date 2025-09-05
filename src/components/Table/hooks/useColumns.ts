@@ -1,5 +1,5 @@
-import type { Column, ColumnVisibility } from "@/types/table"
 import { useCallback, useMemo } from "react"
+import type { Column, ColumnVisibility } from "../types"
 
 export interface UseColumnsReturn<T> {
   isAllVisible: boolean

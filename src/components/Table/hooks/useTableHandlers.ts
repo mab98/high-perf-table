@@ -1,6 +1,5 @@
-import type { ApiData } from "@/types/api"
-import type { Column, ColumnVisibility, Sort, Tooltip } from "@/types/table"
 import { useCallback } from "react"
+import type { ApiData, Column, ColumnVisibility, Sort, Tooltip } from "../types"
 
 export interface UseTableHandlersProps<T> {
   setSort: (sort?: Sort) => void
@@ -117,18 +116,11 @@ export const useTableHandlers = <T>({
 
           setFilters((prevFilters) => {
             const updatedFilters = { ...prevFilters }
-            const removedFilters: string[] = []
             hiddenColumns.forEach((columnKey) => {
               if (updatedFilters[columnKey]) {
-                removedFilters.push(columnKey)
                 delete updatedFilters[columnKey]
               }
             })
-            if (removedFilters.length > 0) {
-              console.log(
-                `Removing filters for hidden columns: ${removedFilters.join(", ")}`
-              )
-            }
             return updatedFilters
           })
         }
@@ -148,7 +140,6 @@ export const useTableHandlers = <T>({
             setFilters((prevFilters) => {
               const updatedFilters = { ...prevFilters }
               if (updatedFilters[key]) {
-                console.log(`Removing filter for hidden column: ${key}`)
                 delete updatedFilters[key]
               }
               return updatedFilters

@@ -1,9 +1,9 @@
 import "@/App.css"
 import Table from "@/components/Table/Table"
+import { CLIENT_SIDE, VIRTUALIZATION } from "@/components/Table/constants"
+import type { FetchingMode, RenderStrategy } from "@/components/Table/types"
 import { colDefs } from "@/config/colDefs"
-import { CLIENT_SIDE, VIRTUALIZATION } from "@/constants"
 import { useApiData } from "@/hooks/useApiData"
-import type { FetchingMode, RenderStrategy } from "@/types/table"
 
 function App() {
   const fetchingMode: FetchingMode = CLIENT_SIDE

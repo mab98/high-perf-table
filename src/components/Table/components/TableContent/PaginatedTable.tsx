@@ -5,9 +5,9 @@ import ResizableTableHeader from "@/components/Table/components/TableHeader/Resi
 import TableRow from "@/components/Table/components/TableRow/TableRow"
 import type { ColumnWidthInfo } from "@/components/Table/hooks/useColumnWidths"
 import { ColumnsIcon, SearchIcon } from "@/components/Table/Icons/Icons"
-import type { ApiData } from "@/types/api"
-import type { Column, Sort } from "@/types/table"
 import { useCallback, useMemo } from "react"
+import type { ApiData } from "../../types"
+import type { Column, Sort } from "../../types/table"
 
 interface SortingProps {
   sort?: Sort | null

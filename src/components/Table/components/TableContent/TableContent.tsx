@@ -10,11 +10,11 @@ import {
   ErrorIcon,
   SearchIcon
 } from "@/components/Table/Icons/Icons"
-import { PAGINATION, VIRTUALIZATION } from "@/constants"
-import type { ApiData } from "@/types/api"
-import type { Column, RenderStrategy, Sort } from "@/types/table"
 import { useCallback, useMemo } from "react"
 import { TableVirtuoso } from "react-virtuoso"
+import { PAGINATION, VIRTUALIZATION } from "../../constants"
+import type { ApiData } from "../../types"
+import type { Column, RenderStrategy, Sort } from "../../types/table"
 
 interface SortingProps {
   sort?: Sort | null

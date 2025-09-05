@@ -1,6 +1,6 @@
 import "@/components/Table/components/TableTooltip/TableTooltip.css"
-import type { Tooltip } from "@/types/table"
 import { createPortal } from "react-dom"
+import type { Tooltip } from "../../types/table"
 
 const TableTooltip = ({ text, position }: Tooltip) => {
   if (!text.trim() || !position) return null

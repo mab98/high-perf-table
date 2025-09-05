@@ -1,6 +1,6 @@
-import type { ApiData, ApiResponse } from "@/types/api"
-import type { Sort } from "@/types/table"
 import { useMemo } from "react"
+import type { ApiData, ApiResponse } from "../types"
+import type { Sort } from "../types/table"
 
 interface UseClientSideDataParams {
   data: ApiResponse<ApiData> | undefined

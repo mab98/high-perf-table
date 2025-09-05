@@ -1,10 +1,10 @@
 import TableCell from "@/components/Table/components/TableCell/TableCell"
 import "@/components/Table/components/TableRow/TableRow.css"
 import type { ColumnWidthInfo } from "@/components/Table/hooks/useColumnWidths"
-import { CELL_MIN_WIDTH } from "@/constants"
-import type { Column } from "@/types/table"
 import type { ReactNode } from "react"
 import { memo, useMemo } from "react"
+import { CELL_MIN_WIDTH } from "../../constants"
+import type { Column } from "../../types/table"
 
 interface TableRowProps<T> {
   row: T

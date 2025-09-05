@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 
-export type EditableConfig = {
+type EditableConfig = {
   validation?: (value: string) => string | null
 }
 
@@ -27,14 +27,6 @@ export type ColumnVisibility = {
   visible: boolean
 } & ({ key: string } | { all: boolean })
 
-export type TableQueryParams = {
-  limit?: number
-  offset?: number
-  sort?: string
-  search?: string
-  filters?: Record<string, string>
-}
-
 export type Tooltip = {
   text: string
   position: { x: number; y: number }
@@ -48,6 +40,14 @@ export type ValidationError = {
 export type RenderStrategy = "virtualization" | "pagination"
 
 export type FetchingMode = "serverSide" | "clientSide"
+
+export type TableQueryParams = {
+  limit?: number
+  offset?: number
+  sort?: string
+  search?: string
+  filters?: Record<string, string>
+}
 
 export type PaginationState = {
   pageIndex: number

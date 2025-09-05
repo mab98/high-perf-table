@@ -1,7 +1,7 @@
 import "@/components/Table/components/TableHeader/TableHeader.css"
-import type { Column } from "@/types/table"
 import { DragOverlay } from "@dnd-kit/core"
 import { memo } from "react"
+import type { Column } from "../../types/table"
 
 interface ColumnDragOverlayProps<T> {
   activeColumn: string | null

@@ -1,5 +1,4 @@
-import type { ApiResponse } from "@/types/api"
-import type { TableQueryParams } from "@/types/table"
+import type { ApiResponse, TableQueryParams } from "@/components/Table/types"
 
 export const buildQueryString = (params: TableQueryParams): string => {
   const searchParams = new URLSearchParams()

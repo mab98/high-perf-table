@@ -3,8 +3,6 @@ import ResizableHeaderCell from "@/components/Table/components/TableHeader/Resiz
 import SeparateResizeHandle from "@/components/Table/components/TableHeader/SeparateResizeHandle"
 import "@/components/Table/components/TableHeader/TableHeader.css"
 import type { ColumnWidthInfo } from "@/components/Table/hooks/useColumnWidths"
-import { CELL_MIN_WIDTH } from "@/constants"
-import type { Column, Sort } from "@/types/table"
 import {
   DndContext,
   MouseSensor,
@@ -20,6 +18,8 @@ import {
 } from "@dnd-kit/sortable"
 import clsx from "clsx"
 import { memo, useCallback, useMemo, useRef, useState } from "react"
+import { CELL_MIN_WIDTH } from "../../constants"
+import type { Column, Sort } from "../../types/table"
 
 interface ResizableTableHeaderProps<T> {
   colDefs: Column<T>[]

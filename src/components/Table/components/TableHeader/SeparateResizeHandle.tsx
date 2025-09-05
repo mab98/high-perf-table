@@ -1,6 +1,6 @@
 import "@/components/Table/components/TableHeader/ResizableHeader.css"
-import { CELL_MAX_WIDTH, CELL_MIN_WIDTH } from "@/constants"
 import { memo, useCallback, useEffect, useRef, useState } from "react"
+import { CELL_MAX_WIDTH, CELL_MIN_WIDTH } from "../../constants"
 
 interface SeparateResizeHandleProps {
   columnKey: string

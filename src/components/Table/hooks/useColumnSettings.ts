@@ -1,5 +1,5 @@
-import type { Column } from "@/types/table"
 import { useCallback, useEffect, useState } from "react"
+import type { Column } from "../types/table"
 
 export interface ColumnConfig {
   key: string

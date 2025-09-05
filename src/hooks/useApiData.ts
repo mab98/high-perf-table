@@ -1,6 +1,10 @@
-import { CLIENT_SIDE, SERVER_SIDE } from "@/constants"
-import type { ApiData, ApiParams, ApiResponse } from "@/types/api"
-import type { FetchingMode } from "@/types/table"
+import { CLIENT_SIDE, SERVER_SIDE } from "@/components/Table/constants"
+import type {
+  ApiData,
+  ApiParams,
+  ApiResponse,
+  FetchingMode
+} from "@/components/Table/types"
 import { buildQueryString, defaultFetcher } from "@/utils/apiUtils"
 import { useCallback, useMemo, useState } from "react"
 import useSWR from "swr"

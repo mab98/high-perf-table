@@ -1,5 +1,5 @@
-import type { ApiData } from "@/types/api"
 import { useCallback, useEffect, useState } from "react"
+import type { ApiData } from "../types"
 
 export interface StoredEdit {
   rowId: string | number

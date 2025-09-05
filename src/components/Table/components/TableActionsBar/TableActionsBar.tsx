@@ -3,7 +3,7 @@ import Columns from "@/components/Table/components/Columns/Columns"
 import Filters from "@/components/Table/components/Filters/Filters"
 import "@/components/Table/components/TableActionsBar/TableActionsBar.css"
 import TableSearch from "@/components/Table/components/TableSearch/TableSearch"
-import type { Column, ColumnVisibility } from "@/types/table"
+import type { Column, ColumnVisibility } from "../../types/table"
 
 interface TableActionsBarProps<T> {
   colDefs: Column<T>[]
