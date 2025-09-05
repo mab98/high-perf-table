@@ -35,11 +35,3 @@
 .table-row:hover::before {
   width: var(--spacing-1);
 }
-
-.table-row:nth-child(even) {
-  background: var(--bg-surface);
-}
-
-.table-row:nth-child(even):hover {
-  background: var(--bg-hover);
-}
