@@ -195,17 +195,20 @@ const ResizableTableHeader = <T,>({
           items={columnsMeta.map((c) => c.key)}
           strategy={horizontalListSortingStrategy}
         >
-          {columnsMeta.map(({ key, col, isActive, sortDirection, width }) => (
-            <ResizableHeaderCell
-              key={key}
-              col={col}
-              width={width}
-              isActive={isActive}
-              sortDirection={sortDirection}
-              onSort={handleSort}
-              pinned={col.pinned || null}
-            />
-          ))}
+          {columnsMeta.map(
+            ({ key, col, style, isActive, sortDirection, width }) => (
+              <ResizableHeaderCell
+                key={key}
+                col={col}
+                width={width}
+                style={style}
+                isActive={isActive}
+                sortDirection={sortDirection}
+                onSort={handleSort}
+                pinned={col.pinned || null}
+              />
+            )
+          )}
         </SortableContext>
 
         {/* Separate layer for resize handles positioned between columns */}

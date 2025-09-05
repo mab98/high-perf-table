@@ -25,6 +25,7 @@ const renderSortIcon = <T,>(col: Column<T>, sortDirection: string | null) => {
 interface ResizableHeaderCellProps<T> {
   col: Column<T>
   width: number
+  style?: React.CSSProperties
   isActive: boolean
   sortDirection: "asc" | "desc" | null
   onSort: (col: Column<T>) => void
@@ -34,6 +35,7 @@ interface ResizableHeaderCellProps<T> {
 const ResizableHeaderCell = <T,>({
   col,
   width,
+  style: passedStyle,
   isActive,
   sortDirection,
   onSort,
@@ -56,9 +58,10 @@ const ResizableHeaderCell = <T,>({
       transform: CSS.Transform.toString(transform),
       transition,
       width: `${width}px`,
-      minWidth: `${CELL_MIN_WIDTH}px`
+      minWidth: `${CELL_MIN_WIDTH}px`,
+      ...passedStyle
     }),
-    [transform, transition, width]
+    [transform, transition, width, passedStyle]
   )
 
   const handleClick = (event: React.MouseEvent) => {

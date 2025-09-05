@@ -5,6 +5,7 @@
   background: var(--bg-canvas);
   align-items: center;
   width: 100%;
+  min-width: fit-content;
   transition: all var(--transition-normal);
   position: relative;
 }

@@ -124,8 +124,7 @@
 /* Pinned cell styles */
 .table-cell--pinned-left {
   position: sticky;
-  left: 0;
-  z-index: 1;
+  z-index: 11;
   background: var(--white);
   box-shadow:
     2px 0 4px rgba(0, 0, 0, 0.08),
@@ -134,8 +133,7 @@
 
 .table-cell--pinned-right {
   position: sticky;
-  right: 0;
-  z-index: 1;
+  z-index: 11;
   background: var(--white);
   box-shadow:
     2px 0 4px rgba(0, 0, 0, 0.08),

@@ -65,7 +65,6 @@
 /* Pinned column styling */
 .header-cell-container.pinned-left {
   position: sticky;
-  left: 0;
   z-index: 21;
   background: var(--table-header-bg);
   box-shadow:
@@ -75,7 +74,6 @@
 
 .header-cell-container.pinned-right {
   position: sticky;
-  right: 0;
   z-index: 21;
   background: var(--table-header-bg);
   box-shadow:
