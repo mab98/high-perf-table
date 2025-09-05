@@ -11,15 +11,6 @@ import {
   SERVER_SIDE,
   VIRTUALIZATION_STRING
 } from "@/constants"
-import { useClientSideData } from "@/hooks/useClientSideData"
-import { useColumnOrder } from "@/hooks/useColumnOrder"
-import { useColumnSettings } from "@/hooks/useColumnSettings"
-import { useColumnWidths } from "@/hooks/useColumnWidths"
-import { useDebounce } from "@/hooks/useDebounce"
-import { useInlineEdit } from "@/hooks/useInlineEdit"
-import { useLocalStorageEdits } from "@/hooks/useLocalStorageEdits"
-import { usePagination } from "@/hooks/usePagination"
-import { useTableHandlers } from "@/hooks/useTableHandlers"
 import type { ApiData, ApiParams, ApiResponse } from "@/types/api"
 import type {
   Column,
@@ -32,6 +23,15 @@ import type {
 import { useCallback, useEffect, useMemo, useState } from "react"
 import TableTooltip from "./components/TableTooltip/TableTooltip"
 import ValidationErrorTooltip from "./components/ValidationError/ValidationError"
+import { useClientSideData } from "./hooks/useClientSideData"
+import { useColumnOrder } from "./hooks/useColumnOrder"
+import { useColumnSettings } from "./hooks/useColumnSettings"
+import { useColumnWidths } from "./hooks/useColumnWidths"
+import { useDebounce } from "./hooks/useDebounce"
+import { useInlineEdit } from "./hooks/useInlineEdit"
+import { useLocalStorageEdits } from "./hooks/useLocalStorageEdits"
+import { usePagination } from "./hooks/usePagination"
+import { useTableHandlers } from "./hooks/useTableHandlers"
 import "./Table.css"
 
 interface TableProps {

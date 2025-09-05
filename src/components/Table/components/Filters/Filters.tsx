@@ -1,9 +1,9 @@
 import ClearButton from "@/components/Table/components/ClearButton/ClearButton"
 import DropdownButton from "@/components/Table/components/DropdownButton/DropdownButton"
 import "@/components/Table/components/Filters/Filters.css"
-import { useFilters } from "@/hooks/useFilters"
 import type { Column } from "@/types/table"
 import { memo } from "react"
+import { useFilters } from "../../hooks/useFilters"
 
 interface FiltersProps<T> {
   colDefs: Column<T>[]
