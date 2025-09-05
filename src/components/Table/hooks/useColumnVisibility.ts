@@ -17,7 +17,7 @@ export interface UseColumnsOptions<T> {
   onColumnVisibility: (params: ColumnVisibility) => void
 }
 
-export const useColumns = <T>({
+export const useColumnVisibility = <T>({
   colDefs,
   visibleColumns,
   onColumnVisibility

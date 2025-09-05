@@ -3,21 +3,14 @@ import ResizableHeaderCell from "@/components/Table/components/TableHeader/Resiz
 import SeparateResizeHandle from "@/components/Table/components/TableHeader/SeparateResizeHandle"
 import "@/components/Table/components/TableHeader/TableHeader.css"
 import type { ColumnWidthInfo } from "@/components/Table/hooks/useColumnWidths"
-import {
-  DndContext,
-  MouseSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-  type DragStartEvent,
-  type Modifier
-} from "@dnd-kit/core"
+import { useTableHeaderDrag } from "@/components/Table/hooks/useTableHeaderDrag"
+import { DndContext } from "@dnd-kit/core"
 import {
   SortableContext,
   horizontalListSortingStrategy
 } from "@dnd-kit/sortable"
 import clsx from "clsx"
-import { memo, useCallback, useMemo, useRef, useState } from "react"
+import { memo, useCallback, useMemo } from "react"
 import { CELL_MIN_WIDTH } from "../../constants"
 import type { Column, Sort } from "../../types/table"
 
@@ -44,41 +37,22 @@ const ResizableTableHeader = <T,>({
   tableWidth,
   setColumnWidth
 }: ResizableTableHeaderProps<T>) => {
-  const [activeColumn, setActiveColumn] = useState<string | null>(null)
-  const tableHeaderRef = useRef<HTMLDivElement>(null)
-
-  /* Constrain drag horizontally within table bounds */
-  const constrainedHorizontalModifier: Modifier = ({
-    transform,
-    draggingNodeRect
-  }) => {
-    if (!draggingNodeRect || !tableWidth || !tableHeaderRef.current) {
-      return { x: transform.x, y: 0, scaleX: 1, scaleY: 1 }
+  const {
+    activeColumn,
+    tableHeaderRef,
+    constrainedHorizontalModifier,
+    sensors,
+    handleDragStart,
+    handleDragEnd
+  } = useTableHeaderDrag({
+    tableWidth,
+    onColumnReorder: (activeId, overId) => {
+      // Check if reordering is allowed (for pinned columns)
+      if (onColumnReorder && (!canReorder || canReorder(activeId, overId))) {
+        onColumnReorder(activeId, overId)
+      }
     }
-
-    const headerRect = tableHeaderRef.current.getBoundingClientRect()
-    const dragNodeWidth = draggingNodeRect.width
-
-    const leftBoundary = headerRect.left
-    const rightBoundary = headerRect.left + tableWidth
-
-    const currentLeft = draggingNodeRect.left + transform.x
-    const currentRight = currentLeft + dragNodeWidth
-
-    let constrainedX = transform.x
-    if (currentLeft < leftBoundary) {
-      constrainedX = leftBoundary - draggingNodeRect.left
-    }
-    if (currentRight > rightBoundary) {
-      constrainedX = rightBoundary - dragNodeWidth - draggingNodeRect.left
-    }
-
-    return { x: constrainedX, y: 0, scaleX: 1, scaleY: 1 }
-  }
-
-  const sensors = useSensors(
-    useSensor(MouseSensor, { activationConstraint: { distance: 8 } })
-  )
+  })
 
   const handleSort = useCallback(
     (col: Column<T>) => {
@@ -99,29 +73,6 @@ const ResizableTableHeader = <T,>({
       }
     },
     [sort, onSort, onClearSort]
-  )
-
-  const handleDragStart = useCallback((event: DragStartEvent) => {
-    setActiveColumn(event.active.id as string)
-  }, [])
-
-  const handleDragEnd = useCallback(
-    (event: DragEndEvent) => {
-      const { active, over } = event
-
-      if (over && active.id !== over.id && onColumnReorder) {
-        const activeId = active.id as string
-        const overId = over.id as string
-
-        // Check if reordering is allowed (for pinned columns)
-        if (!canReorder || canReorder(activeId, overId)) {
-          onColumnReorder(activeId, overId)
-        }
-      }
-
-      setActiveColumn(null)
-    },
-    [onColumnReorder, canReorder]
   )
 
   const handleResize = useCallback(

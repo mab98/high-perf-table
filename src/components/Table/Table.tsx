@@ -12,9 +12,13 @@ import { useDebounce } from "@/components/Table/hooks/useDebounce"
 import { useInlineEdit } from "@/components/Table/hooks/useInlineEdit"
 import { useLocalStorageEdits } from "@/components/Table/hooks/useLocalStorageEdits"
 import { usePagination } from "@/components/Table/hooks/usePagination"
+import { useTableComputedValues } from "@/components/Table/hooks/useTableComputedValues"
+import { useTableEffects } from "@/components/Table/hooks/useTableEffects"
 import { useTableHandlers } from "@/components/Table/hooks/useTableHandlers"
+import { useTableSaveLogic } from "@/components/Table/hooks/useTableSaveLogic"
+import { useTableState } from "@/components/Table/hooks/useTableState"
 import "@/components/Table/Table.css"
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useMemo } from "react"
 import {
   CLIENT_SIDE,
   DEFAULT_TABLE_HEIGHT,
@@ -29,10 +33,7 @@ import type {
   ApiResponse,
   Column,
   FetchingMode,
-  RenderStrategy,
-  Sort,
-  Tooltip,
-  ValidationError
+  RenderStrategy
 } from "./types"
 
 interface TableProps<T> {
@@ -62,16 +63,25 @@ const Table = <T extends Record<string, unknown> & { id: string | number }>({
   fetchingMode = SERVER_SIDE,
   tableTitle
 }: TableProps<T>) => {
-  /** Local State */
-  const [localSearch, setLocalSearch] = useState("")
-  const [localFilters, setLocalFilters] = useState<Record<string, string>>({})
-  const [sort, setSort] = useState<Sort | undefined>()
-  const [offset, setOffset] = useState(0)
-  const [fetchedRows, setFetchedRows] = useState<T[]>([])
-  const [totalRecords, setTotalRecords] = useState(0)
-  const [tooltip, setTooltip] = useState<Tooltip | null>(null)
-  const [validationError, setValidationError] =
-    useState<ValidationError | null>(null)
+  /** Table State Management */
+  const {
+    localSearch,
+    setLocalSearch,
+    localFilters,
+    setLocalFilters,
+    sort,
+    setSort,
+    offset,
+    setOffset,
+    fetchedRows,
+    setFetchedRows,
+    totalRecords,
+    setTotalRecords,
+    tooltip,
+    setTooltip,
+    validationError,
+    setValidationError
+  } = useTableState<T>()
 
   /** Debounced values */
   const search = useDebounce(localSearch, 500)
@@ -142,74 +152,57 @@ const Table = <T extends Record<string, unknown> & { id: string | number }>({
       ? clientSideDataWithPagination.data
       : effectiveApiData
 
-  /** Effects */
-  // Update API params when dependencies change (only for server-side mode)
-  useEffect(() => {
-    if (fetchingMode === SERVER_SIDE) {
-      const params: ApiParams = {
-        limit:
-          effectivePaginationMode === PAGINATION
-            ? paginationState.pageSize
-            : PAGE_SIZE,
-        offset:
-          effectivePaginationMode === PAGINATION
-            ? paginationState.pageIndex * paginationState.pageSize
-            : offset * PAGE_SIZE,
-        sort:
-          sort && sort.column ? `${sort.column},${sort.direction}` : undefined,
-        search: search || undefined,
-        filters: Object.keys(filters).length > 0 ? filters : undefined
-      }
-      onApiParamsChange(params)
-    }
-  }, [
+  /** Effects - Handle data fetching and updates */
+  useTableEffects({
+    finalApiData,
+    setFetchedRows,
+    setTotalRecords,
+    setOffset,
     search,
     filters,
     sort,
     offset,
-    onApiParamsChange,
-    effectivePaginationMode,
     paginationState,
-    fetchingMode
-  ])
-
-  // Reset data when query params change (only for server-side mode)
-  useEffect(() => {
-    if (
-      fetchingMode === SERVER_SIDE &&
-      effectivePaginationMode === VIRTUALIZATION
-    ) {
-      setFetchedRows([])
-      setOffset(0)
-    }
-    // For pagination, the usePagination hook handles resets internally
-    // For client-side mode, data is always fresh from the hook
-  }, [search, sort, filters, effectivePaginationMode, fetchingMode])
-
-  // Append API data (for virtualization) or replace (for pagination)
-  useEffect(() => {
-    if (!finalApiData) return
-    setTotalRecords(finalApiData.total)
-
-    if (fetchingMode === CLIENT_SIDE) {
-      // For client-side mode, always replace the data completely
-      setFetchedRows(finalApiData.data)
-    } else if (effectivePaginationMode === VIRTUALIZATION) {
-      // For server-side virtualization mode, append data
-      setFetchedRows((prev) =>
-        offset === 0 ? finalApiData.data : [...prev, ...finalApiData.data]
-      )
-    } else {
-      // For server-side pagination, replace the data completely
-      setFetchedRows(finalApiData.data)
-    }
-  }, [finalApiData, offset, effectivePaginationMode, fetchingMode])
+    fetchingMode,
+    effectivePaginationMode,
+    onApiParamsChange
+  })
 
   /** Column Order & Resize */
   const { orderedColDefs, onColumnReorder, canReorder } = useColumnOrder({
     colDefs,
     columnOrder,
     setColumnOrder
+  })
+
+  /** Computed Values */
+  const visibleColDefs = useMemo(
+    () => orderedColDefs.filter((col) => visibleColumns.includes(col.key)),
+    [orderedColDefs, visibleColumns]
+  )
+
+  const columnWidths = useColumnWidths({
+    colDefs: visibleColDefs,
+    tableWidth,
+    customWidths: customColumnWidths
+  })
+
+  const {
+    isSearchOrFilterActive,
+    enhancedColDefs,
+    dataWithEdits,
+    getRowId,
+    setValidationErrorCallback
+  } = useTableComputedValues<T>({
+    localSearch,
+    localFilters,
+    orderedColDefs,
+    visibleColumns,
+    fetchedRows,
+    applyEditsToData: applyEditsToData as (data: T[]) => T[],
+    columnWidths,
+    tableWidth,
+    setValidationError
   })
 
   /** Handlers (sorting, filters, etc.) */
@@ -237,24 +230,7 @@ const Table = <T extends Record<string, unknown> & { id: string | number }>({
       }
     },
     setTooltip,
-    setValidationError: useCallback(
-      (text: string, element: HTMLElement | null) => {
-        if (!text.trim() || !element) {
-          setValidationError(null)
-          return
-        }
-
-        const rect = element.getBoundingClientRect()
-        setValidationError({
-          text,
-          position: {
-            x: rect.left + rect.width / 2,
-            y: rect.bottom + 8 // Position below the input with a small gap
-          }
-        })
-      },
-      []
-    ),
+    setValidationError: setValidationErrorCallback,
     setSearch: setLocalSearch,
     orderedColDefs,
     loading: effectiveLoading,
@@ -264,40 +240,12 @@ const Table = <T extends Record<string, unknown> & { id: string | number }>({
   })
 
   /** Enhanced save function with local storage */
-  const onSave = useCallback(
-    async (rowId: string | number, columnKey: string, value: string) => {
-      // Get the actual original value from stored edits if it exists, otherwise from current data
-      const existingEdit = getStoredEdit(rowId, columnKey)
-
-      let actualValue: string
-      if (existingEdit) {
-        // Use the original value from the existing edit
-        actualValue = existingEdit.actualValue
-      } else {
-        // Find the original value from the current data
-        const row = fetchedRows.find((r) => r.id === rowId)
-        actualValue = row
-          ? String(row[columnKey as keyof typeof row] || "")
-          : ""
-      }
-
-      // Save the edit locally first
-      saveEdit(rowId, columnKey, value, actualValue)
-
-      // Then call the original save function to update the table data
-      await originalOnSave(rowId, columnKey, value)
-    },
-    [saveEdit, originalOnSave, fetchedRows, getStoredEdit]
-  )
-
-  /** Row ID Handler - Use actual row ID for persistence */
-  const getRowId = useCallback(
-    (index: number): string | number => {
-      const row = fetchedRows[index]
-      return row?.id ?? index
-    },
-    [fetchedRows]
-  )
+  const { onSave } = useTableSaveLogic({
+    getStoredEdit,
+    saveEdit,
+    fetchedRows,
+    originalOnSave
+  })
 
   /** Inline Edit */
   const {
@@ -318,40 +266,6 @@ const Table = <T extends Record<string, unknown> & { id: string | number }>({
         : null
     }
   })
-
-  /** Derived Values */
-  const isSearchOrFilterActive = useMemo(
-    () =>
-      localSearch.trim() !== "" ||
-      Object.values(localFilters).some((v) => v.trim() !== ""),
-    [localSearch, localFilters]
-  )
-
-  const visibleColDefs = useMemo(
-    () => orderedColDefs.filter((col) => visibleColumns.includes(col.key)),
-    [orderedColDefs, visibleColumns]
-  )
-
-  const columnWidths = useColumnWidths({
-    colDefs: visibleColDefs,
-    tableWidth,
-    customWidths: customColumnWidths
-  })
-
-  const enhancedColDefs = useMemo(
-    () =>
-      visibleColDefs.map((col, i) => ({
-        ...col,
-        width: columnWidths[i]?.width ?? col.width
-      })),
-    [visibleColDefs, columnWidths]
-  )
-
-  /** Apply stored edits to the fetched data */
-  const dataWithEdits = useMemo(() => {
-    const result = applyEditsToData(fetchedRows)
-    return result
-  }, [fetchedRows, applyEditsToData])
 
   return (
     <>

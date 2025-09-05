@@ -1,6 +1,6 @@
 import "@/components/Table/components/Columns/Columns.css"
 import DropdownButton from "@/components/Table/components/DropdownButton/DropdownButton"
-import { useColumns } from "@/components/Table/hooks/useColumns"
+import { useColumnVisibility } from "@/components/Table/hooks/useColumnVisibility"
 import { memo, useCallback } from "react"
 import type { Column, ColumnVisibility } from "../../types/table"
 
@@ -27,7 +27,7 @@ const Columns = <T extends Record<string, unknown>>({
     toggleableColumns,
     alwaysVisibleColumns,
     columnsLabel
-  } = useColumns({
+  } = useColumnVisibility({
     colDefs,
     visibleColumns,
     onColumnVisibility
